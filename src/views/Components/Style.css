@@ -1,0 +1,29 @@
+.divSearchMenu {
+    text-align: right;
+    vertical-align: middle;
+    box-shadow: inset 0px 0px 1px 0px grey, 5px 5px 10px -4px #CCCCCC;
+    padding: 5px;
+    margin-bottom: 9px;
+    padding-right: 18px;
+    height: 30px;
+}
+
+.MuiAccordion-root{
+    padding: 0;
+    min-height: 30;
+}
+
+.MuiAccordionSummary-content{
+    margin: 0px;
+    min-height: 30;
+}
+
+.MuiButtonBase-root .MuiAccordionSummary-root{
+    padding: 0;
+    margin: 0;
+    height: 1em;
+} 
+
+.css-g1h2ui-MuiButtonBase-root-MuiAccordionSummary-root{
+    min-height: 20;
+}

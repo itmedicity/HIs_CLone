@@ -1,0 +1,8 @@
+.input_focus:focus{
+    background: #a4def726 !important;
+    outline-color: white;
+}
+.select_box:focus {
+    background: #a4def726 !important;
+    outline-color: #a4def726;
+}
