@@ -1,12 +1,60 @@
 import { Box, Button, Paper } from '@mui/material'
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 // import logo from "../assets/Ellider.png"
 import '../style.css'
 import imageLogo from "../../assets/Ellider.png"
+import { ToastContainer } from 'react-toastify'
+import { errorNofity, infoNofity } from '../../Constant/Constants'
+import { useNavigate } from 'react-router-dom'
+import { axiosinstance } from '../../controllers/AxiosConfig'
+import moment from 'moment'
+import { useDispatch, useSelector } from 'react-redux'
+import { logedIformation } from '../../Redux-Slice/LoginSlice/LoginInfomration'
 
 const Login = () => {
+
+    const navigate = useNavigate()
+    const dispatch = useDispatch();
+
+    const [userName, setUserName] = useState("");
+    const [password, setPassword] = useState("");
+    const [clinic, setClinic] = useState("00");
+
+    const handleClickLogin = useCallback(async () => {
+        if (userName === "") {
+            infoNofity("User Name Is Blank")
+        } else if (password === "") {
+            infoNofity("User Password Is Blank")
+        } else {
+            const postData = {
+                usc_name: userName,
+                usc_pass: password
+            }
+
+            const loginFun = await axiosinstance.post("/employee/login", postData);
+            const { success } = await loginFun.data;
+            if (success === 1) {
+                const { expireDate, message, token, data } = await loginFun.data;
+                const loginCred = {
+                    user: data.us_code,
+                    name: data.usc_first_name,
+                    token: token,
+                    expire: expireDate
+                }
+                localStorage.setItem('usrCred', JSON.stringify(loginCred));
+                dispatch(logedIformation(loginCred))
+                if (moment(expireDate) > moment(new Date())) {
+                    navigate('/Menu')
+                }
+            } else {
+                errorNofity("Invalid Login")
+            }
+        }
+    }, [userName, password, clinic])
+
     return (
         <Box sx={{ display: 'flex', justifyContent: 'center' }} >
+            <ToastContainer />
             <Paper sx={{
                 marginTop: '100px',
                 width: '400px',
@@ -64,6 +112,7 @@ const Login = () => {
                                     color: '#58595b',
                                     padding: '0 5px'
                                 }}
+                                onChange={(e) => setUserName(e.target.value)}
                             />
                         </Box>
                         <Box sx={{
@@ -90,6 +139,7 @@ const Login = () => {
                                     color: '#58595b',
                                     padding: '0 5px'
                                 }}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                         </Box>
                         <Box sx={{
@@ -119,6 +169,7 @@ const Login = () => {
                                     borderBottomColor: '#0f81be',
                                 }}
                                 defaultValue="00"
+                                onChange={(e) => setClinic(e.target.value)}
                             >
                                 <option>--Select--</option>
                                 <option value="00" >Travancore Medical College & Hospital</option>
@@ -147,6 +198,7 @@ const Login = () => {
                                             backgroundColor: '#00A0E3'
                                         }
                                     }}
+                                    onClick={handleClickLogin}
                                 >Login</Button>
                             </Box>
                         </Box>

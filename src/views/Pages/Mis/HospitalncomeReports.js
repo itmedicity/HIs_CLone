@@ -5,13 +5,19 @@ import "react-datepicker/dist/react-datepicker.css";
 import './Style.css'
 import ButtonCmp from '../../Components/ButtonCmp';
 import { imageIcon } from '../../../assets/ImageExport';
+import { useNavigate } from 'react-router-dom'
 
 const HospitalncomeReports = () => {
+    const navigate = useNavigate();
     const [startDate, setStartDate] = useState(new Date());
 
     const handleClick = () => {
         window.open('http://localhost:3000/TestCmp', '_blank');
     };
+
+    const handleClose = () => {
+        navigate("/Menu")
+    }
 
     return (
         <Paper sx={{ display: 'flex', flex: 1, justifyContent: 'center' }} square variant='outlined' >
@@ -84,7 +90,7 @@ const HospitalncomeReports = () => {
                                         paddingTop: 10
                                     }} >
                                         <ButtonCmp name="Preview" style={{ mr: 1 }} onClick={handleClick} />
-                                        <ButtonCmp name="Close" style={{}} onClick={() => { }} />
+                                        <ButtonCmp name="Close" style={{}} onClick={handleClose} />
                                     </td>
 
                                 </tr>

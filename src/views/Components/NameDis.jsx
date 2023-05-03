@@ -5,7 +5,6 @@ import CopyrightIcon from '@mui/icons-material/Copyright';
 const NameDis = () => {
     return (
         <Box>
-            Test
             {/* <Box
                 sx={{
                     fontFamily: 'Tahoma',

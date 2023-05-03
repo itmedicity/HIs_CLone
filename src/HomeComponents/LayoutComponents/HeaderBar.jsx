@@ -1,11 +1,27 @@
 import { Box, Button, Divider, Paper } from '@mui/material'
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import imageLogo from '../../assets/Ellider.png'
 import moment from 'moment'
+import { useNavigate } from 'react-router-dom'
 
 const HeaderBar = () => {
+    const navigate = useNavigate()
+    const today = moment().format('dddd LL');
+    const [user, setUser] = useState("DSOFT");
 
-    const today = moment().format('dddd LL')
+    useEffect(() => {
+        const userLogedInfm = localStorage.getItem("usrCred");
+        if (userLogedInfm !== null) {
+            let userName = JSON.parse(userLogedInfm).name;
+            setUser(userName)
+        }
+    }, [setUser])
+
+    const handleLogoutFunction = useCallback(async () => {
+        localStorage.removeItem("usrCred");
+        navigate("/")
+    }, [])
+
     return (
         <Paper sx={{ height: '60px', display: 'flex', backgroundColor: '#E4E4E4' }} >
             <Box sx={{ width: '124px', }} >
@@ -30,7 +46,7 @@ const HeaderBar = () => {
                         color: 'rgb(88,86,83)',
                         fontSize: '15px',
                         fontFamily: 'Arial, Helvetica, sans-serif',
-                        paddingLeft: '5px'
+                        paddingLeft: '5px',
                     }} >
                         MANAGEMENT INFORMATION SYSTEM
                     </Box>
@@ -39,7 +55,7 @@ const HeaderBar = () => {
                         fontSize: '12px',
                         fontWeight: 'normal',
                         lineHeight: '20px',
-                        paddingLeft: '5px'
+                        paddingLeft: '5px',
                     }} >2.0.2.3020</Box>
                 </Box>
             </Box>
@@ -57,7 +73,8 @@ const HeaderBar = () => {
                     color: '#0F81BE',
                     fontWeight: 'bold',
                     fontFamily: 'Arial, Helvetica, sans-serif',
-                }} >DSOFT</Box>
+                    textTransform: "capitalize"
+                }} >{user.toLocaleUpperCase()}</Box>
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'right',
@@ -93,6 +110,7 @@ const HeaderBar = () => {
                             fontSize: '12px',
                             color: '#6D6962'
                         }}
+                        onClick={handleLogoutFunction}
                         size='small'
                         startIcon={'|'}
                     >Logout</Button>
