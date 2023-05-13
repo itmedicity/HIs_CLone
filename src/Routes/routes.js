@@ -9,6 +9,7 @@ const Mis = React.lazy(() => import('../views/Pages/Mis'));
 const Outpatient = React.lazy(() => import('../views/Pages/Outpatient'));
 const PharmacyBilling = React.lazy(() => import('../views/Pages/PharmacyBilling'));
 const HospitalIncomeReports = React.lazy(() => import('../views/Pages/Mis/HospitalncomeReports'));
+const incomeReports = React.lazy(() => import('../views/Pages/Mis/IncomeReports'))
 
 const routes = [
     { path: '', element: NameDis },
@@ -20,5 +21,6 @@ const routes = [
     { path: '/PharmacyBilling', element: PharmacyBilling },
     { path: '/Test', element: Test },
     { path: '/hospital_income', element: HospitalIncomeReports, name: "Hospital Income Statement" },
+    { path: '/income-reports', element: incomeReports, name: "Hospital Income Statement" },
 ]
 export default routes

@@ -1,19 +1,30 @@
 import { Paper, Box, Divider } from '@mui/material'
-import React, { useState } from 'react'
+import React, { memo, useCallback, useState } from 'react'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import './Style.css'
 import ButtonCmp from '../../Components/ButtonCmp';
 import { imageIcon } from '../../../assets/ImageExport';
 import { useNavigate } from 'react-router-dom'
+import moment from 'moment';
 
 const HospitalncomeReports = () => {
     const navigate = useNavigate();
     const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
 
-    const handleClick = () => {
-        window.open('http://localhost:3000/TestCmp', '_blank');
-    };
+    const handleClick = useCallback(() => {
+        const postDate = {
+            from: moment(startDate).format('DD/MM/YYYY 00:00:00'),
+            to: moment(endDate).format('DD/MM/YYYY 23:59:59')
+        }
+        // @ts-ignore
+        navigate('/Menu/income-reports', {
+            state: {
+                date: postDate
+            }
+        })
+    }, [startDate, endDate]);
 
     const handleClose = () => {
         navigate("/Menu")
@@ -74,10 +85,10 @@ const HospitalncomeReports = () => {
                                     <td>:</td>
                                     <td>
                                         <DatePicker
-                                            selected={startDate}
+                                            selected={endDate}
                                             dateFormat="dd/MM/yyyy"
                                             // @ts-ignore
-                                            onChange={(date) => setStartDate(date)}
+                                            onChange={(date) => setEndDate(date)}
                                             className='datePicker'
                                         />
                                     </td>
@@ -123,4 +134,4 @@ const HospitalncomeReports = () => {
     )
 }
 
-export default HospitalncomeReports
+export default memo(HospitalncomeReports) 
