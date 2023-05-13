@@ -3,7 +3,10 @@ import { Box, CircularProgress } from '@mui/material';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Text from './views/Components/Text';
 import NotFountPage from './views/Components/NotFountPage';
-import TestComponent from './views/Pages/Mis/TestComponent';
+import TestComponent from './views/Pages/Mis/IncomeReports';
+import ProtectedRoute from './HomeComponents/LayoutComponents/ProtectedRoute';
+import { Provider } from 'react-redux';
+import { store } from './store';
 
 const Login = lazy(() => import('./HomeComponents/Login/Login'));
 const DefaultLayout = lazy(() => import('./HomeComponents/LayoutComponents/DefaultLayout'));
@@ -12,12 +15,15 @@ function App() {
   return (
     <BrowserRouter>
       <Suspense fallback={<CircularProgress />} >
-        <Routes>
-          <Route path='/' element={<Login />} />
-          <Route path='/Menu/*' element={<DefaultLayout />} />
-          <Route path='/TestCmp/' element={<TestComponent />} />
-          <Route path='*' element={<NotFountPage />} />
-        </Routes>
+        <Provider store={store} >
+          <Routes>
+            <Route path='/' element={<Login />} />
+            <Route path='/Menu/*' element={<ProtectedRoute />} />
+            {/* <Route path='/Menu/*' element={<DefaultLayout />} />
+          <Route path='/TestCmp/' element={<TestComponent />} /> */}
+            <Route path='*' element={<NotFountPage />} />
+          </Routes>
+        </Provider>
       </Suspense>
     </BrowserRouter>
   );
