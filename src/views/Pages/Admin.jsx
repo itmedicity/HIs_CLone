@@ -11,7 +11,7 @@ const Admin = () => {
             <ContentSecondary name="Admin" >
                 <ContentPaper name="User Setting" >
                     <ContentNavLink name="User Group" route="" />
-                    <ContentNavLink name="User Creation" route="" />
+                    <ContentNavLink name="User Creation" route="/Menu/User" />
                     <ContentNavLink name="User Rights" route="" />
                     <ContentNavLink name="Change Password" route="" />
                     <ContentNavLink name="Query Settings" route="" />
