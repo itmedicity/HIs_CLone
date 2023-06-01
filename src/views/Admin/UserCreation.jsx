@@ -1,12 +1,12 @@
 import { Box, Typography } from '@mui/material'
-import React, { Fragment, useState, useCallback, useEffect } from 'react'
+import React, { Fragment, useState, useCallback, useMemo } from 'react'
 import { ToastContainer } from 'react-toastify'
 import Divider from '@mui/material/Divider';
 import { axiosinstance } from '../../controllers/AxiosConfig';
 import { succesNofity, warningNofity } from '../../Constant/Constants';
 import { ViewUserDetails } from './ViewUserDetails';
 import { PreviewReport } from './PreviewReport';
-
+import './style.css'
 
 
 const UserCreation = () => {
@@ -128,25 +128,28 @@ const UserCreation = () => {
 
     }
 
-    const postdata = {
-        us_code: Math.ceil(Math.random() * 1000),
-        usc_name: username,
-        usc_alias: shortname,
-        usc_first_name: fullname,
-        usc_pass: password,
-        usc_active: active === true ? '1' : '0'
+    const postdata = useMemo(() => {
+        return {
+            us_code: Math.ceil(Math.random() * 1000),
+            usc_name: username,
+            usc_alias: shortname,
+            usc_first_name: fullname,
+            usc_pass: password,
+            usc_active: active === true ? '1' : '0'
+        }
+    }, [username, shortname, fullname, password, active])
 
-    }
-
-    const patchdata = {
-        emp_slno: empno,
-        us_code: userid,
-        usc_name: username,
-        usc_alias: shortname,
-        usc_first_name: fullname,
-        usc_pass: password,
-        usc_active: active === true ? '1' : '0'
-    }
+    const patchdata = useMemo(() => {
+        return {
+            emp_slno: empno,
+            us_code: userid,
+            usc_name: username,
+            usc_alias: shortname,
+            usc_first_name: fullname,
+            usc_pass: password,
+            usc_active: active === true ? '1' : '0'
+        }
+    }, [empno, userid, username, shortname, fullname, password, active])
 
 
     const SaveUserDetails = useCallback((e) => {
@@ -271,7 +274,7 @@ const UserCreation = () => {
         else {
             UserDetailsAdd(postdata)
         }
-    }, [postdata, patchdata, edit])
+    }, [postdata, patchdata, edit, username, shortname, password, mobile, email, resetPass])
 
 
     const ClearUserDetails = async () => {
@@ -320,7 +323,7 @@ const UserCreation = () => {
     const editView = async (val) => {
 
         setFlag(0)
-        const { emp_slno, us_code, usc_name, usc_alias, usc_first_name, usc_pass, usc_active } = val
+        const { emp_slno, us_code, usc_name, usc_alias, usc_first_name, usc_active } = val
         setEmpno(emp_slno)
         setUserid(us_code)
         setUsername(usc_name)
@@ -328,7 +331,7 @@ const UserCreation = () => {
         setFullname(usc_first_name)
         setPassword('')
         setMobile('123456')
-        setEmail(usc_first_name + "@gmail.com")
+        setEmail(usc_name + "@gmail.com")
         setClinic(1)
         setActive(usc_active === 1 ? true : false)
         setEdit(1)
@@ -350,7 +353,7 @@ const UserCreation = () => {
 
                     const obj = {
                         emp_slno: val.emp_slno,
-                        clinic_name: "Travancore Medcical College & Hospital",
+                        clinic_name: "Travancore Medical College & Hospital",
                         usc_name: val.usc_name,
                         usc_alias: val.usc_alias,
                         usc_first_name: val.usc_first_name,
@@ -370,6 +373,7 @@ const UserCreation = () => {
         getdata()
 
     }, [])
+
 
 
     return (
@@ -474,7 +478,7 @@ const UserCreation = () => {
                                 </Box>
 
                                 <Box sx={{ width: "62%", pl: 0.5 }}>
-                                    <input type="text" autoComplete='off'
+                                    <input type="text" autoComplete='off '
 
                                         style={{
                                             border: '0.5px solid grey',
@@ -483,7 +487,9 @@ const UserCreation = () => {
                                             height: '18px',
                                             width: '210px',
                                             margin: '0px,0px,0px,0px',
-                                            borderRadius: '3px'
+                                            borderRadius: '3px',
+                                            // borderColor: isTextInputFocused == true ? 'Orange' : 'grey'
+
                                         }}
 
                                         // classname='textNewInputTest'

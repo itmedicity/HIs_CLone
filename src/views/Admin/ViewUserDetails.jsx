@@ -1,4 +1,4 @@
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, IconButton, Paper } from '@mui/material'
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, IconButton } from '@mui/material'
 import React, { Fragment, useEffect, useState, useCallback } from 'react'
 import { ToastContainer } from 'react-toastify'
 import Divider from '@mui/material/Divider';
@@ -38,7 +38,7 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
     useEffect(() => {
         const getdata = async () => {
             const result = await axiosinstance.get('/employee/view')
-            const { success, message, data } = result.data
+            const { success, data } = result.data
             if (success === 2) {
                 setView(data)
             }
@@ -98,9 +98,7 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
             getdata()
         }
 
-    }, [postdata, search])
-
-
+    }, [postdata, search, username, shortname, fullname])
 
 
     return (
@@ -285,11 +283,11 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
                                 borderCollapse='separate' tableLayout='fixed'
                                 style={{
                                     border: "0.5px solid lightgrey", fontFamily: "Arial",
-                                    BorderAllRounded: '1px',
+                                    BorderAllRounded: '1px', opacity: 0.9
 
                                 }}>
 
-                                <TableHead sx={{ height: '40px' }} >
+                                <TableHead stickyHeader sx={{ height: '40px' }} >
                                     <TableRow size='small' sx={{
                                         borderWidth: 1,
 
@@ -297,11 +295,11 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
                                         borderStyle: 'solid',
 
                                     }}>
-                                        <TableCell sx={{ backgroundColor: '#dfdcdca6', fontSize: 12, borderRight: '1px solid lightgrey', pl: 1 }}></TableCell>
-                                        <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: '#dfdcdca6', borderRight: '1px solid lightgrey', pl: 1 }}>User Name</TableCell>
-                                        <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: '#dfdcdca6', borderRight: '1px solid lightgrey', pl: 1 }}>Short Name</TableCell>
-                                        <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: '#dfdcdca6', borderRight: '1px solid lightgrey', pl: 1 }}>Real Name</TableCell>
-                                        <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: '#dfdcdca6', borderRight: '1px solid lightgrey', pl: 1 }}>Active</TableCell>
+                                        <TableCell sx={{ backgroundColor: '#dfdcdca6', fontSize: 12, borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}></TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: '#dfdcdca6', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>User Name</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: '#dfdcdca6', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Short Name</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: '#dfdcdca6', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Real Name</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: '#dfdcdca6', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Active</TableCell>
 
                                     </TableRow>
                                 </TableHead>
@@ -311,8 +309,8 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
                                             <TableCell sx={{ borderRight: '1px solid lightgrey', width: 15 }}>
                                                 <IconButton
                                                     onClick={(e) => EditUser(val)}
-                                                    sx={{ paddingY: 0.7 }} >
-                                                    <img src={Edit_icon} width="12" height="12" />
+                                                    sx={{ paddingY: 0.8 }} >
+                                                    <img src={Edit_icon} width="12" height="12" alt='Edit' />
                                                 </IconButton>
                                             </TableCell>
 
