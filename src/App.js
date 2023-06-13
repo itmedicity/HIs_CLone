@@ -3,7 +3,6 @@ import { Box, CircularProgress } from '@mui/material';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Text from './views/Components/Text';
 import NotFountPage from './views/Components/NotFountPage';
-import TestComponent from './views/Pages/Mis/IncomeReports';
 import ProtectedRoute from './HomeComponents/LayoutComponents/ProtectedRoute';
 import { Provider } from 'react-redux';
 import { store } from './store';

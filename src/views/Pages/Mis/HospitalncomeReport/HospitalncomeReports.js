@@ -3,8 +3,8 @@ import React, { memo, useCallback, useState } from 'react'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import './Style.css'
-import ButtonCmp from '../../Components/ButtonCmp';
-import { imageIcon } from '../../../assets/ImageExport';
+import ButtonCmp from '../../../Components/ButtonCmp';
+import { imageIcon } from '../../../../assets/ImageExport';
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment';
 
@@ -103,7 +103,6 @@ const HospitalncomeReports = () => {
                                         <ButtonCmp name="Preview" style={{ mr: 1 }} onClick={handleClick} />
                                         <ButtonCmp name="Close" style={{}} onClick={handleClose} />
                                     </td>
-
                                 </tr>
                             </tbody>
                         </table>
