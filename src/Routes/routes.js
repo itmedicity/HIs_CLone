@@ -8,8 +8,11 @@ const LabGeneralBill = React.lazy(() => import('../views/Pages/LabGeneralBill'))
 const Mis = React.lazy(() => import('../views/Pages/Mis'));
 const Outpatient = React.lazy(() => import('../views/Pages/Outpatient'));
 const PharmacyBilling = React.lazy(() => import('../views/Pages/PharmacyBilling'));
+
 const HospitalIncomeReports = React.lazy(() => import('../views/Pages/Mis/HospitalncomeReport/HospitalncomeReports'));
 const incomeReports = React.lazy(() => import('../views/Pages/Mis/HospitalncomeReport/IncomeReports'))
+const User = React.lazy(() => import('../views/Admin/UserCreation'));
+
 
 const routes = [
     { path: '', element: NameDis },
@@ -22,5 +25,6 @@ const routes = [
     { path: '/Test', element: Test },
     { path: '/hospital_income', element: HospitalIncomeReports, name: "Hospital Income Statement" },
     { path: '/income-reports', element: incomeReports, name: "Hospital Income Statement" },
+    { path: '/User', name: 'New User Creation', element: User },
 ]
 export default routes

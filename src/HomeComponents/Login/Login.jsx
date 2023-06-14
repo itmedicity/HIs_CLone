@@ -125,6 +125,7 @@ const Login = () => {
                         }} >Password</Box>
                         <Box sx={{ display: 'flex', paddingTop: '5px' }}>
                             <input
+                                type="password"
                                 autoComplete='off'
                                 className='input_focus'
                                 style={{
