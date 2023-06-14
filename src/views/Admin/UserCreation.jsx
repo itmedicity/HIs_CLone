@@ -6,10 +6,10 @@ import { axiosinstance } from '../../controllers/AxiosConfig';
 import { succesNofity, warningNofity } from '../../Constant/Constants';
 import { ViewUserDetails } from './ViewUserDetails';
 import { PreviewReport } from './PreviewReport';
-import './style.css'
-
+import { useNavigate } from 'react-router-dom'
 
 const UserCreation = () => {
+    const navigate = useNavigate();
     const [username, setUsername] = useState('')
     const [shortname, setShortname] = useState('')
     const [fullname, setFullname] = useState('')
@@ -67,7 +67,6 @@ const UserCreation = () => {
         setDoctor(e.target.value)
 
     }
-
     const Getlab = (e) => {
         setLab(e.target.value)
 
@@ -117,7 +116,6 @@ const UserCreation = () => {
             setActive(false)
         }
     }
-
     const ResetPassword = (e) => {
         if (e.target.checked === true) {
             setResetPass(true)
@@ -127,7 +125,6 @@ const UserCreation = () => {
         }
 
     }
-
     const postdata = useMemo(() => {
         return {
             us_code: Math.ceil(Math.random() * 1000),
@@ -171,14 +168,12 @@ const UserCreation = () => {
                 warningNofity("Enter Email")
             }
             else {
-
                 const result = await axiosinstance.post('/employee/insert', postdata)
                 const { success, message } = result.data
                 if (success === 1) {
 
                     succesNofity(message);
                     ClearUserDetails();
-
                 }
                 else if (success === 7) {
                     warningNofity(message)
@@ -187,14 +182,10 @@ const UserCreation = () => {
                     console.log(message);
                 }
             }
-
         }
 
         const UserDetailsUpdate = async () => {
-
             if (resetPass === true) {
-
-                // console.log('reset password');
                 if (username === '') {
                     warningNofity("Enter User Name")
                 }
@@ -211,14 +202,11 @@ const UserCreation = () => {
                     warningNofity("Enter Email")
                 }
                 else {
-
                     const result = await axiosinstance.patch('/employee/resetpass', patchdata)
-
                     const { success, message } = result.data
                     if (success === 2) {
                         succesNofity(message);
                         ClearUserDetails();
-
                     }
                     else if (success === 7) {
 
@@ -228,12 +216,8 @@ const UserCreation = () => {
                         console.log(message);
                     }
                 }
-
             }
             else {
-
-                // console.log('password not updated');
-
                 if (username === '') {
                     warningNofity("Enter User Name")
                 }
@@ -247,14 +231,11 @@ const UserCreation = () => {
                     warningNofity("Enter Email")
                 }
                 else {
-
                     const result = await axiosinstance.patch('/employee/update', patchdata)
-
                     const { success, message } = result.data
                     if (success === 2) {
                         succesNofity(message);
                         ClearUserDetails();
-
                     }
                     else if (success === 7) {
 
@@ -264,7 +245,6 @@ const UserCreation = () => {
                         console.log(message);
                     }
                 }
-
             }
         }
 
@@ -275,7 +255,6 @@ const UserCreation = () => {
             UserDetailsAdd(postdata)
         }
     }, [postdata, patchdata, edit, username, shortname, password, mobile, email, resetPass])
-
 
     const ClearUserDetails = async () => {
         setUsername('')
@@ -300,16 +279,19 @@ const UserCreation = () => {
         setResetPass(false)
 
     }
+    const Closepage = async () => {
+        console.log("close");
+        navigate("/Menu")
+        ClearUserDetails();
+
+    }
 
     const ViewUserData = useCallback(() => {
-
         const getdata = async () => {
             const result = await axiosinstance.get('/employee/view')
             const { success, message, data } = result.data
             if (success === 2) {
                 setView(data)
-
-                // console.log(data);
                 setFlag(1)
             }
             else {
@@ -321,7 +303,6 @@ const UserCreation = () => {
     }, [])
 
     const editView = async (val) => {
-
         setFlag(0)
         const { emp_slno, us_code, usc_name, usc_alias, usc_first_name, usc_active } = val
         setEmpno(emp_slno)
@@ -344,8 +325,6 @@ const UserCreation = () => {
             const { success, message, data } = result.data
             if (success === 2) {
                 setView(data)
-
-                // console.log(data);
 
                 //  const { emp_slno, usc_active, usc_first_name, usc_alias, usc_name } = data[0]
 
@@ -374,8 +353,6 @@ const UserCreation = () => {
 
     }, [])
 
-
-
     return (
         <Fragment>
             <ToastContainer />
@@ -387,14 +364,12 @@ const UserCreation = () => {
                             width: "100%",
                             height: "600px",
                             alignItems: "center",
-                            //  backgroundColor: 'lightskyblue',
                             justifyContent: 'center',
                             alignContent: 'center',
                             px: 19,
                         }}>
                         <Box
                             sx={{
-                                // backgroundColor: 'pink',
                                 display: "flex",
                                 flexDirection: 'column',
                                 flex: 1,
@@ -1811,7 +1786,7 @@ const UserCreation = () => {
 
 
                                             }}
-                                            onClick={ClearUserDetails}
+                                            onClick={Closepage}
                                         >
                                             Close
                                         </button>
@@ -1825,6 +1800,7 @@ const UserCreation = () => {
                         </Box>
                     </Box>
             }
+
         </Fragment>
     )
 }

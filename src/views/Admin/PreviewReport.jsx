@@ -14,8 +14,8 @@ import { Tooltip } from '@mui/joy';
 import pdf_icon from '../Images/pdf_icon.jpg';
 import excel_icon from '../Images/excel_icon.jpg';
 import close_icon from '../Images/close_icon.png';
-import { pdfdownload } from './PdfMaking';
-import { ExporttoExcel } from './ExcelReport';
+import { pdfdownload } from '../FunctionalComponents/PdfMaking';
+import { ExporttoExcel } from '../FunctionalComponents/ExcelReport';
 
 
 export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
@@ -24,21 +24,16 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
     const printdate = moment(new Date()).format('DD/MM/YYYY HH:mm:ss')
     const fileName = "User Details";
 
-
-
     const Viewaspdf = (e) => {
         pdfdownload(view)
     }
     const ViewasExcel = (e) => {
         ExporttoExcel(preview, fileName)
     }
-
-
     const ClosePreview = async (e) => {
         setFlag(0)
         ClearData();
     }
-
     useEffect(() => {
         const userLogedInfm = localStorage.getItem("usrCred");
         if (userLogedInfm !== null) {
@@ -55,14 +50,12 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                     display: "flex", flexDirection: 'column',
                     width: "100%",
                     height: "100%",
-                    backgroundColor: "#E1E1E1",
-                    pt: 2,
                     justifyContent: 'right',
+                    backgroundColor: "#E1E1E1",
                     pl: 3,
-                    pr: 6
-
-                }}
-            >
+                    pr: 6,
+                    pt: 2,
+                }}>
                 <Box sx={{
                     display: "flex",
                     //   flexDirection: 'row-reverse',
@@ -106,7 +99,6 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                             </Typography>
                         </Box>
 
-
                         <Tooltip title="Excel">
                             <IconButton
                                 onClick={(e) => ViewasExcel(e)}
@@ -126,7 +118,6 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                             </Typography>
                         </Box>
 
-
                         <Tooltip title="Close">
                             <IconButton
                                 onClick={(e) => ClosePreview(e)}
@@ -145,7 +136,6 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                                 }}>Close
                             </Typography>
                         </Box>
-
 
                     </Box>
                 </Box>
