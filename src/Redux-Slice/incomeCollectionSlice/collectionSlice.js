@@ -71,6 +71,20 @@ const getunsettledAmount = createAsyncThunk('api/unsettledAmount', (postData) =>
             return response.data;
         })
 })
+//IP PREVIOUS DAY COLLECTION
+const getipPreviousDayCollection = createAsyncThunk('api/ippreviousDayCollection', (postData) => {
+    return axiosinstance.post("/collection/ipPreviousDayCollection", postData)
+        .then((response) => {
+            return response.data;
+        })
+})
+//CREDIT INSURANCE BILL
+const getipcreditInsuranceBill = createAsyncThunk('api/creditInsuranceBill', (postData) => {
+    return axiosinstance.post("/collection/creditInsuranceBill", postData)
+        .then((response) => {
+            return response.data;
+        })
+})
 
 const initialState = {
     advanceCollection: {
@@ -119,6 +133,16 @@ const initialState = {
         message: "",
     },
     unsettledAmount: {
+        data: [],
+        status: 0,
+        message: "",
+    },
+    ippreviousDayCollection: {
+        data: [],
+        status: 0,
+        message: "",
+    },
+    creditInsuranceBill: {
         data: [],
         status: 0,
         message: "",
@@ -330,6 +354,46 @@ const collectionSlice = createSlice({
             state.unsettledAmount.data = payload.data
             state.loading = false
         },
+
+        // @ts-ignore
+        [getipPreviousDayCollection.pending]: (state, { payload }) => {
+            state.ippreviousDayCollection.status = 0
+            state.ippreviousDayCollection.message = "pending"
+            state.loading = true
+        },
+        // @ts-ignore
+        [getipPreviousDayCollection.rejected]: (state, { payload }) => {
+            state.ippreviousDayCollection.status = 2
+            state.ippreviousDayCollection.message = "Error"
+            state.loading = false
+        },
+        // @ts-ignore
+        [getipPreviousDayCollection.fulfilled]: (state, { payload }) => {
+            state.ippreviousDayCollection.status = payload.success
+            state.ippreviousDayCollection.message = payload.message
+            state.ippreviousDayCollection.data = payload.data
+            state.loading = false
+        },
+
+        // @ts-ignore
+        [getipcreditInsuranceBill.pending]: (state, { payload }) => {
+            state.creditInsuranceBill.status = 0
+            state.creditInsuranceBill.message = "pending"
+            state.loading = true
+        },
+        // @ts-ignore
+        [getipcreditInsuranceBill.rejected]: (state, { payload }) => {
+            state.creditInsuranceBill.status = 2
+            state.creditInsuranceBill.message = "Error"
+            state.loading = false
+        },
+        // @ts-ignore
+        [getipcreditInsuranceBill.fulfilled]: (state, { payload }) => {
+            state.creditInsuranceBill.status = payload.success
+            state.creditInsuranceBill.message = payload.message
+            state.creditInsuranceBill.data = payload.data
+            state.loading = false
+        },
     }
 })
 
@@ -343,7 +407,9 @@ export {
     getcreditInsuranceBillCollection,
     getIpconsolidatedDiscount,
     getipPreviousDayDiscount,
-    getunsettledAmount
+    getunsettledAmount,
+    getipPreviousDayCollection,
+    getipcreditInsuranceBill
 }
 
 export default collectionSlice.reducer;
