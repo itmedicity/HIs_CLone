@@ -4,14 +4,21 @@ import ContentSecondary from '../Components/ContentSecondary';
 import ContentPaper from '../Components/ContentPaper';
 import ContentNavLink from '../Components/ContentNavLink';
 
+import { user_settings } from '../../Routes/routes.admin';
+
 const Admin = () => {
 
     return (
         <ContentMain>
             <ContentSecondary name="Admin" >
                 <ContentPaper name="User Setting" >
+
                     <ContentNavLink name="User Group" route="" />
-                    <ContentNavLink name="User Creation" route="" />
+                    {/* <ContentNavLink name="User Creation" route="/Menu/User" /> */}
+
+                    {
+                        user_settings.map((element, idx) => <ContentNavLink name={element.name} route={element.path} key={idx} />)
+                    }
                     <ContentNavLink name="User Rights" route="" />
                     <ContentNavLink name="Change Password" route="" />
                     <ContentNavLink name="Query Settings" route="" />

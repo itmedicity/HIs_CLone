@@ -8,6 +8,7 @@ const LabGeneralBill = React.lazy(() => import('../views/Pages/LabGeneralBill'))
 const Mis = React.lazy(() => import('../views/Pages/Mis'));
 const Outpatient = React.lazy(() => import('../views/Pages/Outpatient'));
 const PharmacyBilling = React.lazy(() => import('../views/Pages/PharmacyBilling'));
+
 //Qmt
 const HospitalIncomeReports = React.lazy(() => import('../views/Pages/Mis/HospitalncomeReport/HospitalncomeReports'));
 const incomeReports = React.lazy(() => import('../views/Pages/Mis/HospitalncomeReport/IncomeReports'))
@@ -17,6 +18,8 @@ const incomeReportsTmch = React.lazy(() => import('../views/Pages/Mis/HospitalIc
 //Tssh
 const HospitalIncomeReportsTssh = React.lazy(() => import('../views/Pages/Mis/HospitalIncomeTssh/HospitalncomeReports'))
 const incomeReportsTssh = React.lazy(() => import('../views/Pages/Mis/HospitalIcomeTmch/IncomeReports'))
+
+const User = React.lazy(() => import('../views/Admin/UserCreation'));
 
 const routes = [
     { path: '', element: NameDis },
@@ -36,5 +39,7 @@ const routes = [
     //Tssh
     { path: '/hospital_income_tssh', element: HospitalIncomeReportsTssh, name: "Hospital Income Statement" },
     { path: '/income-reports-tssh', element: incomeReportsTssh, name: "Hospital Income Statement" },
+    { path: '/User', name: 'New User Creation', element: User },
+
 ]
 export default routes
