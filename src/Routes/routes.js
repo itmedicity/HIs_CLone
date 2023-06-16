@@ -8,8 +8,10 @@ const LabGeneralBill = React.lazy(() => import('../views/Pages/LabGeneralBill'))
 const Mis = React.lazy(() => import('../views/Pages/Mis'));
 const Outpatient = React.lazy(() => import('../views/Pages/Outpatient'));
 const PharmacyBilling = React.lazy(() => import('../views/Pages/PharmacyBilling'));
-const HospitalIncomeReports = React.lazy(() => import('../views/Pages/Mis/HospitalncomeReports'));
-const incomeReports = React.lazy(() => import('../views/Pages/Mis/IncomeReports'))
+
+const HospitalIncomeReports = React.lazy(() => import('../views/Pages/Mis/HospitalncomeReport/HospitalncomeReports'));
+const incomeReports = React.lazy(() => import('../views/Pages/Mis/HospitalncomeReport/IncomeReports'))
+
 const User = React.lazy(() => import('../views/Pages/Admin/UserSettings/UserCreation/UserCreation'));
 
 const routes = [
