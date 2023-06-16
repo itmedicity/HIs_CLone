@@ -2,7 +2,7 @@
 
 import React from "react";
 
-const UserCreation = React.lazy(() => import('../views/Admin/UserCreation'));
+const UserCreation = React.lazy(() => import('../views/Pages/Admin/UserSettings/UserCreation/UserCreation'));
 
 
 export const user_settings = [

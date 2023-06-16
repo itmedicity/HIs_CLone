@@ -1,10 +1,10 @@
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, IconButton } from '@mui/material'
-import React, { Fragment, useEffect, useState, useCallback } from 'react'
+import React, { Fragment, useEffect, useState, useCallback, useMemo } from 'react'
 import { ToastContainer } from 'react-toastify'
 import Divider from '@mui/material/Divider';
-import { axiosinstance } from '../../controllers/AxiosConfig';
-import { infoNofity } from '../../Constant/Constants';
-import Edit_icon from '../Images/Edit_icon.png'
+import { axiosinstance } from '../../../../../controllers/AxiosConfig';
+import { infoNofity } from '../../../../../Constant/Constants';
+import Edit_icon from '../../../../../views/Images/Edit_icon.png'
 
 export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData }) => {
 
@@ -15,7 +15,6 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
 
     const Changeusername = (e) => {
         setUsername(e.target.value)
-        console.log(e.target.value)
         setSearch(1)
 
     }
@@ -27,12 +26,12 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
         setFullname(e.target.value)
         setSearch(1)
     }
-    const PageClose = async () => {
+    const PageClose = useCallback(() => {
         setFlag(0)
         setSearch(0)
         ClearData();
 
-    }
+    }, [])
 
 
     useEffect(() => {
@@ -42,17 +41,21 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
             if (success === 2) {
                 setView(data)
             }
+            else {
+                setView([])
+            }
         }
         getdata()
 
     }, [])
 
-
-    const postdata = {
-        usc_name: username,
-        usc_alias: shortname,
-        usc_first_name: fullname
-    }
+    const postdata = useMemo(() => {
+        return {
+            usc_name: username,
+            usc_alias: shortname,
+            usc_first_name: fullname
+        }
+    }, [username, shortname, fullname])
 
     const SearchUser = useCallback((e) => {
         const serachdata = async () => {
@@ -62,6 +65,10 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
             if (success === 2) {
                 setView(data)
                 setSearch(1)
+                // setUsername('')
+                // setShortname('')
+                // setFullname('')
+                setSearch(0)
             }
             else if (success === 1) {
 
@@ -69,7 +76,7 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
             }
             else {
 
-                console.log(message);
+                infoNofity(message);
             }
         }
 
@@ -79,14 +86,17 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
             if (success === 2) {
                 setView(data)
                 setFlag(1)
-
+                setUsername('')
+                setShortname('')
+                setFullname('')
+                setSearch(0)
             }
             else if (success === 1) {
 
                 infoNofity(message)
             }
             else {
-                console.log(message);
+                infoNofity(message);
             }
         }
 
@@ -122,7 +132,7 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
                         flex: 1,
                         border: '1px solid grey',
                         borderRadius: '3px',
-                        width: "95%",
+                        width: "100%",
                         maxHeight: "550px"
                     }}
                 >
@@ -133,7 +143,6 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
                             pt: 1,
                             pl: 1,
                             flexDirection: 'row',
-                            //  width: "100%",
                             justifyContent: 'left',
                             backgroundColor: '#525252',
                             fontWeight: 'bold',
@@ -171,7 +180,6 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
                                     width: '160px',
                                     margin: '0px,0px,0px,0px',
                                     borderRadius: '3px',
-                                    // padding: '3px'
 
                                 }}
                                 value={username}
@@ -229,15 +237,13 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
                                     backgroundColor: '#dbdbdb)',
                                     fontSize: '12px',
                                     borderRadius: '5px',
-                                    // boxShadow: '0px 0px 0px, inset 0px 0px 0px ',
-                                    padding: '3px',
+                                    padding: '4px',
                                     cursor: 'pointer',
                                     width: '75px',
                                     borderSpacing: '1px',
-                                    boxSizing: 'border-box',
-                                    // color: 'ButtonText',
-                                    fontFamily: 'Arial'
-
+                                    borderColor: 'lightgrey',
+                                    fontFamily: 'Arial',
+                                    fontWeight: 'bold'
 
                                 }}
                                 onClick={SearchUser}
@@ -252,16 +258,13 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
                                     backgroundColor: '#dbdbdb)',
                                     fontSize: '12px',
                                     borderRadius: '5px',
-                                    boxShadow: '0px 0px 0px, inset 0px 0px 0px ',
-                                    padding: '3px',
+                                    padding: '4px',
                                     cursor: 'pointer',
                                     width: '75px',
                                     borderSpacing: '1px',
-                                    boxSizing: 'border-box',
-                                    // color: 'ButtonText',
-                                    fontFamily: 'Arial'
-
-
+                                    borderColor: 'lightgrey',
+                                    fontFamily: 'Arial',
+                                    fontWeight: 'bold'
                                 }}
                                 onClick={PageClose}
                             >
@@ -275,19 +278,17 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
                         <TableContainer
                             sx={{
                                 maxHeight: 400, maxWidth: "100%",
-                                // "&::-webkit-scrollbar": {
-                                //     display: "none"
-                                // }
+
                             }}>
-                            <Table size='small' stickyHeader aria-label="sticky table" padding={"none"}
-                                borderCollapse='separate' tableLayout='fixed'
+                            <Table size='small' stickyHeader aria-label="a dense table" padding={"none"}
+                                // tableLayout='fixed'
                                 style={{
                                     border: "0.5px solid lightgrey", fontFamily: "Arial",
                                     BorderAllRounded: '1px', opacity: 0.9
 
                                 }}>
 
-                                <TableHead stickyHeader sx={{ height: '40px' }} >
+                                <TableHead sx={{ height: '40px' }} >
                                     <TableRow size='small' sx={{
                                         borderWidth: 1,
 
@@ -295,11 +296,11 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
                                         borderStyle: 'solid',
 
                                     }}>
-                                        <TableCell sx={{ backgroundColor: '#dfdcdca6', fontSize: 12, borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}></TableCell>
-                                        <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: '#dfdcdca6', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>User Name</TableCell>
-                                        <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: '#dfdcdca6', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Short Name</TableCell>
-                                        <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: '#dfdcdca6', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Real Name</TableCell>
-                                        <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: '#dfdcdca6', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Active</TableCell>
+                                        <TableCell sx={{ backgroundColor: 'lightgrey', fontSize: 12, borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}></TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>User Name</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Short Name</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Real Name</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Active</TableCell>
 
                                     </TableRow>
                                 </TableHead>
@@ -324,9 +325,6 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
 
                             </Table>
 
-
-
-
                         </TableContainer>
 
                     </Box>
@@ -334,7 +332,6 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
                     <Divider flexItem sx={{ borderBlockColor: 'grey', pt: 3 }}></Divider>
 
                 </Box>
-
             </Box>
         </Fragment >
     )
