@@ -4,7 +4,7 @@ import ContentSecondary from '../Components/ContentSecondary';
 import ContentPaper from '../Components/ContentPaper';
 import ContentNavLink from '../Components/ContentNavLink';
 
-import { user_settings } from '../../Routes/routes.admin';
+import { user_settings, report_grouping } from '../../Routes/routes.admin';
 
 const Admin = () => {
 
@@ -29,7 +29,9 @@ const Admin = () => {
                     <ContentNavLink name="Query Add/Edit" route="" />
                 </ContentPaper>
                 <ContentPaper name="Reports Grouping">
-                    <ContentNavLink name="Hospital Icome Group" route="" />
+                    {
+                        report_grouping.map((element, idx) => <ContentNavLink name={element.name} route={element.path} key={idx} />)
+                    }
                 </ContentPaper>
             </ContentSecondary>
         </ContentMain>

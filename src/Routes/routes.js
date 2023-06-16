@@ -21,6 +21,9 @@ const incomeReportsTssh = React.lazy(() => import('../views/Pages/Mis/HospitalIc
 
 const User = React.lazy(() => import('../views/Admin/UserCreation'));
 
+//Report Grouping
+const IpPatientGroup = React.lazy(() => import('../views/Pages/Admin/ReportGrouping/TsshPatientGroup/IpPatientGrouping'))
+
 const routes = [
     { path: '', element: NameDis },
     { path: '/Admin', element: Admin },
@@ -40,6 +43,7 @@ const routes = [
     { path: '/hospital_income_tssh', element: HospitalIncomeReportsTssh, name: "Hospital Income Statement" },
     { path: '/income-reports-tssh', element: incomeReportsTssh, name: "Hospital Income Statement" },
     { path: '/User', name: 'New User Creation', element: User },
+    { path: '/IpPatientGrouping', element: IpPatientGroup, name: "Patient Grouping" }
 
 ]
 export default routes

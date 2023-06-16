@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import ContentMain from '../Components/ContentMain'
 import ContentSecondary from '../Components/ContentSecondary'
 import ContentPaper from '../Components/ContentPaper'
@@ -26,4 +26,4 @@ const Mis = () => {
     )
 }
 
-export default Mis
+export default memo(Mis) 
