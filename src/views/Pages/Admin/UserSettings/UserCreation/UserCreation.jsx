@@ -2,14 +2,15 @@ import { Box, Typography } from '@mui/material'
 import React, { Fragment, useState, useCallback, useMemo } from 'react'
 import { ToastContainer } from 'react-toastify'
 import Divider from '@mui/material/Divider';
-import { axiosinstance } from '../../controllers/AxiosConfig';
-import { succesNofity, warningNofity } from '../../Constant/Constants';
+import { axiosinstance } from '../../../../../controllers/AxiosConfig';
+import { succesNofity, warningNofity } from '../../../../../Constant/Constants';
 import { ViewUserDetails } from './ViewUserDetails';
 import { PreviewReport } from './PreviewReport';
 import { useNavigate } from 'react-router-dom'
 
 const UserCreation = () => {
     const navigate = useNavigate();
+
     const [username, setUsername] = useState('')
     const [shortname, setShortname] = useState('')
     const [fullname, setFullname] = useState('')
@@ -32,21 +33,20 @@ const UserCreation = () => {
     const [edit, setEdit] = useState(0)
     const [userid, setUserid] = useState(0)
     const [empno, setEmpno] = useState(0)
-    const [resetPass, setResetPass] = useState(0)
-
+    const [resetPass, setResetPass] = useState(false)
+    const [preview, setPreview] = useState([])
 
     const Changeusername = (e) => {
         setUsername(e.target.value)
-        console.log(username);
     }
     const Changeshortname = (e) => {
         setShortname(e.target.value)
-        // console.log(shortname);
     }
     const Changefullname = (e) => {
         setFullname(e.target.value)
     }
     const Changepassword = (e) => {
+
         setPassword(e.target.value)
     }
     const Changemobile = (e) => {
@@ -103,17 +103,20 @@ const UserCreation = () => {
     const ChangeBillingUser = (e) => {
         if (e.target.checked === true) {
             setBilling(true)
+
         }
         else {
             setBilling(false)
         }
     }
+
     const ChangeActive = (e) => {
         if (e.target.checked === true) {
             setActive(true)
         }
         else {
             setActive(false)
+
         }
     }
     const ResetPassword = (e) => {
@@ -125,6 +128,7 @@ const UserCreation = () => {
         }
 
     }
+
     const postdata = useMemo(() => {
         return {
             us_code: Math.ceil(Math.random() * 1000),
@@ -177,9 +181,11 @@ const UserCreation = () => {
                 }
                 else if (success === 7) {
                     warningNofity(message)
+                    ClearUserDetails();
                 }
                 else {
-                    console.log(message);
+                    warningNofity(message);
+                    ClearUserDetails();
                 }
             }
         }
@@ -213,7 +219,7 @@ const UserCreation = () => {
                         warningNofity(message)
                     }
                     else {
-                        console.log(message);
+                        warningNofity(message);
                     }
                 }
             }
@@ -238,11 +244,11 @@ const UserCreation = () => {
                         ClearUserDetails();
                     }
                     else if (success === 7) {
-
                         warningNofity(message)
                     }
                     else {
-                        console.log(message);
+                        warningNofity(message);
+
                     }
                 }
             }
@@ -256,7 +262,7 @@ const UserCreation = () => {
         }
     }, [postdata, patchdata, edit, username, shortname, password, mobile, email, resetPass])
 
-    const ClearUserDetails = async () => {
+    const ClearUserDetails = useCallback(() => {
         setUsername('')
         setShortname('')
         setFullname('')
@@ -276,16 +282,18 @@ const UserCreation = () => {
         setActive(true)
         setFlag(0)
         setEdit(0)
+        setUserid(0)
+        setEmpno(0)
         setResetPass(false)
+        setView([])
+        setPreview([])
 
-    }
-    const Closepage = async () => {
-        console.log("close");
+    }, [])
+    const Closepage = useCallback(() => {
         navigate("/Menu")
         ClearUserDetails();
 
-    }
-
+    }, [])
     const ViewUserData = useCallback(() => {
         const getdata = async () => {
             const result = await axiosinstance.get('/employee/view')
@@ -293,6 +301,7 @@ const UserCreation = () => {
             if (success === 2) {
                 setView(data)
                 setFlag(1)
+
             }
             else {
                 succesNofity(message);
@@ -302,7 +311,7 @@ const UserCreation = () => {
 
     }, [])
 
-    const editView = async (val) => {
+    const editView = useCallback((val) => {
         setFlag(0)
         const { emp_slno, us_code, usc_name, usc_alias, usc_first_name, usc_active } = val
         setEmpno(emp_slno)
@@ -317,8 +326,9 @@ const UserCreation = () => {
         setActive(usc_active === 1 ? true : false)
         setEdit(1)
 
-    }
-    const [preview, setPreview] = useState([])
+    }, [])
+
+
     const PreviewUserDetails = useCallback(() => {
         const getdata = async () => {
             const result = await axiosinstance.get('/employee/select')
@@ -344,6 +354,7 @@ const UserCreation = () => {
                 })
                 setPreview(viewdata)
                 setFlag(2)
+
             }
             else {
                 succesNofity(message);
@@ -357,7 +368,7 @@ const UserCreation = () => {
         <Fragment>
             <ToastContainer />
             {flag === 1 ? <ViewUserDetails setFlag={setFlag} view={view} setView={setView} EditUser={editView} ClearData={ClearUserDetails} /> :
-                flag === 2 ? <PreviewReport setFlag={setFlag} view={view} preview={preview} ClearData={ClearUserDetails} /> :
+                flag === 2 ? < PreviewReport setFlag={setFlag} view={view} preview={preview} ClearData={ClearUserDetails} /> :
                     <Box
                         sx={{
                             display: "flex", flexDirection: 'column',
@@ -390,7 +401,7 @@ const UserCreation = () => {
                                     backgroundColor: '#525252',
                                     fontWeight: 'bold',
                                     textAlign: 'left',
-                                    height: '30px',
+                                    height: '20px',
                                     py: 1
                                 }}>
 
@@ -453,7 +464,7 @@ const UserCreation = () => {
                                 </Box>
 
                                 <Box sx={{ width: "62%", pl: 0.5 }}>
-                                    <input type="text" autoComplete='off '
+                                    <input type="text" autoComplete='off'
 
                                         style={{
                                             border: '0.5px solid grey',
@@ -466,13 +477,10 @@ const UserCreation = () => {
                                             // borderColor: isTextInputFocused == true ? 'Orange' : 'grey'
 
                                         }}
-
-                                        // classname='textNewInputTest'
                                         id='username'
                                         value={username}
                                         name="username"
-                                        // onInput={Changeusername}
-                                        onChange={Changeusername}
+                                        onInput={Changeusername}
 
 
                                     />
@@ -583,7 +591,7 @@ const UserCreation = () => {
                                             fontWeight: 'bold'
                                         }}
                                     >
-
+                                        *
                                     </Typography>
                                 </Box>
                                 <Box sx={{ width: "3%" }}>
@@ -668,10 +676,10 @@ const UserCreation = () => {
                                         :
                                     </Typography>
                                 </Box>
-
                                 {edit === 0 ?
-                                    <Box sx={{ width: "62%", pl: 0.5 }}>
-                                        <input input type="password" autoComplete='off'
+                                    <Box sx={{ width: "62%", pl: 0.6 }}>
+                                        <input type="password"
+                                            //autoComplete='off'
                                             style={{
 
                                                 border: '0.5px solid grey',
@@ -679,7 +687,7 @@ const UserCreation = () => {
                                                 textAlign: 'start',
                                                 height: '18px',
                                                 width: '150px',
-                                                margin: '0px,0px,0px,0px',
+                                                //margin: '0px,0px,0px,0px',
                                                 borderRadius: '3px'
 
                                             }}
@@ -692,7 +700,7 @@ const UserCreation = () => {
 
                                     <Box sx={{ width: "62%", pl: 0.5, display: "flex", flexDirection: 'row', }}>
                                         <Box sx={{ width: "19%" }}>
-                                            <input input type="password" autoComplete='off'
+                                            <input type="password"
                                                 style={{
 
                                                     border: '0.5px solid grey',
@@ -721,16 +729,15 @@ const UserCreation = () => {
                                                     height: '15px'
 
                                                 }}
-                                                checked={resetPass}
+                                                // checked={resetPass}
                                                 value={resetPass}
                                                 name="resetPass"
                                                 onChange={ResetPassword}
                                             >
-
                                             </input>
 
-
                                         </Box>
+
 
                                         <Box sx={{ width: "12%", pl: 0, pt: 0.8 }}>
                                             <Typography variant="body1"
@@ -744,9 +751,7 @@ const UserCreation = () => {
                                             </Typography>
                                         </Box>
                                     </Box>
-
                                 }
-
 
                             </Box>
 
@@ -937,7 +942,7 @@ const UserCreation = () => {
                                 <Box sx={{ width: "62%", pl: 0.5 }}>
 
                                     <select
-                                        defaultValue={0}
+                                        // defaultValue={0}
                                         variant="outlined"
                                         style={{
 
@@ -948,8 +953,6 @@ const UserCreation = () => {
                                             fontSize: '12px',
                                             fontFamily: 'Arial',
                                             borderRadius: '3px'
-
-
 
                                         }}
                                         name="clinic"
@@ -1014,7 +1017,6 @@ const UserCreation = () => {
                                 <Box sx={{ width: "62%", pl: 0.5 }}>
 
                                     <select
-                                        defaultValue={0}
                                         variant="outlined"
                                         style={{
 
@@ -1088,7 +1090,6 @@ const UserCreation = () => {
                                 <Box sx={{ width: "62%", pl: 0.5 }}>
 
                                     <select
-                                        defaultValue={0}
                                         variant="outlined"
                                         style={{
 
@@ -1161,7 +1162,6 @@ const UserCreation = () => {
                                 <Box sx={{ width: "62%", pl: 0.5 }}>
 
                                     <select
-                                        defaultValue={0}
                                         variant="outlined"
                                         style={{
 
@@ -1236,7 +1236,6 @@ const UserCreation = () => {
                                 <Box sx={{ width: "62%", pl: 0.5 }}>
 
                                     <select
-                                        defaultValue={0}
                                         variant="outlined"
                                         style={{
 
@@ -1308,7 +1307,6 @@ const UserCreation = () => {
                                 <Box sx={{ width: "62%", pl: 0.5 }}>
 
                                     <select
-                                        defaultValue={0}
                                         variant="outlined"
                                         style={{
 
@@ -1395,7 +1393,7 @@ const UserCreation = () => {
                                             }}
                                             value={time}
                                             name="time"
-                                            changeTextValue={Changetime}
+                                            onChange={Changetime}
                                         />
                                     </Box>
                                     <Box sx={{ p: 0.5, flexDirection: 'row' }}>
@@ -1414,7 +1412,7 @@ const UserCreation = () => {
                             </Box>
 
 
-                            {/* password reset */}
+                            {/* password reset next login*/}
 
                             <Box sx={{
                                 display: "flex", flexDirection: 'row', width: "100%",
@@ -1467,7 +1465,7 @@ const UserCreation = () => {
 
                                         }}
 
-                                        checked={pass}
+                                        // checked={pass}
                                         value={pass}
                                         name="pass"
                                         onChange={Changepass}
@@ -1530,7 +1528,7 @@ const UserCreation = () => {
                                             height: '15px'
 
                                         }}
-                                        checked={access}
+                                        // checked={access}
                                         value={access}
                                         name="access"
                                         onChange={ChangeAccess}
@@ -1591,7 +1589,7 @@ const UserCreation = () => {
                                             width: '15px',
                                             height: '15px'
                                         }}
-                                        checked={billing}
+                                        // checked={billing}
                                         value={billing}
                                         name="billing"
                                         onChange={ChangeBillingUser}
@@ -1601,6 +1599,7 @@ const UserCreation = () => {
 
                                 </Box>
                             </Box>
+
                             {/* Active */}
                             <Box sx={{
                                 display: "flex", flexDirection: 'row', width: "100%", height: 23,
@@ -1672,7 +1671,6 @@ const UserCreation = () => {
                                 height: '100px',
                                 alignItems: "center"
                             }}>
-
                                 <Box sx={{ display: "flex", flexDirection: 'row', pt: 1 }}>
 
                                     <button
@@ -1680,16 +1678,13 @@ const UserCreation = () => {
                                             backgroundColor: '#dbdbdb)',
                                             fontSize: '12px',
                                             borderRadius: '5px',
-                                            boxShadow: '0px 0px 0px, inset 0px 0px 0px ',
                                             padding: '4px',
                                             cursor: 'pointer',
                                             width: '75px',
-                                            borderSpacing: '0.5px',
-                                            boxSizing: 'border-box',
-                                            // color: 'ButtonText',
-                                            borderCollapse: 'separate',
-                                            fontFamily: 'Arial'
-
+                                            borderSpacing: '1px',
+                                            borderColor: 'lightgrey',
+                                            fontFamily: 'Arial',
+                                            fontWeight: 'bold'
 
                                         }}
                                         onClick={SaveUserDetails}
@@ -1703,15 +1698,14 @@ const UserCreation = () => {
                                                 backgroundColor: '#dbdbdb)',
                                                 fontSize: '12px',
                                                 borderRadius: '5px',
-                                                boxShadow: '0px 0px 0px, inset 0px 0px 0px ',
                                                 padding: '4px',
                                                 cursor: 'pointer',
                                                 width: '75px',
                                                 borderSpacing: '1px',
-                                                boxSizing: 'border-box',
-                                                // color: 'ButtonText',
-                                                borderCollapse: 'separate',
-                                                fontFamily: 'Arial'
+                                                borderColor: 'lightgrey',
+                                                fontFamily: 'Arial',
+                                                fontWeight: 'bold'
+
 
                                             }}
                                             onClick={ClearUserDetails}
@@ -1726,16 +1720,13 @@ const UserCreation = () => {
                                                 backgroundColor: '#dbdbdb)',
                                                 fontSize: '12px',
                                                 borderRadius: '5px',
-                                                boxShadow: '0px 0px 0px, inset 0px 0px 0px ',
                                                 padding: '4px',
                                                 cursor: 'pointer',
                                                 width: '75px',
                                                 borderSpacing: '1px',
-                                                boxSizing: 'border-box',
-                                                color: 'ButtonText',
-                                                borderCollapse: 'separate',
-                                                fontFamily: 'Arial'
-
+                                                borderColor: 'lightgrey',
+                                                fontFamily: 'Arial',
+                                                fontWeight: 'bold'
 
 
                                             }}
@@ -1750,17 +1741,13 @@ const UserCreation = () => {
                                                 backgroundColor: '#dbdbdb)',
                                                 fontSize: '12px',
                                                 borderRadius: '5px',
-                                                boxShadow: '0px 0px 0px, inset 0px 0px 0px ',
                                                 padding: '4px',
                                                 cursor: 'pointer',
                                                 width: '75px',
                                                 borderSpacing: '1px',
-                                                boxSizing: 'border-box',
-                                                color: 'ButtonText',
-                                                borderCollapse: 'separate',
-                                                fontFamily: 'Arial'
-
-
+                                                borderColor: 'lightgrey',
+                                                fontFamily: 'Arial',
+                                                fontWeight: 'bold'
 
                                             }}
                                             onClick={PreviewUserDetails}
@@ -1774,17 +1761,13 @@ const UserCreation = () => {
                                                 backgroundColor: '#dbdbdb)',
                                                 fontSize: '12px',
                                                 borderRadius: '5px',
-                                                boxShadow: '0px 0px 0px, inset 0px 0px 0px ',
                                                 padding: '4px',
                                                 cursor: 'pointer',
                                                 width: '75px',
                                                 borderSpacing: '1px',
-                                                boxSizing: 'border-box',
-                                                color: 'ButtonText',
-                                                borderCollapse: 'separate',
-                                                fontFamily: 'Arial'
-
-
+                                                borderColor: 'lightgrey',
+                                                fontFamily: 'Arial',
+                                                fontWeight: 'bold'
                                             }}
                                             onClick={Closepage}
                                         >
@@ -1801,7 +1784,7 @@ const UserCreation = () => {
                     </Box>
             }
 
-        </Fragment>
+        </Fragment >
     )
 }
 

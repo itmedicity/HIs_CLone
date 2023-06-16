@@ -11,8 +11,8 @@ const PharmacyBilling = React.lazy(() => import('../views/Pages/PharmacyBilling'
 
 const HospitalIncomeReports = React.lazy(() => import('../views/Pages/Mis/HospitalncomeReport/HospitalncomeReports'));
 const incomeReports = React.lazy(() => import('../views/Pages/Mis/HospitalncomeReport/IncomeReports'))
-const User = React.lazy(() => import('../views/Admin/UserCreation'));
 
+const User = React.lazy(() => import('../views/Pages/Admin/UserSettings/UserCreation/UserCreation'));
 
 const routes = [
     { path: '', element: NameDis },
