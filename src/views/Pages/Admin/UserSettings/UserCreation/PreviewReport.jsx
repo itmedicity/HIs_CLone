@@ -1,5 +1,5 @@
 import { Box, IconButton, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { Fragment } from 'react'
 import TableContainer from '@mui/material/TableContainer';
 import Table from '@mui/material/Table';
@@ -11,11 +11,11 @@ import moment from 'moment';
 import Divider from '@mui/material/Divider';
 import { ToastContainer } from 'react-toastify';
 import { Tooltip } from '@mui/joy';
-import pdf_icon from '../Images/pdf_icon.jpg';
-import excel_icon from '../Images/excel_icon.jpg';
-import close_icon from '../Images/close_icon.png';
-import { pdfdownload } from '../FunctionalComponents/PdfMaking';
-import { ExporttoExcel } from '../FunctionalComponents/ExcelReport';
+import pdf_icon from '../../../../../views/Images/pdf_icon.jpg';
+import excel_icon from '../../../../../views/Images/excel_icon.jpg';
+import close_icon from '../../../../../views/Images/close_icon.png';
+import { pdfdownload } from '../../../../../views/FunctionalComponents/PdfMaking';
+import { ExporttoExcel } from '../../../../../views/FunctionalComponents/ExcelReport';
 
 
 export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
@@ -24,21 +24,24 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
     const printdate = moment(new Date()).format('DD/MM/YYYY HH:mm:ss')
     const fileName = "User Details";
 
-    const Viewaspdf = (e) => {
+    const Viewaspdf = useCallback((e) => {
         pdfdownload(view)
-    }
-    const ViewasExcel = (e) => {
+    }, [])
+    const ViewasExcel = useCallback((e) => {
         ExporttoExcel(preview, fileName)
-    }
-    const ClosePreview = async (e) => {
+    }, [])
+    const ClosePreview = useCallback((e) => {
         setFlag(0)
         ClearData();
-    }
+    }, [])
+
     useEffect(() => {
         const userLogedInfm = localStorage.getItem("usrCred");
         if (userLogedInfm !== null) {
             let userName = JSON.parse(userLogedInfm).name;
             setUser(userName)
+        } else {
+            setUser('')
         }
     }, [setUser])
 
@@ -49,7 +52,6 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                 sx={{
                     display: "flex", flexDirection: 'column',
                     width: "100%",
-                    height: "100%",
                     justifyContent: 'right',
                     backgroundColor: "#E1E1E1",
                     pl: 3,
@@ -144,8 +146,6 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                 <Box
                     sx={{
                         display: "flex",
-                        height: "100%",
-                        width: "100%",
                         border: '1px solid grey',
                         borderRadius: '2px',
                         flexDirection: 'column',
@@ -283,7 +283,6 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                         display: "flex",
                         flexDirection: 'column',
                         flex: 1,
-                        width: "97%",
                         pl: 2,
                         pt: 3,
                         pr: 5

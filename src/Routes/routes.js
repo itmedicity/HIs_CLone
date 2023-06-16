@@ -18,11 +18,11 @@ const incomeReportsTmch = React.lazy(() => import('../views/Pages/Mis/HospitalIc
 //Tssh
 const HospitalIncomeReportsTssh = React.lazy(() => import('../views/Pages/Mis/HospitalIncomeTssh/HospitalncomeReports'))
 const incomeReportsTssh = React.lazy(() => import('../views/Pages/Mis/HospitalIcomeTmch/IncomeReports'))
-
-const User = React.lazy(() => import('../views/Admin/UserCreation'));
-
 //Report Grouping
 const IpPatientGroup = React.lazy(() => import('../views/Pages/Admin/ReportGrouping/TsshPatientGroup/IpPatientGrouping'))
+
+const User = React.lazy(() => import('../views/Pages/Admin/UserSettings/UserCreation/UserCreation'));
+
 
 const routes = [
     { path: '', element: NameDis },

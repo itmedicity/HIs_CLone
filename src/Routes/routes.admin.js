@@ -1,8 +1,7 @@
 import React from "react";
 
-const UserCreation = React.lazy(() => import('../views/Admin/UserCreation'));
+const UserCreation = React.lazy(() => import('../views/Pages/Admin/UserSettings/UserCreation/UserCreation'));
 const IpPatientGroup = React.lazy(() => import('../views/Pages/Admin/ReportGrouping/TsshPatientGroup/IpPatientGrouping'))
-
 
 export const user_settings = [
     { path: '/Menu/User', element: UserCreation, name: "User Creation" },
