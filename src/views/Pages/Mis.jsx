@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import ContentMain from '../Components/ContentMain'
 import ContentSecondary from '../Components/ContentSecondary'
 import ContentPaper from '../Components/ContentPaper'
@@ -14,13 +14,6 @@ const Mis = () => {
                     {
                         top_officials.map((element, idx) => <ContentNavLink name={element.name} route={element.path} key={idx} />)
                     }
-
-                    {/* <ContentNavLink name="User Creation" route="" />
-                    <ContentNavLink name="User Rights" route="" />
-                    <ContentNavLink name="Change Password" route="" />
-                    <ContentNavLink name="Query Settings" route="" />
-                    <ContentNavLink name="Dynamic Reports" route="" />
-                    <ContentNavLink name="Dashboard User Rights" route="" /> */}
                 </ContentPaper>
                 <ContentPaper name="Reg. Cons.">
                     <ContentNavLink name="Query Add/Edit" route="" />
@@ -33,4 +26,4 @@ const Mis = () => {
     )
 }
 
-export default Mis
+export default memo(Mis) 

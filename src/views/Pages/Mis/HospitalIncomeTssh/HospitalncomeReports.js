@@ -120,7 +120,7 @@ const HospitalncomeReports = () => {
                                     <td>
                                         <img src={imageIcon.checkBoxImage} alt='Check' />
                                     </td>
-                                    <td>Quilon Medical Trust (QMT)</td>
+                                    <td>Travancore Super Speciality Hospital- (TSSH)</td>
                                 </tr>
                             </tbody>
                         </table>

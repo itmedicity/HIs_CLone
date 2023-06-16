@@ -5,6 +5,7 @@ import collectionSlice from './Redux-Slice/incomeCollectionSlice/collectionSlice
 import incomeSlice from './Redux-Slice/incomeCollectionSlice/incomeSlice'
 import incomeProcedureSlice from './Redux-Slice/incomeCollectionSlice/incomeProcedureSlice'
 import misGroupMastSlice from './Redux-Slice/incomeCollectionSlice/misGroupMastSlice'
+import AdmissionInfoSlice from './Redux-Slice/ipAdmissionInfo/AdmissionInfoSlice'
 
 export const store = configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
         collection: collectionSlice,
         pharmacyIncome: incomeSlice,
         procedureIncome: incomeProcedureSlice,
-        misGroup: misGroupMastSlice
+        misGroup: misGroupMastSlice,
+        admissionList: AdmissionInfoSlice
     },
 })
