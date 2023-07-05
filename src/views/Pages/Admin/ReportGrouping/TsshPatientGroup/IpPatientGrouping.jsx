@@ -1,12 +1,101 @@
 // @ts-nocheck
-import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import { Box, Button, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import React, { memo, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { useDispatch, useSelector } from 'react-redux'
+import { format } from 'date-fns'
+import { getAdmissionList } from '../../../../../Redux-Slice/ipAdmissionInfo/AdmissionInfoSlice'
+import TableRows from './TableRows'
+import { axiosinstance } from '../../../../../controllers/AxiosConfig'
+import { ToastContainer } from 'react-toastify'
 
 const IpPatientGrouping = () => {
-
+    const dispatch = useDispatch();
     const [value, setValue] = useState(new Date());
+    const [ipList, setIplist] = useState([]);
+    const [ipListMysql, setIpListMysql] = useState([]);
+    const [apiStatus, setApiStatus] = useState(false);
+
+    const [cont, setCount] = useState(0);
+
+    const getAdmissionListFun = useCallback(async () => {
+        setApiStatus(true)
+        const selectedDate = format(value, 'dd/MM/yyyy')
+        const fromDate = `${selectedDate} 00:00:00`;
+        const toDate = `${selectedDate} 23:59:59`;
+
+        const postData = {
+            from: fromDate,
+            to: toDate
+        }
+
+        dispatch(getAdmissionList(postData))
+
+        const dateForMysql = format(value, 'yyyy-MM-dd');
+        const getPostData = {
+            date: dateForMysql
+        }
+
+        await axiosinstance.post('/admission/getTsshPatientList', getPostData).then((result) => {
+            // console.log(ele)
+            const { success, data } = result.data;
+            if (success === 1) {
+                setIpListMysql(data)
+            }
+        })
+
+    }, [value])
+
+    const state = useSelector((state) => state.admissionList)
+    const admissionList = useMemo(() => state, [state])
+
+    useEffect(() => {
+
+        const dateForMysql = format(value, 'yyyy-MM-dd');
+        const getPostData = {
+            date: dateForMysql
+        }
+        const updateMysqlPatientList = async (getPostData) => {
+
+            await axiosinstance.post('/admission/getTsshPatientList', getPostData).then((result) => {
+                // console.log(ele)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setIpListMysql(data)
+                }
+            })
+        }
+        updateMysqlPatientList(getPostData)
+
+    }, [value, cont])
+
+
+
+    useEffect(() => {
+        if (admissionList.status === true) {
+            const oraAdmissionList = admissionList.data;
+
+            // console.log(ipListMysql)
+            // console.log(admissionList.data)
+            const newPatientLst = oraAdmissionList?.map((e) => {
+                const ipNoIsExcist = ipListMysql?.find(vl => vl.ip_no === e.IP_NO);
+                if (ipNoIsExcist !== undefined) {
+                    return { ...e, isTssh: 1 }
+                } else {
+                    return { ...e, isTssh: 0 }
+                }
+            })
+            // console.log(newPatientLst)
+            setIplist(newPatientLst)
+            setApiStatus(false)
+        } else {
+            setApiStatus(false)
+        }
+
+
+    }, [admissionList, ipListMysql])
+
     return (
         <Paper
             variant="outlined"
@@ -16,6 +105,7 @@ const IpPatientGrouping = () => {
                 borderColor: '#525252'
             }}
         >
+            <ToastContainer />
             <Box sx={{
                 display: 'flex',
                 backgroundColor: '#525252',
@@ -75,6 +165,7 @@ const IpPatientGrouping = () => {
                     <Button
                         variant='outlined'
                         sx={{ mx: 2 }}
+                        onClick={getAdmissionListFun}
                     >Process</Button>
                 </Paper>
                 <Paper
@@ -85,11 +176,13 @@ const IpPatientGrouping = () => {
                         borderBottomRightRadius: '3px'
                     }}
                 >
-                    <TableContainer component={Paper} >
+                    <TableContainer component={Paper} sx={{ maxHeight: 700 }}  >
+                        {apiStatus && <LinearProgress />}
                         <Table size='small' stickyHeader >
                             <TableHead >
                                 <TableRow>
                                     <TableCell variant='head' padding='checkbox' >slno</TableCell>
+                                    <TableCell variant='head' padding='checkbox' >Date</TableCell>
                                     <TableCell variant='head' padding='checkbox' >Inpatient #</TableCell>
                                     <TableCell variant='head' padding='checkbox' >Outpatient #</TableCell>
                                     <TableCell variant='head' padding='checkbox' >Patient Name</TableCell>
@@ -97,15 +190,7 @@ const IpPatientGrouping = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                <TableRow>
-                                    <TableCell padding='checkbox' >d</TableCell>
-                                    <TableCell padding='checkbox' >d</TableCell>
-                                    <TableCell padding='checkbox' >d</TableCell>
-                                    <TableCell padding='checkbox' >d</TableCell>
-                                    <TableCell padding='checkbox' align='center' >
-                                        <Button variant='outlined' size='small' sx={{ textTransform: 'capitalize', width: '50%' }} >Transfer</Button>
-                                    </TableCell>
-                                </TableRow>
+                                {ipList?.map((val, idx) => <TableRows key={idx} data={val} n={idx} setCount={setCount} />)}
                             </TableBody>
                         </Table>
                     </TableContainer>
