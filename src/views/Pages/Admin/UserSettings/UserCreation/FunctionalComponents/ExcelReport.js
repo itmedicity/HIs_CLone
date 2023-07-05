@@ -7,16 +7,9 @@ export const ExporttoExcel = async (preview, fileName) => {
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
 
-
-    // const ws = XLSX.utils.json_to_sheet(preview);
-
-
-
     const ws = XLSX.utils.json_to_sheet(preview);
 
-
-
-    XLSX.utils.sheet_add_aoa(ws, [["Sl.No", "Hospital Name", "User Name", "Short Name", "Real Name", "Active"]], { origin: "A1" });
+    XLSX.utils.sheet_add_aoa(ws, [["Sl.No", "Hospital Name", "User Name", "Short Name", "Real Name", "User Group", "Active"]], { origin: "A1" });
     const wb = {
         Sheets: { data: ws },
         SheetNames: ["data"]

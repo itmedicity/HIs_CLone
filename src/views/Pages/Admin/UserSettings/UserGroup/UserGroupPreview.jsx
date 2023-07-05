@@ -1,35 +1,30 @@
-import { Box, IconButton, Typography } from '@mui/material'
-import React, { useEffect, useState, useCallback } from 'react'
-import { Fragment } from 'react'
-import TableContainer from '@mui/material/TableContainer';
-import Table from '@mui/material/Table';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
+import { Box, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material'
+import React, { Fragment, useCallback, useState, useEffect } from 'react'
+import { ToastContainer } from 'react-toastify'
+import pdf_icon from '../../../../Images/pdf_icon.jpg'
+import excel_icon from '../../../../Images/excel_icon.jpg'
+import close_icon from '../../../../Images/close_icon.png'
 import moment from 'moment';
 import Divider from '@mui/material/Divider';
-import { ToastContainer } from 'react-toastify';
-import { Tooltip } from '@mui/joy';
-import pdf_icon from '../../../../../views/Images/pdf_icon.jpg';
-import excel_icon from '../../../../../views/Images/excel_icon.jpg';
-import close_icon from '../../../../../views/Images/close_icon.png';
-import { ExporttoExcel } from './FunctionalComponents/ExcelReport';
-import { pdfdownload } from './FunctionalComponents/PdfMaking';
+import { pdfgroup } from './UserGroupComponents/PDFUserGroup'
+import { ExcelExportGroup } from './UserGroupComponents/ExcelUserGroup'
 
 
-export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
+export const UserGroupPreview = ({ view, preview, setFlag, ClearData }) => {
     const [user, setUser] = useState("DSOFT");
     const todaydate = moment(new Date()).format('DD/MM/YYYY')
     const printdate = moment(new Date()).format('DD/MM/YYYY HH:mm:ss')
-    const fileName = "User Details";
+    const fileName = "User Group Details";
 
     const Viewaspdf = useCallback((e) => {
-        pdfdownload(view)
+        pdfgroup(view)
     }, [])
+
     const ViewasExcel = useCallback((e) => {
-        ExporttoExcel(preview, fileName)
+        ExcelExportGroup(preview, fileName)
+
     }, [])
+
     const ClosePreview = useCallback((e) => {
         setFlag(0)
         ClearData();
@@ -48,16 +43,15 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
     return (
         <Fragment>
             <ToastContainer />
-            <Box
-                sx={{
-                    display: "flex", flexDirection: 'column',
-                    width: "100%",
-                    justifyContent: 'right',
-                    backgroundColor: "#E1E1E1",
-                    pl: 3,
-                    pr: 6,
-                    pt: 2,
-                }}>
+            <Box sx={{
+                display: "flex", flexDirection: 'column',
+                width: "100%",
+                justifyContent: 'right',
+                backgroundColor: "#E1E1E1",
+                pl: 3,
+                pr: 6,
+                pt: 2,
+            }}>
                 <Box sx={{
                     display: "flex",
                     justifyContent: 'right',
@@ -65,41 +59,36 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                     pb: 2
 
                 }}>
-                    <Box
-                        sx={{
-                            display: "flex",
-                            width: "15%",
-                            height: "100%",
-                            alignItems: "center",
-                            justifyContent: 'left',
-                            alignContent: 'left',
-                            alignItems: "left",
-                            border: '1px solid lightgrey',
-                            backgroundColor: 'white',
-                            borderRadius: '5px',
-                            opacity: 0.6
+                    <Box sx={{
+                        display: "flex",
+                        width: "15%",
+                        height: "100%",
+                        alignItems: "center",
+                        justifyContent: 'left',
+                        alignContent: 'left',
+                        alignItems: "left",
+                        border: '1px solid lightgrey',
+                        backgroundColor: 'white',
+                        borderRadius: '5px',
+                        opacity: 0.6
 
-                        }}
-                    >
+                    }}>
                         <Tooltip title="PDF">
                             <IconButton
                                 onClick={(e) => Viewaspdf(e)}
                             >
-
                                 <img src={pdf_icon} width="40" height="35" />
                             </IconButton>
                         </Tooltip>
                         <Box sx={{ py: 1.5 }}
                         >
-                            <Typography
-                                style={{
-                                    fontSize: '12px',
-                                    fontFamily: "Calibri",
-                                    color: '#121213',
-                                }}>PDF
+                            <Typography style={{
+                                fontSize: '12px',
+                                fontFamily: "Calibri",
+                                color: '#121213',
+                            }}>PDF
                             </Typography>
                         </Box>
-
                         <Tooltip title="Excel">
                             <IconButton
                                 onClick={(e) => ViewasExcel(e)}
@@ -142,24 +131,20 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                 </Box>
 
 
-                <Box
-                    sx={{
-                        display: "flex",
-                        border: '1px solid grey',
-                        borderRadius: '2px',
-                        flexDirection: 'column',
-                        backgroundColor: "white",
-                        pt: 3
+                <Box sx={{
+                    display: "flex",
+                    border: '1px solid grey',
+                    borderRadius: '2px',
+                    flexDirection: 'column',
+                    backgroundColor: "white",
+                    pt: 3
 
-                    }}
-                >
-
+                }}>
                     <Box sx={{
                         display: "flex",
                         flexDirection: 'row',
                         justifyContent: "center",
                     }}>
-
                         <Typography
                             style={{
 
@@ -172,7 +157,6 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                             }}>
                             TRAVANCORE MEDICAL COLLEGE & HOSPITAL
                         </Typography>
-
                     </Box>
 
                     <Box
@@ -182,7 +166,6 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                             justifyContent: "center",
 
                         }}>
-
                         <Typography
                             style={{
 
@@ -194,8 +177,8 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                             }}>
                             A Unit Of Quilon Medical Trust, Mylapore, Thattamala P.O, Kollam
                         </Typography>
-
                     </Box>
+
                     <Box sx={{
                         display: "flex",
                         flexDirection: 'row',
@@ -250,18 +233,15 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                                 paddingLeft: '10px'
 
                             }}>
-                            User Creation List
+                            User Group List
                         </Typography>
                     </Box>
-
-
 
                     <Box sx={{
                         display: "flex",
                         width: "98%",
                         flexDirection: 'row',
                         justifyContent: "right",
-
                     }}>
                         <Typography
                             style={{
@@ -276,140 +256,98 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                         </Typography>
                     </Box>
 
+
                     <Box sx={{
                         display: "flex",
                         flexDirection: 'column',
                         flex: 1,
                         pl: 2,
                         pt: 3,
-                        pr: 5
+                        pr: 5,
+
                     }}
                         variant='elevation'>
-
                         <TableContainer>
-                            <Table size='small' aria-label="a dense table" padding={"none"}>
+                            <Table size='small' aria-label="a dense table" padding={"none"} >
                                 <TableHead>
                                     <TableRow sx={{
-                                        backgroundColor: '#E1E1E1',
-                                        borderWidth: 0,
-                                        borderTopWidth: 1,
-                                        borderColor: 'grey',
-                                        borderStyle: 'solid'
+                                        backgroundColor: '#E1E1E1', borderWidth: 0, borderTopWidth: 1, borderColor: 'grey', borderStyle: 'solid'
                                     }}>
-                                        <TableCell
-                                            sx={{
-                                                fontWeight: 550,
-                                                fontSize: 13,
-                                                fontFamily: "Arial",
-                                                borderWidth: 0,
-                                                borderTopWidth: 1,
-                                                borderColor: 'grey',
-                                                borderStyle: 'solid',
-                                                borderBottom: '1px solid grey'
-                                            }}>Sl.No</TableCell>
-                                        <TableCell
-                                            sx={{
-                                                fontWeight: 550,
-                                                fontSize: 13,
-                                                fontFamily: "Arial",
-                                                borderWidth: 0,
-                                                borderTopWidth: 1,
-                                                borderColor: 'grey',
-                                                borderStyle: 'solid',
-                                                borderBottom: '1px solid grey'
-                                            }}>Hospital Name</TableCell>
-                                        <TableCell
-                                            sx={{
-                                                fontWeight: 550,
-                                                fontSize: 13,
-                                                fontFamily: "Arial",
-                                                borderWidth: 0,
-                                                borderTopWidth: 1,
-                                                borderColor: 'grey',
-                                                borderStyle: 'solid',
-                                                borderBottom: '1px solid grey'
-                                            }}>User Name</TableCell>
-                                        <TableCell
-                                            sx={{
-                                                fontWeight: 550,
-                                                fontSize: 13,
-                                                fontFamily: "Arial",
-                                                borderWidth: 0,
-                                                borderTopWidth: 1,
-                                                borderColor: 'grey',
-                                                borderStyle: 'solid',
-                                                borderBottom: '1px solid grey'
-                                            }}>Short Name</TableCell>
-                                        <TableCell
-                                            sx={{
-                                                fontWeight: 550,
-                                                fontSize: 13,
-                                                fontFamily: "Arial",
-                                                borderWidth: 0,
-                                                borderTopWidth: 1,
-                                                borderColor: 'grey',
-                                                borderStyle: 'solid',
-                                                borderBottom: '1px solid grey'
-                                            }}>Real Name</TableCell>
-                                        <TableCell
-                                            sx={{
-                                                fontWeight: 550,
-                                                fontSize: 13,
-                                                fontFamily: "Arial",
-                                                borderWidth: 0,
-                                                borderTopWidth: 1,
-                                                borderColor: 'grey',
-                                                borderStyle: 'solid',
-                                                borderBottom: '1px solid grey'
-                                            }}>User Group</TableCell>
-                                        <TableCell
-                                            sx={{
-                                                fontWeight: 550,
-                                                fontSize: 13,
-                                                fontFamily: "Arial",
-                                                borderWidth: 0,
-                                                borderTopWidth: 1,
-                                                borderColor: 'grey',
-                                                borderStyle: 'solid',
-                                                borderBottom: '1px solid grey'
-                                            }}>Active</TableCell>
+                                        <TableCell sx={{
+                                            fontWeight: 550,
+                                            fontSize: 13,
+                                            fontFamily: "Arial",
+                                            borderWidth: 0,
+                                            borderTopWidth: 1,
+                                            borderColor: 'grey',
+                                            borderStyle: 'solid',
+                                            borderBottom: '1px solid grey',
+                                            columnWidth: 40,
+                                            pl: 0.3
+                                        }}>Sl.No</TableCell>
 
+                                        <TableCell
+                                            sx={{
+                                                fontWeight: 550,
+                                                fontSize: 13,
+                                                fontFamily: "Arial",
+                                                borderWidth: 0,
+                                                borderTopWidth: 1,
+                                                borderColor: 'grey',
+                                                borderStyle: 'solid',
+                                                borderBottom: '1px solid grey',
+                                                columnWidth: 200
+                                            }}>Group</TableCell>
+                                        <TableCell
+                                            sx={{
+                                                fontWeight: 550,
+                                                fontSize: 13,
+                                                fontFamily: "Arial",
+                                                borderWidth: 0,
+                                                borderTopWidth: 1,
+                                                borderColor: 'grey',
+                                                borderStyle: 'solid',
+                                                borderBottom: '1px solid grey',
+                                                columnWidth: 200
+                                            }}>Active</TableCell>
+                                        <TableCell
+                                            sx={{
+                                                fontWeight: 550,
+                                                fontSize: 13,
+                                                fontFamily: "Arial",
+                                                borderWidth: 0,
+                                                borderTopWidth: 1,
+                                                borderColor: 'grey',
+                                                borderStyle: 'solid',
+                                                borderBottom: '1px solid grey',
+                                                columnWidth: 200,
+                                            }}>Password Expiry Days</TableCell>
                                     </TableRow>
                                 </TableHead>
-
                                 <TableBody sx={{ justifyContent: 'center', }}>
                                     {view && view.map((val) => {
-                                        return <TableRow key={val.emp_slno} >
-                                            <TableCell sx={{ fontSize: 12, fontFamily: "Arial", borderWidth: 0, borderBottom: '1px solid grey' }}>{val.emp_slno}</TableCell>
-                                            <TableCell sx={{ fontSize: 12, fontFamily: "Arial", borderWidth: 0, borderBottom: '1px solid grey' }}>{'TRAVANCORE MEDICAL COLLEGE & HOSPITAL'}</TableCell>
-                                            <TableCell sx={{ fontSize: 12, fontFamily: "Arial", borderWidth: 0, borderBottom: '1px solid grey' }}>{val.usc_name}</TableCell>
-                                            <TableCell sx={{ fontSize: 12, fontFamily: "Arial", borderWidth: 0, borderBottom: '1px solid grey' }}>{val.usc_alias}</TableCell>
-                                            <TableCell sx={{ fontSize: 12, fontFamily: "Arial", borderWidth: 0, borderBottom: '1px solid grey' }}>{val.usc_first_name}</TableCell>
+                                        return <TableRow key={val.group_id} >
+                                            <TableCell sx={{ fontSize: 12, fontFamily: "Arial", borderWidth: 0, borderBottom: '1px solid grey', pl: 0.3 }}>{val.user_group_id}</TableCell>
                                             <TableCell sx={{ fontSize: 12, fontFamily: "Arial", borderWidth: 0, borderBottom: '1px solid grey' }}>{val.user_group_name}</TableCell>
-                                            <TableCell sx={{ fontSize: 12, fontFamily: "Arial", borderWidth: 0, borderBottom: '1px solid grey' }}>{(val.usc_active) === 1 ? 'Yes' : 'No'}</TableCell>
+                                            <TableCell sx={{ fontSize: 12, fontFamily: "Arial", borderWidth: 0, borderBottom: '1px solid grey' }}>{(val.user_group_active) === 1 ? 'Yes' : 'No'}</TableCell>
+                                            <TableCell sx={{ fontSize: 12, fontFamily: "Arial", borderWidth: 0, borderBottom: '1px solid grey' }}>{val.pass_expiry_days}</TableCell>
                                         </TableRow>
                                     }
                                     )}
                                 </TableBody>
-
                             </Table>
                         </TableContainer>
-
                     </Box>
 
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: 'column',
-                            flex: 1,
-                            width: "100%",
-                            height: "100%",
-                            py: 5
-
-
-                        }}>
+                    <Box sx={{
+                        display: "flex",
+                        flexDirection: 'column',
+                        flex: 1,
+                        width: "100%",
+                        height: "100%",
+                        py: 5
+                    }}>
                         <Divider flexItem sx={{ borderBlockColor: 'black' }}></Divider>
-
 
                         <Box sx={{
                             display: "flex",
@@ -418,8 +356,6 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                             width: "100%",
                             height: "100%",
                             pt: 1
-
-
                         }}>
 
                             <Box sx={{
@@ -427,7 +363,6 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                                 width: "40%",
                                 height: "100%",
                                 flexDirection: 'column',
-                                // backgroundColor: "burlywood"
                             }}>
 
                                 <Typography
@@ -441,9 +376,7 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                                     }}>
                                     Date/Time :{printdate}
                                 </Typography>
-
                             </Box>
-
 
                             <Box sx={{
                                 display: "flex",
@@ -464,39 +397,29 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                                     }}>
                                     User :{user}
                                 </Typography>
-
                             </Box >
+
                             <Box sx={{
                                 display: "flex",
                                 width: "20%",
                                 height: "100%",
                                 flexDirection: 'row',
                                 justifyContent: "center",
-
-
                             }}>
                                 <Typography
                                     style={{
-
                                         fontSize: '14px',
                                         fontFamily: "Calibri",
                                         color: 'grey',
                                         paddingLeft: '10px'
-
                                     }}>
                                     Powered By : Ellider
                                 </Typography>
-
                             </Box >
-
-
                         </Box>
+
                     </Box>
-
-
-
                 </Box>
-
             </Box>
         </Fragment >
     )
