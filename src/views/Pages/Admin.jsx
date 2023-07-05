@@ -12,14 +12,13 @@ const Admin = () => {
         <ContentMain>
             <ContentSecondary name="Admin" >
                 <ContentPaper name="User Setting" >
-
-                    <ContentNavLink name="User Group" route="" />
-                    {/* <ContentNavLink name="User Creation" route="/Menu/User" /> */}
-
                     {
                         user_settings.map((element, idx) => <ContentNavLink name={element.name} route={element.path} key={idx} />)
                     }
-                    <ContentNavLink name="User Rights" route="" />
+
+                    {/* <ContentNavLink name="User Group" route="" /> */}
+                    {/* <ContentNavLink name="User Creation" route="/Menu/User" /> */}
+                    {/* <ContentNavLink name="User Rights" route="" /> */}
                     <ContentNavLink name="Change Password" route="" />
                     <ContentNavLink name="Query Settings" route="" />
                     <ContentNavLink name="Dynamic Reports" route="" />
