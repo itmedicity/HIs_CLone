@@ -22,6 +22,9 @@ const incomeReportsTssh = React.lazy(() => import('../views/Pages/Mis/HospitalIc
 const IpPatientGroup = React.lazy(() => import('../views/Pages/Admin/ReportGrouping/TsshPatientGroup/IpPatientGrouping'))
 
 const User = React.lazy(() => import('../views/Pages/Admin/UserSettings/UserCreation/UserCreation'));
+const UserGroup = React.lazy(() => import('../views/Pages/Admin/UserSettings/UserGroup/UserGroupCreation'));
+const UserRight = React.lazy(() => import('../views/Pages/Admin/UserSettings/UserRights/UserRightsApply'));
+const MenuGroups = React.lazy(() => import('../views/Pages/Admin/UserSettings/MenuGroupCreation/MenuGroupMapping'));
 
 
 const routes = [
@@ -43,7 +46,10 @@ const routes = [
     { path: '/hospital_income_tssh', element: HospitalIncomeReportsTssh, name: "Hospital Income Statement" },
     { path: '/income-reports-tssh', element: incomeReportsTssh, name: "Hospital Income Statement" },
     { path: '/User', name: 'New User Creation', element: User },
-    { path: '/IpPatientGrouping', element: IpPatientGroup, name: "Patient Grouping" }
+    { path: '/IpPatientGrouping', element: IpPatientGroup, name: "Patient Grouping" },
+    { path: '/UserGroup', name: 'User Group', element: UserGroup },
+    { path: '/UserRights', name: 'User Rights', element: UserRight },
+    { path: '/MenuGroup', name: 'Menu Group Mapping', element: MenuGroups, },
 
 ]
 export default routes

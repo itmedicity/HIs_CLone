@@ -5,8 +5,7 @@ import moment from 'moment';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-export const pdfdownload = async (view) => {
-
+export const pdfgroup = async (view) => {
     const printdate = moment(new Date()).format('DD/MM/YYYY HH:mm:ss')
 
     var pdf = {
@@ -30,45 +29,38 @@ export const pdfdownload = async (view) => {
                 style: 'small'
             },
             {
-                text: 'User Creation List ',
+                text: 'User Group List ',
                 style: 'header'
             },
             {
-                lineHeight: 1.3,
+                lineHeight: 1.5,
                 text: printdate,
                 fontSize: 8,
                 bold: false,
                 alignment: 'right',
             },
 
-
             {
                 style: 'tableExample',
                 table: {
-                    widths: [25, 150, 70, '*', 100, '*'],
+                    widths: [25, 150, 70, 100],
 
                     heights: 10,
                     body: [
                         [
                             { text: 'Sl.No', style: 'tableHeader' },
-                            { text: 'Hospital Name', style: 'tableHeader' },
-                            { text: 'User Name', style: 'tableHeader' },
-                            { text: 'Short Name', style: 'tableHeader' },
-                            { text: 'Real Name', style: 'tableHeader' },
+                            { text: 'Group', style: 'tableHeader' },
                             { text: 'Active', style: 'tableHeader' },
+                            { text: 'Password Expiry Days', style: 'tableHeader' },
                         ]
                     ].concat(view && view.map((val) => [
-                        { text: val.emp_slno, fontSize: 8, alignment: 'center' },
-                        { text: 'Travancore Medical College & Hospital', fontSize: 8, alignment: 'center' },
-                        { text: val.usc_name, fontSize: 8, alignment: 'left' },
-                        { text: val.usc_alias, fontSize: 8, alignment: 'left' },
-                        { text: val.usc_first_name, fontSize: 8, alignment: 'left' },
-                        { text: (val.usc_active) === 1 ? "Yes" : "No", fontSize: 8, alignment: 'center' },
-
+                        { text: val.group_id, fontSize: 8, alignment: 'center' },
+                        { text: val.group_name, fontSize: 8, alignment: 'left' },
+                        { text: (val.group_active) === 1 ? "Yes" : "No", fontSize: 8, alignment: 'center' },
+                        { text: val.pass_expiry_days, fontSize: 8, alignment: 'left' },
                     ]))
                 }
             }
-
         ],
 
         styles: {
@@ -102,18 +94,14 @@ export const pdfdownload = async (view) => {
             },
             tableExample: {
                 lineHeight: 1
-                // margin: [0, 0, 0, 0]
-
             },
             tableHeader: {
                 bold: true,
                 fontSize: 9,
                 color: 'black',
                 alignment: 'center',
-
             }
         }
-
     }
     pdfMake.createPdf(pdf).open();
 }
