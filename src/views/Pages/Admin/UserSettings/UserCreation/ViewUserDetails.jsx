@@ -75,7 +75,6 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
 
     }, [postdata])
 
-
     return (
         <Fragment>
             <ToastContainer />
@@ -251,7 +250,7 @@ export const ViewUserDetails = ({ setFlag, view, setView, EditUser, ClearData })
                                     maxHeight: 400, maxWidth: "100%",
 
                                 }}>
-                                <Table size='small' stickyHeader aria-label="a dense table" padding={"none"}
+                                <Table size='small' stickyHeader aria-label="a dense able" padding={"none"}
                                     // tableLayout='fixed'
                                     style={{
                                         border: "0.5px solid lightgrey", fontFamily: "Arial",

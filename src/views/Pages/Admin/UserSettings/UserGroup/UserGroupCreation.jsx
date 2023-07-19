@@ -242,7 +242,6 @@ const UserGroupCreation = () => {
 
                                     <Box sx={{ display: "flex", width: "72%", pl: 0.5 }}>
                                         <input type="text" autoComplete='off'
-
                                             style={{
                                                 border: '0.5px solid grey',
                                                 fontSize: '12px',
