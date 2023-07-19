@@ -25,7 +25,8 @@ const User = React.lazy(() => import('../views/Pages/Admin/UserSettings/UserCrea
 const UserGroup = React.lazy(() => import('../views/Pages/Admin/UserSettings/UserGroup/UserGroupCreation'));
 const UserRight = React.lazy(() => import('../views/Pages/Admin/UserSettings/UserRights/UserRightsApply'));
 const MenuGroups = React.lazy(() => import('../views/Pages/Admin/UserSettings/MenuGroupCreation/MenuGroupMapping'));
-
+const Medicines = React.lazy(() => import('../views/Pages/PharmacyBilling/Stock/MedicineDetails/ImportMedicines'));
+const StoreReq = React.lazy(() => import('../views/Pages/PharmacyBilling/Stock/StoreRequisition/StoreRequisitionEdit'));
 
 const routes = [
     { path: '', element: NameDis },
@@ -45,11 +46,16 @@ const routes = [
     //Tssh
     { path: '/hospital_income_tssh', element: HospitalIncomeReportsTssh, name: "Hospital Income Statement" },
     { path: '/income-reports-tssh', element: incomeReportsTssh, name: "Hospital Income Statement" },
+
     { path: '/User', name: 'New User Creation', element: User },
     { path: '/IpPatientGrouping', element: IpPatientGroup, name: "Patient Grouping" },
     { path: '/UserGroup', name: 'User Group', element: UserGroup },
     { path: '/UserRights', name: 'User Rights', element: UserRight },
-    { path: '/MenuGroup', name: 'Menu Group Mapping', element: MenuGroups, },
+    { path: '/MenuGroup', name: 'Menu Group Mapping', element: MenuGroups },
+
+    // PharmacyBilling
+    { path: '/Medicines', name: 'Import New Medicine', element: Medicines },
+    { path: '/StoreRequest', name: 'Store Requisition', element: StoreReq },
 
 ]
 export default routes
