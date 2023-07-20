@@ -3,7 +3,7 @@ import ContentMain from '../Components/ContentMain';
 import ContentSecondary from '../Components/ContentSecondary';
 import ContentPaper from '../Components/ContentPaper';
 import ContentNavLink from '../Components/ContentNavLink';
-import { stock_settings } from '../../Routes/routes.pharmacybilling';
+import { analysis_settings, stock_settings } from '../../Routes/routes.pharmacybilling';
 
 const PharmacyBilling = () => {
     return (
@@ -16,7 +16,9 @@ const PharmacyBilling = () => {
 
                 </ContentPaper>
                 <ContentPaper name="Analysis Statement">
-
+                    {
+                        analysis_settings.map((element, idx) => <ContentNavLink name={element.name} route={element.path} key={idx} />)
+                    }
                 </ContentPaper>
                 <ContentPaper name="In Charge">
 

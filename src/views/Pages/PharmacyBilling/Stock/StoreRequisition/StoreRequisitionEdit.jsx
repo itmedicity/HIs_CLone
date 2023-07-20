@@ -15,10 +15,9 @@ const StoreRequisitionEdit = () => {
     const [flag, setFlag] = useState(0)
     const [buttonview, setButtonview] = useState(0)
 
-
-
     const ReqDateChange = async (e) => {
         setReqdate(e.target.value)
+
     }
     const postdata = useMemo(() => {
         return {
