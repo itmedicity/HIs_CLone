@@ -27,6 +27,7 @@ const UserRight = React.lazy(() => import('../views/Pages/Admin/UserSettings/Use
 const MenuGroups = React.lazy(() => import('../views/Pages/Admin/UserSettings/MenuGroupCreation/MenuGroupMapping'));
 const Medicines = React.lazy(() => import('../views/Pages/PharmacyBilling/Stock/MedicineDetails/ImportMedicines'));
 const StoreReq = React.lazy(() => import('../views/Pages/PharmacyBilling/Stock/StoreRequisition/StoreRequisitionEdit'));
+const RolAnalysis = React.lazy(() => import('../views/Pages/PharmacyBilling/Analysis Statement/RolBasedAnalysis/RolBasedAnalysis'));
 
 const routes = [
     { path: '', element: NameDis },
@@ -56,6 +57,7 @@ const routes = [
     // PharmacyBilling
     { path: '/Medicines', name: 'Import New Medicine', element: Medicines },
     { path: '/StoreRequest', name: 'Store Requisition', element: StoreReq },
+    { path: '/RolAnalysis', name: 'ROL Based Analysis', element: RolAnalysis },
 
 ]
 export default routes
