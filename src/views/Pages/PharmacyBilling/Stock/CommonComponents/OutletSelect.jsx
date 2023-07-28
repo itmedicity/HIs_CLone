@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { axiosinstance } from '../../../../../controllers/AxiosConfig'
 import { FormControl, MenuItem, Select } from '@mui/material'
 
-const OutletSelect = ({ value, setValue }) => {
+const OutletSelect = ({ value, setValue, disabled }) => {
     const [pharmacy, setPharmacy] = useState([])
 
     useEffect(() => {
@@ -33,11 +33,12 @@ const OutletSelect = ({ value, setValue }) => {
                     fontFamily: 'Arial',
                     borderRadius: '3px'
                 }}
+                disabled={disabled}
                 name="value"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
             >
-                <MenuItem value={0}>--Select-- </MenuItem>
+                <MenuItem value={0}>--Pharmacy-- </MenuItem>
                 {
                     pharmacy && pharmacy.map((val, ind) => {
                         return <MenuItem key={ind} value={val.ou_code}>{val.ouc_desc}</MenuItem>

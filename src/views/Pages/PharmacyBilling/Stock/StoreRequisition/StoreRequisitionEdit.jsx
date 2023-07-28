@@ -67,12 +67,13 @@ const StoreRequisitionEdit = () => {
             }
             searchdata(postdata)
         }
-    }, [postdata])
+    }, [postdata, docno])
 
     const Closepage = useCallback(() => {
+        navigate("/Menu/PharmacyBilling");
         setFlag(0)
         setButtonview(0)
-        navigate("/Menu/PharmacyBilling")
+
 
     }, [])
 
@@ -138,7 +139,7 @@ const StoreRequisitionEdit = () => {
         }
         AddDetails(roldata);
 
-    }, [view])
+    }, [view, pharmacy])
 
     const patchdata = useMemo(() => {
         return {
@@ -205,7 +206,7 @@ const StoreRequisitionEdit = () => {
                     </Box>
                     <Box sx={{ display: "flex", flexDirection: 'row', width: '100%' }}>
 
-                        <Box sx={{ pt: 2, flex: 1.5, display: "flex", flexDirection: 'row' }}>
+                        <Box sx={{ pt: 2, display: "flex", flexDirection: 'row' }}>
                             <Box sx={{ pt: 1, pl: 2 }}>
                                 <Typography
                                     variant="body1"
@@ -230,8 +231,8 @@ const StoreRequisitionEdit = () => {
                             </Box>
                         </Box>
 
-                        <Box sx={{ display: "flex", flexDirection: 'row', pt: 2, flex: 2, }}>
-                            <Box sx={{ pl: 1, pt: 1 }}>
+                        <Box sx={{ display: "flex", flexDirection: 'row', pt: 2 }}>
+                            {/* <Box sx={{ pl: 1, pt: 1 }}>
                                 <Typography
                                     variant="body1"
                                     style={{
@@ -241,7 +242,7 @@ const StoreRequisitionEdit = () => {
                                     }} >
                                     Pharmacy
                                 </Typography>
-                            </Box>
+                            </Box> */}
                             <Box sx={{ pl: 2 }}>
                                 <OutletSelect
                                     value={pharmacy}
@@ -250,7 +251,7 @@ const StoreRequisitionEdit = () => {
                             </Box>
 
                         </Box>
-                        <Box sx={{ pt: 2, flex: 1, }}>
+                        <Box sx={{ pt: 2, pl: 1 }}>
 
                             <TextField type='Date' size='small'
                                 style={{
@@ -266,7 +267,7 @@ const StoreRequisitionEdit = () => {
                                 onChange={(e) => ReqDateChange(e)}
                             />
                         </Box>
-                        <Box sx={{ pt: 2, flex: 1 }}>
+                        <Box sx={{ pt: 2, pl: 1 }}>
                             <Button variant="outlined"
                                 style={{
                                     height: 40,
@@ -289,7 +290,6 @@ const StoreRequisitionEdit = () => {
                     <Box sx={{ display: "flex", flexDirection: 'column', pt: 2 }}>
                         <Divider flexItem sx={{ borderBlockColor: 'grey' }}></Divider>
                     </Box>
-
 
                     <Box sx={{ display: "flex", flexDirection: 'column', height: '620px' }}>
                         <Box sx={{ display: "flex", p: 2 }} variant='elevation' overflow='hidden'>
