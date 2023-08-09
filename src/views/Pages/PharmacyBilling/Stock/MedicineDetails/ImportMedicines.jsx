@@ -16,8 +16,6 @@ const ImportMedicines = () => {
 
     const currentdate = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
 
-
-
     useEffect(() => {
         const getdata = async () => {
             const result = await axiosinstance.get('/importMedicines/select')
@@ -35,19 +33,21 @@ const ImportMedicines = () => {
     }, [])
     const postdata = useMemo(() => {
         return {
-            date0: lastdate,
-            date1: currentdate
+            date0: moment(lastdate).format('DD/MM/yyyy 00:00:00'),
+            date1: moment(currentdate).format('DD/MM/yyyy 23:59:59')
         }
 
     }, [lastdate, currentdate])
 
+
     const patchdata = useMemo(() => {
         return {
-            lastupdate: currentdate
+            lastupdate: moment(new Date(currentdate)).format('DD/MM/yyyy HH:mm:ss')
         }
     }, [currentdate])
-
     const ImportMedicines = useCallback(() => {
+
+
         const MedicineDetails = async (postdata) => {
             const result = await axiosinstance.post('/importMedicines/import', postdata)
             const { success, message, data } = result.data
@@ -76,7 +76,6 @@ const ImportMedicines = () => {
         MedicineDetails(postdata)
         UpdateImportedDate(patchdata)
     }, [patchdata, postdata])
-
 
     const ViewMedicineDetails = useCallback(() => {
         const getdata = async () => {

@@ -16,12 +16,16 @@ import excel_icon from '../../../../../views/Images/excel_icon.jpg';
 import close_icon from '../../../../../views/Images/close_icon.png';
 import { ExporttoExcel } from './FunctionalComponents/ExcelReport';
 import { pdfdownload } from './FunctionalComponents/PdfMaking';
+import { getMenuSlno } from '../../../../../HomeComponents/MenuRights/menuRights';
 
 
 export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
     const [user, setUser] = useState("DSOFT");
     const todaydate = moment(new Date()).format('DD/MM/YYYY')
     const printdate = moment(new Date()).format('DD/MM/YYYY HH:mm:ss')
+    // const [viewList, setviewList] = useState()
+    // const [pdf, setpdf] = useState(0)
+    // const [excel, setexcel] = useState(0)
     const fileName = "User Details";
 
     const Viewaspdf = useCallback((e) => {
@@ -35,16 +39,53 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
         ClearData();
     }, [])
 
+    // useEffect(() => {
+    //     const userLogedInfm = localStorage.getItem("usrCred");
+    //     if (userLogedInfm !== null) {
+    //         let userName = JSON.parse(userLogedInfm).name;
+    //         setUser(userName)
+    //         let userGroup = JSON.parse(userLogedInfm).usergroup;
+    //         getMenuSlno(userGroup).then((val) => {
+    //             const menuSlno = val.map((value) => {
+    //                 return {
+    //                     menu_id: value.menuname_id,
+    //                     pdf: value.pdf_view,
+    //                     excel: value.excel_view
+    //                 }
+    //             })
+    //             setviewList(menuSlno)
+    //         })
+
+    //     } else {
+    //         setUser('')
+    //     }
+
+    //     viewList && viewList.map((val) => {
+    //         if (val.menu_id === 2 && val.pdf === 1) {
+    //             setpdf(1)
+    //         }
+    //         else {
+    //             setpdf(0)
+    //         }
+    //         if (val.menu_id === 2 && val.excel === 1) {
+    //             setexcel(1)
+    //         }
+    //         else {
+    //             setexcel(0)
+    //         }
+    //     })
+    // }, [pdf, excel])
+
     useEffect(() => {
         const userLogedInfm = localStorage.getItem("usrCred");
         if (userLogedInfm !== null) {
             let userName = JSON.parse(userLogedInfm).name;
             setUser(userName)
+
         } else {
             setUser('')
         }
     }, [setUser])
-
     return (
         <Fragment>
             <ToastContainer />
@@ -61,7 +102,7 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
                 <Box sx={{
                     display: "flex",
                     justifyContent: 'right',
-                    height: '35px',
+                    height: '40px',
                     pb: 2
 
                 }}>
@@ -81,43 +122,56 @@ export const PreviewReport = ({ view, preview, setFlag, ClearData }) => {
 
                         }}
                     >
-                        <Tooltip title="PDF">
-                            <IconButton
-                                onClick={(e) => Viewaspdf(e)}
-                            >
 
-                                <img src={pdf_icon} width="40" height="35" />
-                            </IconButton>
-                        </Tooltip>
-                        <Box sx={{ py: 1.5 }}
-                        >
-                            <Typography
-                                style={{
-                                    fontSize: '12px',
-                                    fontFamily: "Calibri",
-                                    color: '#121213',
-                                }}>PDF
-                            </Typography>
+                        {/* {pdf === 1 ? */}
+                        < Box sx={{ display: "flex", flexDirection: 'row' }}>
+                            <Box sx={{ display: "flex", flexDirection: 'column' }}>
+                                <Tooltip title="PDF">
+                                    <IconButton
+                                        onClick={(e) => Viewaspdf(e)}
+                                    >
+                                        <img src={pdf_icon} width="35" height="30" />
+                                    </IconButton>
+                                </Tooltip>
+                            </Box>
+                            <Box sx={{ display: "flex", flexDirection: 'column', pt: 1.5 }}>
+                                <Typography
+                                    style={{
+                                        fontSize: '12px',
+                                        fontFamily: "Calibri",
+                                        color: '#121213',
+                                    }}>PDF
+                                </Typography>
+                            </Box>
                         </Box>
 
-                        <Tooltip title="Excel">
-                            <IconButton
-                                onClick={(e) => ViewasExcel(e)}
-                            >
-                                <img src={excel_icon} width="25" height="20" />
-                            </IconButton>
-                        </Tooltip>
+                        {/* : null}
+                        {
+                            excel === 1 ? */}
 
-                        <Box sx={{ py: 1.5 }}
-                        >
-                            <Typography
-                                style={{
-                                    fontSize: '12px',
-                                    fontFamily: "Calibri",
-                                    color: '#121213',
-                                }}>Excel
-                            </Typography>
+                        <Box sx={{ display: "flex", flexDirection: 'row' }}>
+                            <Box sx={{ display: "flex", flexDirection: 'column' }}>
+                                <Tooltip title="Excel">
+                                    <IconButton
+                                        onClick={(e) => ViewasExcel(e)}
+                                    >
+                                        <img src={excel_icon} width="25" height="22" />
+                                    </IconButton>
+                                </Tooltip>
+
+                            </Box>
+                            <Box sx={{ display: "flex", flexDirection: 'column', pt: 1.5 }}>
+                                <Typography
+                                    style={{
+                                        fontSize: '12px',
+                                        fontFamily: "Calibri",
+                                        color: '#121213',
+                                    }}>Excel
+                                </Typography>
+                            </Box>
                         </Box>
+
+                        {/* : null} */}
 
                         <Tooltip title="Close">
                             <IconButton

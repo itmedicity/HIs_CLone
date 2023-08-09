@@ -15,6 +15,13 @@ const getMonthlyIpVisitCount = createAsyncThunk('/api/rolprocess', (postData) =>
         })
 })
 
+const getSoledMedicinesQnty = createAsyncThunk('/api/rolprocess', (postData) => {
+    return axiosinstance.post("/rolprocess/getsoledqnty", postData)
+        .then((response) => {
+            return response.data;
+        })
+})
+
 
 const initialState = {
     monthlyOpCount: {
@@ -27,7 +34,11 @@ const initialState = {
         status: 0,
         message: "",
     },
-
+    medicineSoledQnty: {
+        data: [],
+        status: 0,
+        message: "",
+    },
     loading: true
 }
 
@@ -77,10 +88,33 @@ const rolProcessSlice = createSlice({
             state.loading = false
             state.monthlyIpCount.data = payload.data
         },
+
+        //medicinessoled
+
+        [getSoledMedicinesQnty.pending]: (state, { payload }) => {
+            state.medicineSoledQnty.status = 0
+            state.medicineSoledQnty.message = "pending"
+            state.loading = true
+        },
+
+        [getSoledMedicinesQnty.rejected]: (state, { payload }) => {
+            state.medicineSoledQnty.status = 1
+            state.medicineSoledQnty.message = "Error"
+            state.loading = false
+        },
+
+        [getSoledMedicinesQnty.fulfilled]: (state, { payload }) => {
+            state.medicineSoledQnty.status = payload.success
+            state.medicineSoledQnty.message = payload.message
+            state.loading = false
+            state.medicineSoledQnty.data = payload.data
+        },
+
     }
 })
 export {
     getMonthlyOpVisitCount,
     getMonthlyIpVisitCount,
+    getSoledMedicinesQnty,
 }
 export default rolProcessSlice.reducer;

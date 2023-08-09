@@ -4,7 +4,6 @@ import { axiosinstance } from '../../controllers/AxiosConfig'
 const getPharmacyTaxReport = createAsyncThunk('/api/pharmacytax', (postData) => {
     return axiosinstance.post("/pharmacytax/selectreport", postData)
         .then((response) => {
-            //   console.log(response.data);
             return response.data;
         })
 })
