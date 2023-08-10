@@ -14,6 +14,7 @@ const StoreRequisitionEdit = () => {
     const [view, setView] = useState([])
     const [flag, setFlag] = useState(0)
     const [buttonview, setButtonview] = useState(0)
+    const [tableview, setTableview] = useState(0)
 
     const ReqDateChange = async (e) => {
         setReqdate(e.target.value)
@@ -54,15 +55,18 @@ const StoreRequisitionEdit = () => {
                     })
                     setView(viewdata)
                     setFlag(0)
+                    setTableview(1)
                     setButtonview(1)
                 }
                 else if (success === 1) {
                     infoNofity(message)
                     setButtonview(0)
+                    setTableview(0)
                 }
                 else {
                     infoNofity(message);
                     setButtonview(0)
+                    setTableview(0)
                 }
             }
             searchdata(postdata)
@@ -104,7 +108,6 @@ const StoreRequisitionEdit = () => {
         getdata();
 
     }, [view])
-
 
     const InsertToRolSetting = useCallback(() => {
         const roldata = view && view.map((val) => {
@@ -172,6 +175,7 @@ const StoreRequisitionEdit = () => {
         setView([])
         setFlag(0)
         setButtonview(0)
+        setTableview(0)
 
     }, [])
     return (
@@ -292,53 +296,58 @@ const StoreRequisitionEdit = () => {
                     </Box>
 
                     <Box sx={{ display: "flex", flexDirection: 'column', height: '620px' }}>
-                        <Box sx={{ display: "flex", p: 2 }} variant='elevation' overflow='hidden'>
-                            <TableContainer sx={{ maxHeight: 620, maxWidth: "100%" }}>
-                                <Table size='small' stickyHeader aria-label="a dense table" padding={"none"}
-                                    style={{
-                                        border: "0.5px solid lightgrey", fontFamily: "Arial",
-                                        BorderAllRounded: '1px', opacity: 0.9
 
-                                    }}>
-                                    <TableHead sx={{ height: '40px' }}>
-                                        <TableRow size='small' sx={{
-                                            borderWidth: 1,
-                                            borderColor: 'grey',
-                                            borderStyle: 'solid',
+                        <Box sx={{ display: "flex", p: 2 }} variant='elevation' overflow='hidden'>
+                            {tableview === 1 ?
+                                <TableContainer sx={{ maxHeight: 620, maxWidth: "100%" }}>
+                                    <Table size='small' stickyHeader aria-label="a dense table" padding={"none"}
+                                        style={{
+                                            border: "0.5px solid lightgrey", fontFamily: "Arial",
+                                            BorderAllRounded: '1px', opacity: 0.9
 
                                         }}>
-                                            <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Sl.No</TableCell>
-                                            <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Category</TableCell>
-                                            <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Item Code</TableCell>
-                                            <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Item</TableCell>
-                                            <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Unit</TableCell>
-                                            <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Req.Qnty</TableCell>
-                                            {flag === 1 ?
-                                                <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>ROL Qnty</TableCell>
-                                                : null}
-                                            <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>QOH</TableCell>
-                                        </TableRow>
-                                    </TableHead>
+                                        <TableHead sx={{ height: '40px' }}>
+                                            <TableRow size='small' sx={{
+                                                borderWidth: 1,
+                                                borderColor: 'grey',
+                                                borderStyle: 'solid',
 
-                                    <TableBody>
-                                        {view && view.map((val, index) => {
-                                            return <TableRow key={index}>
-                                                <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1 }}>{val.slno}</TableCell>
-                                                <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1 }}>{val.MCC_DESC}</TableCell>
-                                                <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1 }}>{val.ITC_ALIAS}</TableCell>
-                                                <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1 }}>{val.ITC_DESC}</TableCell>
-                                                <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1 }}>{val.UNC_ALIAS}</TableCell>
-                                                <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1 }}>{val.SRN_QTY}</TableCell>
+                                            }}>
+                                                <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Sl.No</TableCell>
+                                                <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Category</TableCell>
+                                                <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Item Code</TableCell>
+                                                <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Item</TableCell>
+                                                <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Unit</TableCell>
+                                                <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>Req.Qnty</TableCell>
                                                 {flag === 1 ?
-                                                    <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1 }}>{val.ROL_QTY}</TableCell>
+                                                    <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>ROL Qnty</TableCell>
                                                     : null}
-                                                <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1 }}>{val.SRN_QOH}</TableCell>
+                                                <TableCell sx={{ fontWeight: 'bold', fontSize: 12, backgroundColor: 'lightgrey', borderRight: '1px solid lightgrey', pl: 1, borderTop: '1px solid lightgrey' }}>QOH</TableCell>
                                             </TableRow>
-                                        })}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                                        </TableHead>
+
+                                        <TableBody>
+                                            {view && view.map((val, index) => {
+                                                return <TableRow key={index}>
+                                                    <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1 }}>{val.slno}</TableCell>
+                                                    <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1 }}>{val.MCC_DESC}</TableCell>
+                                                    <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1 }}>{val.ITC_ALIAS}</TableCell>
+                                                    <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1 }}>{val.ITC_DESC}</TableCell>
+                                                    <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1 }}>{val.UNC_ALIAS}</TableCell>
+                                                    <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1 }}>{val.SRN_QTY}</TableCell>
+                                                    {flag === 1 ?
+                                                        <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1 }}>{val.ROL_QTY}</TableCell>
+                                                        : null}
+                                                    <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1 }}>{val.SRN_QOH}</TableCell>
+                                                </TableRow>
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                                : null
+                            }
                         </Box>
+
                     </Box>
 
 

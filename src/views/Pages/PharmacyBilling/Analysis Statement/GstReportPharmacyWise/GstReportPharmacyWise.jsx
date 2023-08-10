@@ -11,6 +11,7 @@ import { getPharmacyTaxReport } from '../../../../../Redux-Slice/pharmacyBilling
 import { useDispatch } from 'react-redux';
 import { endOfMonth, format, startOfMonth } from 'date-fns'
 import { warningNofity } from '../../../../../Constant/Constants'
+import CustomCircularProgress from '../../../../Components/CustomCircularProgress'
 
 
 const GstReportPharmacyWise = () => {
@@ -27,7 +28,7 @@ const GstReportPharmacyWise = () => {
     const [amount, setAmount] = useState(0)
     const [viewreport, setViewReport] = useState([])
     const [disArray, setDisArray] = useState([])
-
+    const [loading, setLoading] = useState(false)
     const dispatch = useDispatch();
 
     const ClearDetails = useCallback(() => {
@@ -178,6 +179,7 @@ const GstReportPharmacyWise = () => {
             const grossamount = amounttotal + taxamount + discount
             setAmount(Math.floor(amounttotal * 100) / 100)
 
+            setLoading(false)
 
         }
 
@@ -185,6 +187,7 @@ const GstReportPharmacyWise = () => {
 
     const ProcessDetails = useCallback(() => {
 
+        setLoading(true)
         const postdata = {
             from: startDate,
             to: endDate,
@@ -286,7 +289,7 @@ const GstReportPharmacyWise = () => {
     return (
         <Fragment>
             <ToastContainer />
-
+            {loading && <CustomCircularProgress />}
             <Box sx={{
                 display: "flex",
                 flexDirection: 'row',

@@ -10,6 +10,7 @@ import { axiosinstance } from '../../controllers/AxiosConfig'
 import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux'
 import { logedIformation } from '../../Redux-Slice/LoginSlice/LoginInfomration'
+import { usergroupid } from '../MenuRights/menuRights'
 
 const Login = () => {
 
@@ -38,11 +39,13 @@ const Login = () => {
                 const loginCred = {
                     user: data.us_code,
                     name: data.usc_first_name,
+                    usergroup: data.user_group_id,
                     token: token,
                     expire: expireDate
                 }
                 localStorage.setItem('usrCred', JSON.stringify(loginCred));
                 dispatch(logedIformation(loginCred))
+
                 if (moment(expireDate) > moment(new Date())) {
                     navigate('/Menu')
                 }
