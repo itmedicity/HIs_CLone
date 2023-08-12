@@ -8,6 +8,7 @@ import { ViewUserDetails } from './ViewUserDetails';
 import { PreviewReport } from './PreviewReport';
 import { useNavigate } from 'react-router-dom'
 import UserGroupComp from '../CommonComponents/UserGroupSelect';
+import { getMenuSlno } from '../../../../../HomeComponents/MenuRights/menuRights';
 
 const UserCreation = () => {
     const navigate = useNavigate();
@@ -36,6 +37,7 @@ const UserCreation = () => {
     const [resetPass, setResetPass] = useState(false)
     const [preview, setPreview] = useState([])
     const [usergroup, setUsergroup] = useState(0)
+
 
     const Changeusername = (e) => {
         setUsername(e.target.value)

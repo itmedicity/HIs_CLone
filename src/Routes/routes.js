@@ -28,6 +28,7 @@ const MenuGroups = React.lazy(() => import('../views/Pages/Admin/UserSettings/Me
 const Medicines = React.lazy(() => import('../views/Pages/PharmacyBilling/Stock/MedicineDetails/ImportMedicines'));
 const StoreReq = React.lazy(() => import('../views/Pages/PharmacyBilling/Stock/StoreRequisition/StoreRequisitionEdit'));
 const RolAnalysis = React.lazy(() => import('../views/Pages/PharmacyBilling/Analysis Statement/RolBasedAnalysis/RolBasedAnalysis'));
+const GstReport = React.lazy(() => import('../views/Pages/PharmacyBilling/Analysis Statement/GstReportPharmacyWise/GstReportPharmacyWise'));
 
 const routes = [
     { path: '', element: NameDis },
@@ -58,6 +59,7 @@ const routes = [
     { path: '/Medicines', name: 'Import New Medicine', element: Medicines },
     { path: '/StoreRequest', name: 'Store Requisition', element: StoreReq },
     { path: '/RolAnalysis', name: 'ROL Based Analysis', element: RolAnalysis },
+    { path: '/GstReport', name: 'GST Report Tax % And Pharmacy Wise', element: GstReport },
 
 ]
 export default routes
