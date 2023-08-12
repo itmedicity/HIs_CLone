@@ -3,8 +3,7 @@ import moment from 'moment';
 import React, { memo } from 'react'
 
 const ReportHeader = ({ name, data }) => {
-    console.log(data)
-    const { from, to } = data.date;
+    const { from, to } = data;
     return (
         <Box sx={{ m: '25px' }} >
             <Box

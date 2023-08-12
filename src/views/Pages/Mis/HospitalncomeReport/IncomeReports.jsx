@@ -87,6 +87,8 @@ const IncomeReports = () => {
 
     const GrosPharma = discount + netAmount + tax;
 
+    const statesss = useSelector((state) => state);
+
     // @ts-ignore
     const collection = useSelector((state) => state.collection);
     // @ts-ignore
@@ -147,55 +149,55 @@ const IncomeReports = () => {
             dispatch(getMisGroupMaster())
             //COLLECTION PART
             // @ts-ignore
-            dispatch(getAdvanceCollection(state.date))
+            dispatch(getAdvanceCollection(state))
             // @ts-ignore
-            dispatch(getAdvanceRefund(state.date))
+            dispatch(getAdvanceRefund(state))
             // @ts-ignore
-            dispatch(getAdvanceSettled(state.date))
+            dispatch(getAdvanceSettled(state))
             // @ts-ignore
-            dispatch(getcollectionagainSaleTotal(state.date))
+            dispatch(getcollectionagainSaleTotal(state))
             // @ts-ignore
-            dispatch(getcollectionagainSaleDeduction(state.date))
+            dispatch(getcollectionagainSaleDeduction(state))
             // @ts-ignore
-            dispatch(getcomplimentory(state.date))
+            dispatch(getcomplimentory(state))
             // @ts-ignore
-            dispatch(getcreditInsuranceBillCollection(state.date))
+            dispatch(getcreditInsuranceBillCollection(state))
             // @ts-ignore
-            dispatch(getIpconsolidatedDiscount(state.date))
+            dispatch(getIpconsolidatedDiscount(state))
             // @ts-ignore
-            dispatch(getipPreviousDayDiscount(state.date))
+            dispatch(getipPreviousDayDiscount(state))
             // @ts-ignore
-            dispatch(getunsettledAmount(state.date))
+            dispatch(getunsettledAmount(state))
             // @ts-ignore
-            dispatch(getipPreviousDayCollection(state.date))
+            dispatch(getipPreviousDayCollection(state))
             // @ts-ignore
-            dispatch(getipcreditInsuranceBill(state.date))
+            dispatch(getipcreditInsuranceBill(state))
 
             //INCOME PART
             // @ts-ignore
-            dispatch(getProincome1(state.date))
+            dispatch(getProincome1(state))
             // @ts-ignore
-            dispatch(getProincome2(state.date))
+            dispatch(getProincome2(state))
             // @ts-ignore
-            dispatch(getProincome3(state.date))
+            dispatch(getProincome3(state))
             // @ts-ignore
-            dispatch(getProincome4(state.date))
+            dispatch(getProincome4(state))
             // @ts-ignore
-            dispatch(getPatietTypeDiscount(state.date))
+            dispatch(getPatietTypeDiscount(state))
             // @ts-ignore
-            dispatch(getPhaSalePart1(state.date))
+            dispatch(getPhaSalePart1(state))
             // @ts-ignore
-            dispatch(getPhaSalePart2(state.date))
+            dispatch(getPhaSalePart2(state))
             // @ts-ignore
-            dispatch(getPhaSalePart3(state.date))
+            dispatch(getPhaSalePart3(state))
             // @ts-ignore
-            dispatch(getPhaReturnPart1(state.date))
+            dispatch(getPhaReturnPart1(state))
             // @ts-ignore
-            dispatch(getPhaReturnPart2(state.date))
+            dispatch(getPhaReturnPart2(state))
             // @ts-ignore
-            dispatch(getPhaReturnPart3(state.date))
+            dispatch(getPhaReturnPart3(state))
             // @ts-ignore
-            dispatch(theaterIncome(state.date))
+            dispatch(theaterIncome(state))
 
         }
     }, [state])

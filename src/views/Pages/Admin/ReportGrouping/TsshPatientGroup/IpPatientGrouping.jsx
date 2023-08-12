@@ -9,15 +9,40 @@ import { getAdmissionList } from '../../../../../Redux-Slice/ipAdmissionInfo/Adm
 import TableRows from './TableRows'
 import { axiosinstance } from '../../../../../controllers/AxiosConfig'
 import { ToastContainer } from 'react-toastify'
+import moment from 'moment/moment'
+import { errorNofity, infoNofity, succesNofity, warningNofity } from '../../../../../Constant/Constants'
+import { useNavigate } from 'react-router-dom'
 
 const IpPatientGrouping = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [value, setValue] = useState(new Date());
     const [ipList, setIplist] = useState([]);
     const [ipListMysql, setIpListMysql] = useState([]);
     const [apiStatus, setApiStatus] = useState(false);
+    const [minDate, setMinDate] = useState(new Date());
 
     const [cont, setCount] = useState(0);
+    const [lastDisUpdateDate, setLastDisUpdateDate] = useState('')
+
+    // GET THE LAST UPDATED DATE AND SET THE DATE FEILD MIN DATE AS THE LAST DISCHAREGE UPDATED DATES
+    useEffect(() => {
+        const getLastDisUpdatedDate = async () => {
+            await axiosinstance.get('/admission/getLastDischargeUpdatedDate').then((result) => {
+                const { success, data } = result.data;
+                if (success === 1) {
+                    const lastDisUpdateDate = data[0]?.Last_dis_updateDate;
+                    const date = new Date(lastDisUpdateDate);
+                    setLastDisUpdateDate(lastDisUpdateDate)
+                    setMinDate(date)
+                }
+            }).catch((e) => {
+                errorNofity(e)
+            })
+        }
+        getLastDisUpdatedDate()
+    }, [])
+
 
     const getAdmissionListFun = useCallback(async () => {
         setApiStatus(true)
@@ -43,6 +68,8 @@ const IpPatientGrouping = () => {
             if (success === 1) {
                 setIpListMysql(data)
             }
+        }).catch((e) => {
+            errorNofity(e)
         })
 
     }, [value])
@@ -64,13 +91,13 @@ const IpPatientGrouping = () => {
                 if (success === 1) {
                     setIpListMysql(data)
                 }
+            }).catch((e) => {
+                errorNofity(e)
             })
         }
         updateMysqlPatientList(getPostData)
 
     }, [value, cont])
-
-
 
     useEffect(() => {
         if (admissionList.status === true) {
@@ -95,6 +122,109 @@ const IpPatientGrouping = () => {
 
 
     }, [admissionList, ipListMysql])
+
+    const dischargeProcess = useCallback(async () => {
+
+        const selectedDate = format(value, 'dd/MM/yyyy')
+        const fromDate = `${selectedDate} 00:00:00`;
+        const toDate = `${selectedDate} 23:59:59`;
+        /*****
+         * GET THE LAST DICHARGE DATE
+         * GET THE DISCHARGE DATE FROM ORACLE USING THE LAST DISCHARGE DATE
+         * GET THE NOT DISCHARGED PATIENT FROM THE MYSQL DATABASE
+         * FILTER THE DATE FROM ORALCE AND MYSQL DATA AND GE TSSH NOT DISCHARGED PATIENT ONLY
+         * UPDATE THE DISCHARGED PATIENT LIST IN THE tssh_ipadmiss
+         * UPDATE THE LAST UPDATED DATE
+         */
+        await axiosinstance.get('/admission/getLastDischargeUpdatedDate').then((result) => {
+            const { success, data } = result.data;
+            if (success === 1) {
+                // console.log(data)
+                // setIpListMysql(data)
+                const lastDisUpdateDate = data[0]?.Last_dis_updateDate;
+                const date = moment(lastDisUpdateDate).format('DD/MM/YYYY')
+                const oracleFromDate = `${date} 00:00:00`;
+
+                const postDateForGetDisPatient = {
+                    from: oracleFromDate,
+                    to: toDate
+                }
+                // GET THE DISCHARGED PATIENT FROM THE ORACLE
+                axiosinstance.post('/admission/getDischargePtFromOracle', postDateForGetDisPatient).then((result) => {
+                    const { success, data } = result.data;
+                    if (success === 1) {
+                        const dischargedPatientFromOra = data;
+                        // GET THE NOT DISCHARGED PATIENT LIST FROM THE MYSQL 
+                        axiosinstance.get('/admission/getAdmittedTsshPatient').then((result) => {
+                            const { success, data } = result.data;
+                            if (success === 1) {
+                                const notDischargedPatient = data;
+                                //  FILTER THE DATE FROM ORALCE AND MYSQL DATA AND GE TSSH NOT DISCHARGED PATIENT ONLY
+                                const filterdPatientList = notDischargedPatient?.map((val) => dischargedPatientFromOra?.find((el) => el.IP_NO === val.ip_no))
+                                    .filter((val) => val !== undefined)
+                                console.log(filterdPatientList)
+
+                                if (filterdPatientList?.length === 0) {
+                                    infoNofity("There Is No Patient For update Discharge")
+                                } else {
+                                    //UPDATE THE DISCHARGED PATIENT INTO THE MYSQL
+                                    axiosinstance.post('/admission/updateDischargedPatient', filterdPatientList).then((result) => {
+                                        const { success, message } = result.data;
+                                        if (success === 1) {
+                                            succesNofity(message)
+                                            //UPDATE THE LAST UPDATED DATED
+                                            /****
+                                             * compare the selected date and the current date  
+                                             * and update the lowest date in to the database
+                                             * and set the selected date feild min date as the last updated date
+                                             */
+                                            const selectedFormDate = new Date(value);
+                                            if (selectedFormDate <= new Date()) {
+                                                const lastUpdatedDate = {
+                                                    date: moment(selectedFormDate).format('YYYY-MM-DD h:m:')
+                                                }
+
+                                                console.log(lastUpdatedDate)
+                                                axiosinstance.post('/admission/UpdateLastDischargeDates', lastUpdatedDate).then((result) => {
+                                                    const { message, success } = result.data;
+                                                    if (success === 1) {
+                                                        succesNofity("Last Discharge Update Date Updated Successfully")
+                                                    } else {
+                                                        errorNofity("Error Updating the Last Update Date")
+                                                    }
+                                                }).catch((e) => {
+                                                    errorNofity(e)
+                                                })
+                                            }
+                                        } else {
+                                            errorNofity(message)
+                                        }
+                                    }).catch((e) => {
+                                        errorNofity(e)
+                                    })
+                                }
+                            } else {
+                                warningNofity("error Getting the Not Discahrged Patient OR Not Patient Data")
+                            }
+                        }).catch((e) => {
+                            errorNofity(e)
+                        })
+
+                    } else {
+                        errorNofity("Error Getting Patient Information From Ellider Software")
+                    }
+                }).catch((e) => {
+                    errorNofity(e)
+                })
+
+            } else {
+                warningNofity("Error Getting Discharge Updated Date")
+            }
+        }).catch((e) => {
+            errorNofity(e)
+        })
+
+    }, [value])
 
     return (
         <Paper
@@ -150,7 +280,7 @@ const IpPatientGrouping = () => {
                             pr: 2
                         }}
                     >
-                        Admission Date :
+                        Date :
                     </Box>
                     <LocalizationProvider dateAdapter={AdapterDateFns} >
                         <DatePicker
@@ -160,13 +290,51 @@ const IpPatientGrouping = () => {
                             disableFuture
                             disableHighlightToday={true}
                             slotProps={{ textField: { size: 'small' } }}
+                            minDate={minDate}
                         />
                     </LocalizationProvider>
                     <Button
                         variant='outlined'
                         sx={{ mx: 2 }}
                         onClick={getAdmissionListFun}
-                    >Process</Button>
+                    >Get Admission</Button>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            fontFamily: 'Arial',
+                            fontSize: '13px',
+                            fontWeight: 'bold',
+                            color: '#525252',
+                            px: 2
+                        }}
+                    >
+                        Last Discharge update Time :
+                    </Box>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            fontFamily: 'Arial',
+                            fontSize: '13px',
+                            fontWeight: 'bold',
+                            color: '#525252',
+                            pr: 2
+                        }}
+                    >
+                        {lastDisUpdateDate}
+                    </Box>
+                    <Button
+                        variant='outlined'
+                        sx={{ mx: 2 }}
+                        onClick={dischargeProcess}
+                    >Discharge Process</Button>
+
+                    <Button
+                        variant='outlined'
+                        sx={{ mx: 2 }}
+                        onClick={() => navigate('/Menu/Admin')}
+                    >Close</Button>
                 </Paper>
                 <Paper
                     square

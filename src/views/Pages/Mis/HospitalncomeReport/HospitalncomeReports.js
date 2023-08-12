@@ -21,7 +21,8 @@ const HospitalncomeReports = () => {
         // @ts-ignore
         navigate('/Menu/income-reports', {
             state: {
-                date: postDate
+                from: postDate.from,
+                to: postDate.to,
             }
         })
     }, [startDate, endDate]);

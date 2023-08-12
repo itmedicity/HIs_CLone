@@ -17,7 +17,7 @@ const HospitalIncomeReportsTmch = React.lazy(() => import('../views/Pages/Mis/Ho
 const incomeReportsTmch = React.lazy(() => import('../views/Pages/Mis/HospitalIcomeTmch/IncomeReports'))
 //Tssh
 const HospitalIncomeReportsTssh = React.lazy(() => import('../views/Pages/Mis/HospitalIncomeTssh/HospitalncomeReports'))
-const incomeReportsTssh = React.lazy(() => import('../views/Pages/Mis/HospitalIcomeTmch/IncomeReports'))
+const incomeReportsTssh = React.lazy(() => import('../views/Pages/Mis/HospitalIncomeTssh/IncomeReports'))
 //Report Grouping
 const IpPatientGroup = React.lazy(() => import('../views/Pages/Admin/ReportGrouping/TsshPatientGroup/IpPatientGrouping'))
 

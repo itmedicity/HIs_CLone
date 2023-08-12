@@ -4,35 +4,59 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom'
 import {
-    getAdvanceCollection,
-    getAdvanceRefund,
-    getAdvanceSettled,
-    getcollectionagainSaleTotal,
-    getcollectionagainSaleDeduction,
-    getcomplimentory,
-    getcreditInsuranceBillCollection,
-    getIpconsolidatedDiscount,
-    getipPreviousDayDiscount,
-    getunsettledAmount,
-    getipPreviousDayCollection,
-    getipcreditInsuranceBill
-} from '../../../../Redux-Slice/incomeCollectionSlice/collectionSlice';
+    // getAdvanceCollection,
+    getAdvanceCollectionTmch,
+    // getAdvanceRefund,
+    getAdvanceRefundTmch,
+    // getAdvanceSettled,
+    getAdvanceSettledTmch,
+    // getcollectionagainSaleTotal,
+    getcollectionagainSaleTotalTmch,
+    // getcollectionagainSaleDeduction,
+    getcollectionagainSaleDeductionTmch,
+    // getcomplimentory,
+    getcomplimentoryTmch,
+    // getcreditInsuranceBillCollection,
+    getcreditInsuranceBillCollectionTmch,
+    // getIpconsolidatedDiscount,
+    getIpconsolidatedDiscountTmch,
+    // getipPreviousDayDiscount,
+    getipPreviousDayDiscountTmch,
+    // getunsettledAmount,
+    getunsettledAmountTmch,
+    // getipPreviousDayCollection,
+    getipPreviousDayCollectionTmch,
+    // getipcreditInsuranceBill,
+    getipcreditInsuranceBillTmch
+} from '../../../../Redux-Slice/incomeCollectionTmchSlice/collectionTmchSlice';
 import {
-    getProincome1,
-    getProincome2,
-    getProincome3,
-    getProincome4,
-    getPatietTypeDiscount,
-    theaterIncome
-} from '../../../../Redux-Slice/incomeCollectionSlice/incomeProcedureSlice'
+    // getProincome1,
+    getProincomeTmch1,
+    // getProincome2,
+    getProincomeTmch2,
+    // getProincome3,
+    getProincomeTmch3,
+    // getProincome4,
+    getProincomeTmch4,
+    // getPatietTypeDiscount,
+    getPatietTypeDiscountTmch,
+    // theaterIncome,
+    theaterIncomeTmch
+} from '../../../../Redux-Slice/incomeCollectionTmchSlice/incomeProcedureTmchSlice';
 import {
-    getPhaSalePart1,
-    getPhaSalePart2,
-    getPhaSalePart3,
-    getPhaReturnPart1,
-    getPhaReturnPart2,
-    getPhaReturnPart3
-} from '../../../../Redux-Slice/incomeCollectionSlice/incomeSlice'
+    // getPhaSalePart1,
+    getPhaSalePartTmch1,
+    // getPhaSalePart2,
+    getPhaSalePartTmch2,
+    // getPhaSalePart3,
+    getPhaSalePartTmch3,
+    // getPhaReturnPart1,
+    getPhaReturnPartTmch1,
+    // getPhaReturnPart2,
+    getPhaReturnPartTmch2,
+    // getPhaReturnPart3,
+    getPhaReturnPartTmch3
+} from '../../../../Redux-Slice/incomeCollectionTmchSlice/incomeTmchSlice'
 // @ts-ignore
 // @ts-ignore
 import { Box, Icon, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
@@ -88,12 +112,12 @@ const IncomeReports = () => {
     const GrosPharma = discount + netAmount + tax;
 
     // @ts-ignore
-    const collection = useSelector((state) => state.collection);
+    const collection = useSelector((state) => state.collectionTmch);
     // @ts-ignore
     // @ts-ignore
-    const pharmacyIncome = useSelector((state) => state.pharmacyIncome, _.isEqual);
+    const pharmacyIncome = useSelector((state) => state.pharmacyIncomeTmch, _.isEqual);
     // @ts-ignore
-    const procedureIncome = useSelector((state) => state.procedureIncome);
+    const procedureIncome = useSelector((state) => state.procedureIncomeTmch);
     const proIncome = useMemo(() => procedureIncome, [procedureIncome]);
     // @ts-ignore
     const misGroup = useSelector((state) => state.misGroup);
@@ -147,55 +171,55 @@ const IncomeReports = () => {
             dispatch(getMisGroupMaster())
             //COLLECTION PART
             // @ts-ignore
-            dispatch(getAdvanceCollection(state.date))
+            dispatch(getAdvanceCollectionTmch(state))
             // @ts-ignore
-            dispatch(getAdvanceRefund(state.date))
+            dispatch(getAdvanceRefundTmch(state))
             // @ts-ignore
-            dispatch(getAdvanceSettled(state.date))
+            dispatch(getAdvanceSettledTmch(state))
             // @ts-ignore
-            dispatch(getcollectionagainSaleTotal(state.date))
+            dispatch(getcollectionagainSaleTotalTmch(state))
             // @ts-ignore
-            dispatch(getcollectionagainSaleDeduction(state.date))
+            dispatch(getcollectionagainSaleDeductionTmch(state))
             // @ts-ignore
-            dispatch(getcomplimentory(state.date))
+            dispatch(getcomplimentoryTmch(state))
             // @ts-ignore
-            dispatch(getcreditInsuranceBillCollection(state.date))
+            dispatch(getcreditInsuranceBillCollectionTmch(state))
             // @ts-ignore
-            dispatch(getIpconsolidatedDiscount(state.date))
+            dispatch(getIpconsolidatedDiscountTmch(state))
             // @ts-ignore
-            dispatch(getipPreviousDayDiscount(state.date))
+            dispatch(getipPreviousDayDiscountTmch(state))
             // @ts-ignore
-            dispatch(getunsettledAmount(state.date))
+            dispatch(getunsettledAmountTmch(state))
             // @ts-ignore
-            dispatch(getipPreviousDayCollection(state.date))
+            dispatch(getipPreviousDayCollectionTmch(state))
             // @ts-ignore
-            dispatch(getipcreditInsuranceBill(state.date))
+            dispatch(getipcreditInsuranceBillTmch(state))
 
             //INCOME PART
             // @ts-ignore
-            dispatch(getProincome1(state.date))
+            dispatch(getProincomeTmch1(state))
             // @ts-ignore
-            dispatch(getProincome2(state.date))
+            dispatch(getProincomeTmch2(state))
             // @ts-ignore
-            dispatch(getProincome3(state.date))
+            dispatch(getProincomeTmch3(state))
             // @ts-ignore
-            dispatch(getProincome4(state.date))
+            dispatch(getProincomeTmch4(state))
             // @ts-ignore
-            dispatch(getPatietTypeDiscount(state.date))
+            dispatch(getPatietTypeDiscountTmch(state))
             // @ts-ignore
-            dispatch(getPhaSalePart1(state.date))
+            dispatch(getPhaSalePartTmch1(state))
             // @ts-ignore
-            dispatch(getPhaSalePart2(state.date))
+            dispatch(getPhaSalePartTmch2(state))
             // @ts-ignore
-            dispatch(getPhaSalePart3(state.date))
+            dispatch(getPhaSalePartTmch3(state))
             // @ts-ignore
-            dispatch(getPhaReturnPart1(state.date))
+            dispatch(getPhaReturnPartTmch1(state))
             // @ts-ignore
-            dispatch(getPhaReturnPart2(state.date))
+            dispatch(getPhaReturnPartTmch2(state))
             // @ts-ignore
-            dispatch(getPhaReturnPart3(state.date))
+            dispatch(getPhaReturnPartTmch3(state))
             // @ts-ignore
-            dispatch(theaterIncome(state.date))
+            dispatch(theaterIncomeTmch(state))
 
         }
     }, [state])
@@ -429,6 +453,7 @@ const IncomeReports = () => {
                     overflow: 'auto',
                     padding: '15px'
                 }} >
+                    <Box>Tmch</Box>
                     <TableContainer component={Box}>
                         <Table padding='none' sx={{}} size="small" aria-label="a dense table" >
                             <TableHead sx={{

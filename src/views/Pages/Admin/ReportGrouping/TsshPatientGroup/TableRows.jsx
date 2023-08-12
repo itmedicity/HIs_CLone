@@ -10,7 +10,9 @@ const TableRows = ({ data, n, setCount }) => {
         const postData = {
             date: data.IPD_DATE,
             ip_no: data.IP_NO,
-            op_no: data.PT_NO
+            op_no: data.PT_NO,
+            disDate: data.DISDATE,
+            disStatus: data.DISSTATUS
         }
 
         const val = Math.random()

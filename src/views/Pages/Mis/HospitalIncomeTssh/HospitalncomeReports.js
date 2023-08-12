@@ -7,21 +7,44 @@ import ButtonCmp from '../../../Components/ButtonCmp';
 import { imageIcon } from '../../../../assets/ImageExport';
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment';
+import { axiosinstance } from '../../../../controllers/AxiosConfig';
 
 const HospitalncomeReports = () => {
     const navigate = useNavigate();
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
 
-    const handleClick = useCallback(() => {
+    const handleClick = useCallback(async () => {
         const postDate = {
             from: moment(startDate).format('DD/MM/YYYY 00:00:00'),
             to: moment(endDate).format('DD/MM/YYYY 23:59:59')
         }
-        // @ts-ignore
-        navigate('/Menu/income-reports', {
-            state: {
-                date: postDate
+
+        const postDataForMysql = {
+            fromDate: moment(startDate).format('YYYY-MM-DD'),
+            toDate: moment(endDate).format('YYYY-MM-DD')
+        }
+
+        await axiosinstance.post('/admission/getTsshPatient', postDataForMysql).then((result) => {
+            const { success, data } = result.data;
+            if (success === 1) {
+                const ipNumber = data?.map((e) => e.ip_no)
+                console.log(ipNumber)
+                navigate('/Menu/income-reports-tssh', {
+                    state: {
+                        from: postDate.from,
+                        to: postDate.to,
+                        ptno: ipNumber
+                    }
+                })
+            } else {
+                navigate('/Menu/income-reports-tssh', {
+                    state: {
+                        from: postDate.from,
+                        to: postDate.to,
+                        ptno: []
+                    }
+                })
             }
         })
     }, [startDate, endDate]);
