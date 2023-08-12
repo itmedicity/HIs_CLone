@@ -10,31 +10,31 @@ import { topOfficilasMenu } from '../../Menu/MISBillingMenu'
 
 const Mis = () => {
 
-    // const user = usergroupid()
-    // const [topoff, setTopOff] = useState()
-    // useEffect(() => {
-    //     getMenuSlno(user).then((val) => {
-    //         const menuSlno = val.map((value) => {
-    //             return value.menuname_id
-    //         })
-    //         const topoffcmenu = topOfficilasMenu.filter(val => menuSlno.includes(val.slno));
-    //         setTopOff(topoffcmenu)
+    const user = usergroupid()
+    const [topoff, setTopOff] = useState()
+    useEffect(() => {
+        getMenuSlno(user).then((val) => {
+            const menuSlno = val.map((value) => {
+                return value.menuname_id
+            })
+            const topoffcmenu = topOfficilasMenu.filter(val => menuSlno.includes(val.slno));
+            setTopOff(topoffcmenu)
 
-    //     })
-    // }, [user])
+        })
+    }, [user])
 
     return (
         <ContentMain>
             <ContentSecondary name="MIS" >
                 <ContentPaper name="Top Officials" >
-                    {/* {
+                    {
                         topoff && topoff.map((val) => {
                             return <ContentNavLink name={val.name} route={val.path} key={val.slno} />;
                         })
-                    } */}
-                    {
-                        top_officials.map((element, idx) => <ContentNavLink name={element.name} route={element.path} key={idx} />)
                     }
+                    {/* {
+                        top_officials.map((element, idx) => <ContentNavLink name={element.name} route={element.path} key={idx} />)
+                    } */}
                 </ContentPaper>
                 <ContentPaper name="Reg. Cons.">
                     <ContentNavLink name="Query Add/Edit" route="" />

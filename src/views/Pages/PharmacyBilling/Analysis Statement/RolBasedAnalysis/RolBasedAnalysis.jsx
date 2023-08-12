@@ -7,7 +7,7 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux';
-import { addMonths, eachDayOfInterval, eachMonthOfInterval, endOfMonth, format, startOfMonth, subMonths, subYears } from 'date-fns'
+import { addMonths, eachDayOfInterval, eachMonthOfInterval, endOfMonth, format, getDaysInMonth, startOfMonth, subMonths, subYears } from 'date-fns'
 import moment from 'moment';
 import { getMonthlyIpVisitCount, getMonthlyOpVisitCount, getSoledMedicinesQnty } from '../../../../../Redux-Slice/pharmacyBilling/rolProcessSlice';
 import { MonthSelect } from './Components/MonthSelect';
@@ -269,7 +269,8 @@ const RolBasedAnalysis = () => {
         const monthList = eachMonthOfInterval({ start: new Date(firstmonth), end: new Date(lastmonth) });
         const dateRange = monthList.map((val, index) => {
             return {
-                month: moment(new Date(val)).format('MMM-YYYY')
+                month: moment(new Date(val)).format('MMM-YYYY'),
+                daysInMonth: getDaysInMonth(new Date(val))
             }
         })
 
@@ -281,18 +282,22 @@ const RolBasedAnalysis = () => {
             ouCode: pharmacy
         }
 
-
+        // for medicines sales
         const SoledMedicinesDetails = async () => {
             const result = await dispatch(getSoledMedicinesQnty(postmed))
             const meddata = result.payload.data
 
+
             const datas = meddata.map((val) => {
                 const totqnt = (meddata?.filter(item => val.IT_CODE === item.IT_CODE).reduce((acc, curr) => acc + (curr.QTY), 0));
                 return {
+                    BMD_DATE: val.BMD_DATE,
                     IT_CODE: val.IT_CODE,
+                    ITC_DESC: val.ITC_DESC,
                     qntyTot: totqnt
                 }
             })
+
             let totqnty = datas.filter((ele, ind) => ind === datas.findIndex(elem => elem.IT_CODE === ele.IT_CODE))
 
             const oneDay = 24 * 60 * 60 * 1000;
@@ -300,35 +305,83 @@ const RolBasedAnalysis = () => {
 
             const viewdata = totqnty && totqnty.map((val) => {
                 const obj = {
+                    BMD_DATE: val.BMD_DATE,
                     IT_CODE: val.IT_CODE,
+                    ITC_DESC: val.ITC_DESC,
                     QNTY_TOT: val.qntyTot,
                     AVRG: (val.qntyTot / diffDays).toFixed(2)
+
                 }
                 return obj
             })
-
             setList(viewdata)
 
-
+            // console.log(meddata);
             const datalist = dateRange.map((val, index) => {
                 const newlist = meddata.filter((value) => moment(new Date(value.BMD_DATE)).format('MMM-YYYY') === val.month)
+
                 return {
                     month: val.month,
+                    Sale: 'Total Sale',
+                    Average: 'Avg/Day',
                     data: newlist,
                 }
+            }).map((val) => {
+                // console.log(val.data);
+                return {
+                    ...val,
+                    data: val.data?.map((el) => {
+                        const itemlist = meddata.find((value) => value.BMD_DATE === el.BMD_DATE)
+                        if (el.IT_CODE === itemlist.IT_CODE) {
+                            return {
+                                ...el,
+                                IT_CODE: el.IT_CODE,
+                                ITC_DESC: el.ITC_DESC,
+                                BMD_DATE: el.BMD_DATE,
+                                QNTY_TOT: el.QTY,
+                                AVRG: ((el.QTY / (getDaysInMonth(new Date(el.BMD_DATE))))).toFixed(2)
+                            }
+                        }
+                        else if (el.IT_CODE !== itemlist.IT_CODE) {
+                            return {
+                                ...el,
+                                IT_CODE: el.IT_CODE,
+                                ITC_DESC: el.ITC_DESC,
+                                BMD_DATE: el.BMD_DATE,
+                                QNTY_TOT: 0,
+                                AVRG: 0
+                            }
+                        }
+
+                    })
+                }
             })
+            // console.log(datalist);
+
+            // 
+
+            // const itemlist = viewdata.find((value) => el.IT_CODE === value.IT_CODE)
+            // if ((el.IT_CODE === itemlist.IT_CODE) === 0) {
+            //     return {
+            //         ...el,
+            //         IT_CODE: el.IT_CODE,
+            //         ITC_DESC: el.ITC_DESC,
+            //         QNTY_TOT: 0,
+            //         AVRG: 0
+            //     }
+            // }
+            // else {
+
+            // }
 
             setMonthwise(datalist)
 
+
         }
         SoledMedicinesDetails(postmed)
-
         setFlag(1)
 
-    }, [dispatch, from, to, from1, to1, month, month1, month2, from2, to2, formonth, monthcount])
-
-
-
+    }, [dispatch, from, to, from1, to1, month, month1, month2, from2, to2, formonth, monthcount, list, monthwise])
     useEffect(() => {
 
         if (month.length !== 0 && month1.length !== 0 && month2.length !== 0) {
@@ -358,18 +411,12 @@ const RolBasedAnalysis = () => {
 
 
     useEffect(() => {
-        if (list.length !== 0) {
-            const ob = {
-                con: 1,
-                data: list
-            }
-
-            const newdatass = [...medlist, ob]
+        if (list.length !== 0 && monthwise.length !== 0) {
             setLoading(false)
-            setMedlist(newdatass)
+
         }
 
-    }, [list.length !== 0])
+    }, [list.length !== 0, monthwise.length !== 0])
 
     return (
         <Fragment>
@@ -535,9 +582,9 @@ const RolBasedAnalysis = () => {
                     </Paper>
 
                     <Box sx={{ display: "flex", flexDirection: 'column', height: '660px' }}>
-                        <Box sx={{ display: "flex", flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'column', height: '450px' }}>
+                        <Box sx={{ display: "flex", flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'column', height: '600px' }}>
                             {flag === 1 ? <Box >
-                                {final && final.map((val, index) => {
+                                {/* {final && final.map((val, index) => {
                                     return < Box key={index} sx={{ display: "flex", flexDirection: 'column' }}>
                                         <MonthSelect
                                             value={val.data}
@@ -545,21 +592,17 @@ const RolBasedAnalysis = () => {
                                     </Box>
 
                                 })
+                                } */}
+                                <Box sx={{ width: '98%', px: 2 }}>
 
-                                }
-
-                                {medlist && medlist.map((val, index) => {
-                                    return < Box key={index} sx={{ display: "flex", flexDirection: 'column' }}>
+                                    < Box ksx={{ display: "flex", flexDirection: 'column' }}>
                                         <SoledMedicinesDetails
-                                            value={val.data}
+                                            value={list}
                                             setcount={monthcount}
                                             monthwise={monthwise}
-
                                         />
                                     </Box>
-
-                                })
-                                }
+                                </Box>
                                 {/* <Box sx={{ display: "flex", flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'column' }}>
 
                                 </Box> */}
