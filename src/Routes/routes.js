@@ -8,16 +8,20 @@ const LabGeneralBill = React.lazy(() => import('../views/Pages/LabGeneralBill'))
 const Mis = React.lazy(() => import('../views/Pages/Mis'));
 const Outpatient = React.lazy(() => import('../views/Pages/Outpatient'));
 const PharmacyBilling = React.lazy(() => import('../views/Pages/PharmacyBilling'));
+const DashBoard = React.lazy(() => import('../views/Pages/Dashboard'));
 
 //Qmt
 const HospitalIncomeReports = React.lazy(() => import('../views/Pages/Mis/HospitalncomeReport/HospitalncomeReports'));
 const incomeReports = React.lazy(() => import('../views/Pages/Mis/HospitalncomeReport/IncomeReports'))
+
 //Tmch
 const HospitalIncomeReportsTmch = React.lazy(() => import('../views/Pages/Mis/HospitalIcomeTmch/HospitalncomeReports'))
 const incomeReportsTmch = React.lazy(() => import('../views/Pages/Mis/HospitalIcomeTmch/IncomeReports'))
+
 //Tssh
 const HospitalIncomeReportsTssh = React.lazy(() => import('../views/Pages/Mis/HospitalIncomeTssh/HospitalncomeReports'))
 const incomeReportsTssh = React.lazy(() => import('../views/Pages/Mis/HospitalIcomeTmch/IncomeReports'))
+
 //Report Grouping
 const IpPatientGroup = React.lazy(() => import('../views/Pages/Admin/ReportGrouping/TsshPatientGroup/IpPatientGrouping'))
 
@@ -30,6 +34,10 @@ const StoreReq = React.lazy(() => import('../views/Pages/PharmacyBilling/Stock/S
 const RolAnalysis = React.lazy(() => import('../views/Pages/PharmacyBilling/Analysis Statement/RolBasedAnalysis/RolBasedAnalysis'));
 const GstReport = React.lazy(() => import('../views/Pages/PharmacyBilling/Analysis Statement/GstReportPharmacyWise/GstReportPharmacyWise'));
 
+// dashboard
+const OpIpAnalysis = React.lazy(() => import('../views/Pages/DashBoard/DashboardOP_IP'));
+
+
 const routes = [
     { path: '', element: NameDis },
     { path: '/Admin', element: Admin },
@@ -38,6 +46,7 @@ const routes = [
     { path: '/Mis', element: Mis },
     { path: '/Outpatient', element: Outpatient },
     { path: '/PharmacyBilling', element: PharmacyBilling },
+    { path: '/DashBoard', element: DashBoard },
     { path: '/Test', element: Test },
     //qmt
     { path: '/hospital_income', element: HospitalIncomeReports, name: "Hospital Income Statement" },
@@ -60,6 +69,9 @@ const routes = [
     { path: '/StoreRequest', name: 'Store Requisition', element: StoreReq },
     { path: '/RolAnalysis', name: 'ROL Based Analysis', element: RolAnalysis },
     { path: '/GstReport', name: 'GST Report Tax % And Pharmacy Wise', element: GstReport },
+
+    // dashbord
+    { path: '/DashBoardData', name: 'OP-IP Statistics', element: OpIpAnalysis },
 
 ]
 export default routes
