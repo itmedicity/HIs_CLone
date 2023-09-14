@@ -21,4 +21,5 @@ export const menuIconName = [
     { slno: 18, route: "/Menu/Test", iconName: imageIcon.icon9, name: 'Casualty' },
     { slno: 19, route: "/Menu/Test", iconName: imageIcon.icon29, name: 'Theatre' },
     { slno: 20, route: "/Menu/Test", iconName: imageIcon.icon49, name: 'General Master' },
+    { slno: 21, route: "/Menu/DashBoard", iconName: imageIcon.icon49, name: 'DashBoard' },
 ]

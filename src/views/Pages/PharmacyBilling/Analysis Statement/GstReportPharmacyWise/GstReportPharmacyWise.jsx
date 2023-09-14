@@ -1,17 +1,26 @@
-import { Box, TextField, Typography, Button, FormControl, MenuItem, Select, Divider, LinearProgress, Paper, } from '@mui/material'
-import React, { Fragment, useState, useCallback, useRef, useMemo, useEffect, memo, Suspense } from 'react'
+import {
+    Box, TextField, Typography, Button, FormControl, MenuItem, Select, Divider, Paper
+} from '@mui/material'
+import React, { Fragment, useState, useCallback, useEffect, memo, useMemo } from 'react'
 import { ToastContainer } from 'react-toastify'
 import OutletSelect from '../../Stock/CommonComponents/OutletSelect'
 import { useNavigate } from 'react-router-dom'
-import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import moment from 'moment';
-import { getPharmacyTaxReport } from '../../../../../Redux-Slice/pharmacyBilling/pharmacyTaxSlice'
-import { useDispatch } from 'react-redux';
+import {
+    getGstTaxReportSelect,
+    getGstTaxReportSelect2,
+    getGstTaxReportSelect3,
+    getPharmacyTaxReport,
+    getPharmacyTaxReportIp,
+    getPharmacyTaxReportIpReturn
+} from '../../../../../Redux-Slice/pharmacyBilling/pharmacyTaxSlice'
+import { useDispatch, useSelector } from 'react-redux';
 import { endOfMonth, format, startOfMonth } from 'date-fns'
-import { warningNofity } from '../../../../../Constant/Constants'
 import CustomCircularProgress from '../../../../Components/CustomCircularProgress'
+import PharmacyReportTable from './Components/PharmacyReportTable'
+import ReportAGgrid from './Components/ReportAGgrid'
 
 
 const GstReportPharmacyWise = () => {
@@ -20,29 +29,40 @@ const GstReportPharmacyWise = () => {
     const [taxvalue, setTaxvalue] = useState(0)
     const [pay, setPay] = useState(0)
     const [allselect, setAllselect] = useState(true)
-    const [viewDis, setViewDis] = useState(0)
     const [fromdate, setFromdate] = useState(moment(new Date()))
-    const [purchase, setPurchase] = useState(0)
-    const [mrp, setMrp] = useState(0)
-    const [actualMrp, setActualMrp] = useState(0)
-    const [amount, setAmount] = useState(0)
+    // const [purchase, setPurchase] = useState(0)
+    // const [mrp, setMrp] = useState(0)
+    // const [actualMrp, setActualMrp] = useState(0)
+    const [grossamount, setGrossAmount] = useState(0)
     const [viewreport, setViewReport] = useState([])
     const [disArray, setDisArray] = useState([])
     const [loading, setLoading] = useState(false)
+    const [totamount, setTotAmount] = useState(0)
+    const [totdisc, setTotdisc] = useState(0)
+    const [tottax, setTottax] = useState(0)
+    const [queryselect, setQueryselect] = useState(0)
+    const [gstdata, setGstdata] = useState([])
     const dispatch = useDispatch();
+    const [flag, setflag] = useState(0)
+    // const [check, setCheck] = useState(0)
+    const [valClick, setValClick] = useState(0)
 
     const ClearDetails = useCallback(() => {
         setpharmacy(0)
         setTaxvalue(0)
         setPay(0)
         setAllselect(true)
-        setViewDis(0)
-        setPurchase(0)
-        setMrp(0)
-        setActualMrp(0)
-        setAmount(0)
+        // setPurchase(0)
+        // setMrp(0)
+        // setActualMrp(0)
+        setTotdisc(0)
+        setTottax(0)
+        setTotAmount(0)
+        setGrossAmount(0)
         setViewReport([])
         setDisArray([])
+        setGstdata([])
+        setflag(0)
     }, [])
 
     const [taxList] = useState([
@@ -54,13 +74,28 @@ const GstReportPharmacyWise = () => {
     ]);
 
     const [paytype] = useState([
-        { id: 'I', desc: "In Patient", },
+        { id: 'I', desc: "In Patient" },
         { id: 'O', desc: "Others" },
 
     ]);
 
-    var startDate = format(startOfMonth(new Date(fromdate)), 'dd-MM-yyyy')
-    var endDate = format(endOfMonth(new Date(fromdate)), 'dd-MM-yyyy ')
+    const [query] = useState([
+        { id: 1, qname: "Query1" },
+        { id: 2, qname: "Query2" },
+        { id: 3, qname: "Query3" },
+
+    ]);
+
+
+    // var startDate = format(startOfMonth(new Date(fromdate)), 'dd/MM/yyyy')
+    // var endDate = format(endOfMonth(new Date(fromdate)), 'dd/MM/yyyy')
+
+    // var startDate = moment('03/01/2023').format('DD/MM/yyyy 00:00:00')
+    // var endDate = moment('03/31/2023').format('DD/MM/yyyy 23:59:59')
+
+    var startDate = moment(startOfMonth(new Date(fromdate))).format('DD/MM/yyyy 00:00:00')
+    var endDate = moment(endOfMonth(new Date(fromdate))).format('DD/MM/yyyy 23:59:59')
+
 
     const CheckAllSelect = (e) => {
         if (e.target.checked === true) {
@@ -71,70 +106,126 @@ const GstReportPharmacyWise = () => {
             setAllselect(false)
         }
     }
+    const ResetTotal = useCallback(() => {
+        setTotdisc(0)
+        setTottax(0)
+        setTotAmount(0)
+        setGrossAmount(0)
+        setflag(0)
+        setLoading(false)
+        setValClick(0)
+    }, [])
 
     const ChangeDate = (e) => {
-        ClearDetails()
+        ResetTotal()
         setFromdate(e.target.value)
     }
+    const ChangeQuery = (e) => {
+        ResetTotal()
+        setQueryselect(e.target.value)
+    }
 
-
-    const rowHeight = 30
-    const headerHeight = 30
-    const defaultColDef = useMemo(() => {
+    const postdata = useMemo(() => {
         return {
-            // sortable: true,
-            resizable: true,
-            flex: 1,
-            minWidth: 100,
-            // filter: true,
-        };
-    }, []);
-    const onGridReady = (params) => {
-        params.api.sizeColumnsToFit()
-    }
-
-    const rowStyle = {
-        fontFamily: [
-            '-apple-system',
-            'BlinkMacSystemFont',
-            '"Segoe UI"',
-            'Roboto',
-            '"Helvetica Neue"',
-            'Arial',
-            'sans-serif',
-            '"Apple Color Emoji"',
-            '"Segoe UI Emoji"',
-            '"Segoe UI Symbol"',
-        ].join(','),
-    }
-
-    const [columnDefs, setColumnDefs] = useState([
-        { headerName: 'Pharmacy Code', field: 'OUCODE', minWidth: 150, filter: 'agTextColumnFilter', },
-        { headerName: "Item Code", field: 'CODE', minWidth: 100 },
-        { headerName: "Bill No", field: 'BILL', minWidth: 100 },
-        { headerName: "Bill Date", field: 'BILLDATE', minWidth: 200, },
-        { headerName: "CACR", field: 'CACR', minWidth: 100 },
-        { headerName: "Quantity", field: 'QTY', minWidth: 100 },
-        { headerName: "Loose", field: 'LOOSE', minWidth: 100 },
-        { headerName: "Purcahse Rate", field: 'PRATE', minWidth: 150 },
-        { headerName: "MRP", field: 'MRP', minWidth: 100 },
-        { headerName: "Actual MRP", field: 'ACTMRP', minWidth: 150 },
-        { headerName: "Amount", field: 'AMT', minWidth: 110 },
-        { headerName: "Discount", field: 'DIS', minWidth: 100 },
-        { headerName: "Tax Code", field: 'TAXCODE', minWidth: 100 },
-        { headerName: "Tax %", field: 'TAXPER', minWidth: 100 },
-        { headerName: "Tax Amount", field: 'TAXAMT', minWidth: 120 },
-        { headerName: 'Pharmacy', field: 'OUC_DESC', minWidth: 200, filter: 'agTextColumnFilter' },
-        { headerName: "Item", field: 'ITC_DESC', minWidth: 200 },
-        { headerName: "Tax Description", field: 'TXC_DESC', minWidth: 150 },
-
-    ]);
+            from: startDate,
+            to: endDate
+        }
+    }, [startDate, endDate])
 
     useEffect(() => {
-        if (disArray.length !== 0) {
+        dispatch(getPharmacyTaxReport(postdata))
+        dispatch(getPharmacyTaxReportIpReturn(postdata))
+        dispatch(getPharmacyTaxReportIp(postdata))
+    }, [postdata, dispatch])
 
-            setViewDis(1)
-            const newdata = disArray.map((val) => {
+    const reportdata1 = useSelector(getGstTaxReportSelect)
+    const reportdata2 = useSelector(getGstTaxReportSelect2)
+    const reportdata3 = useSelector(getGstTaxReportSelect3)
+
+    useEffect(() => {
+
+        if (queryselect === 1) {
+            setGstdata(reportdata1)
+        }
+        else if (queryselect === 2) {
+            setGstdata(reportdata2)
+        }
+        else if (queryselect === 3) {
+            setGstdata(reportdata3)
+        }
+
+    }, [queryselect, reportdata1, reportdata2, reportdata3])
+
+    const ProcessDetails = useCallback(() => {
+        if (flag === 0) {
+            setLoading(true)
+        } else {
+            setLoading(false)
+        }
+        if (allselect === true && taxvalue === 0 && pay === 0) {
+            setDisArray(gstdata)
+        }
+        else if (allselect === true && taxvalue !== 0 && pay === 0) {
+            const phrma = gstdata.filter((val) => val.TAXPER === taxvalue)
+            setDisArray(phrma)
+        }
+        else if (allselect === true && taxvalue === 0 && pay !== 0) {
+            if (pay === 'I') {
+                const phrma = gstdata.filter((val) => val.CACR === pay)
+                setDisArray(phrma)
+
+            }
+            else {
+                const phrma = gstdata.filter((val) => val.CACR !== pay)
+                setDisArray(phrma)
+            }
+        }
+        else if (allselect === true && taxvalue !== 0 && pay !== 0) {
+            if (pay === 'I') {
+                const phrma = gstdata.filter((val) => val.CACR === pay && val.TAXPER === taxvalue)
+                setDisArray(phrma)
+            }
+            else {
+                const phrma = gstdata.filter((val) => val.CACR !== pay && val.TAXPER === taxvalue)
+                setDisArray(phrma)
+            }
+        }
+
+        // checkbox false
+        else if (allselect === false && pharmacy !== 0 && taxvalue !== 0 && pay !== 0) {
+            if (pay === 'I') {
+                const phrma = gstdata.filter((val) => val.OUCODE === pharmacy && val.TAXPER === taxvalue && val.CACR === pay)
+                setDisArray(phrma)
+            }
+            else {
+                const phrma = gstdata.filter((val) => val.OUCODE === pharmacy && val.TAXPER === taxvalue && val.CACR !== pay)
+                setDisArray(phrma)
+            }
+        }
+        else if (allselect === false && pharmacy !== 0 && taxvalue === 0 && pay !== 0) {
+            if (pay === 'I') {
+                const phrma = gstdata.filter((val) => val.OUCODE === pharmacy && val.CACR === pay)
+                setDisArray(phrma)
+            }
+            else {
+                const phrma = gstdata.filter((val) => val.OUCODE === pharmacy && val.CACR !== pay)
+                setDisArray(phrma)
+            }
+        }
+        else if (allselect === false && pharmacy !== 0 && taxvalue !== 0 && pay === 0) {
+
+            const phrma = gstdata.filter((val) => val.OUCODE === pharmacy && val.TAXPER === taxvalue)
+            setDisArray(phrma)
+
+        }
+
+    }, [pay, pharmacy, taxvalue, allselect, gstdata, flag])
+
+    useEffect(() => {
+        // if (check === 1) {
+
+        if (disArray.length !== 0) {
+            const newdata = disArray?.map((val) => {
                 const obj = {
                     OUCODE: val.OUCODE,
                     CODE: val.CODE,
@@ -147,7 +238,7 @@ const GstReportPharmacyWise = () => {
                     MRP: Math.floor(val.MRP * 100) / 100,
                     ACTMRP: Math.floor(val.ACTMRP * 100) / 100,
                     AMT: Math.floor(val.AMT * 100) / 100,
-                    DIS: val.DIS,
+                    DIS: Math.floor(val.DIS * 100) / 100,
                     TAXCODE: val.TAXCODE,
                     TAXPER: val.TAXPER,
                     TAXAMT: Math.floor(val.TAXAMT * 100) / 100,
@@ -159,132 +250,50 @@ const GstReportPharmacyWise = () => {
 
             })
             setViewReport(newdata)
+            // setLoading(false)
+            // setflag(1)
 
+            // const purtotal = disArray.map(val => val.PRATE).reduce((prev, next) => Number(prev) + Number(next))
+            // setPurchase(Math.floor(purtotal * 100) / 100)
 
-            const purtotal = disArray.map(val => val.PRATE).reduce((prev, next) => Number(prev) + Number(next))
-            setPurchase(Math.floor(purtotal * 100) / 100)
+            // const mrptotal = disArray.map(val => val.MRP).reduce((prev, next) => Number(prev) + Number(next))
+            // setMrp(Math.floor(mrptotal * 100) / 100)
 
-            const mrptotal = disArray.map(val => val.MRP).reduce((prev, next) => Number(prev) + Number(next))
-            setMrp(Math.floor(mrptotal * 100) / 100)
+            // const actmrptotal = disArray.map(val => val.ACTMRP).reduce((prev, next) => Number(prev) + Number(next))
+            // setActualMrp(Math.floor(actmrptotal * 100) / 100)
 
-            const actmrptotal = disArray.map(val => val.ACTMRP).reduce((prev, next) => Number(prev) + Number(next))
-            setActualMrp(Math.floor(actmrptotal * 100) / 100)
+            const amounttotal = disArray?.map(val => val.AMT).reduce((prev, next) => Number(prev) + Number(next))
+            setTotAmount(Math.floor(amounttotal * 100) / 100)
 
-            const amounttotal = disArray.map(val => val.AMT).reduce((prev, next) => Number(prev) + Number(next))
+            const taxamount = disArray?.map(val => val.TAXAMT).reduce((prev, next) => Number(prev) + Number(next))
+            setTottax(Math.floor(taxamount * 100) / 100)
 
-            const taxamount = disArray.map(val => val.TAXAMT).reduce((prev, next) => Number(prev) + Number(next))
-
-            const discount = disArray.map(val => val.DIS).reduce((prev, next) => Number(prev) + Number(next))
+            const discount = disArray?.map(val => val.DIS).reduce((prev, next) => Number(prev) + Number(next))
+            setTotdisc(Math.floor(discount * 100) / 100)
 
             const grossamount = amounttotal + taxamount + discount
-            setAmount(Math.floor(amounttotal * 100) / 100)
-
-            setLoading(false)
+            setGrossAmount(Math.floor(grossamount * 100) / 100)
 
         }
-
-    }, [disArray.length !== 0])
-
-    const ProcessDetails = useCallback(() => {
-
-        setLoading(true)
-        const postdata = {
-            from: startDate,
-            to: endDate,
-        }
-
-        const processdata = async (postdata) => {
-
-            const result = await dispatch(getPharmacyTaxReport(postdata))
-            const dataset = result.payload
-            if (dataset.success === 1) {
-                const getarry = dataset.data
-                if (allselect === true) {
-
-                    if (taxvalue === 0 && pay === 0) {
-                        const phrma = dataset.data
-                        setDisArray(phrma)
-                    }
-                    else if (taxvalue !== 0 && pay === 0) {
-
-                        const phrma = getarry.filter((val) => val.TAXPER === taxvalue)
-                        setDisArray(phrma)
-                    }
-                    else if (taxvalue === 0 && pay !== 0) {
-                        if (pay === 'I') {
-
-                            const phrma = getarry.filter((val) => val.CACR === pay)
-                            setDisArray(phrma)
-                        }
-                        else {
-                            const phrma = getarry.filter((val) => val.CACR !== pay)
-                            setDisArray(phrma)
-                        }
-                    }
-                    else if (taxvalue !== 0 && pay !== 0) {
-                        if (pay === 'I') {
-                            const phrma = getarry.filter((val) => val.CACR === pay && val.TAXPER === taxvalue)
-                            setDisArray(phrma)
-                        }
-                        else {
-                            const phrma = getarry.filter((val) => val.CACR !== pay && val.TAXPER === taxvalue)
-                            setDisArray(phrma)
-                        }
-                    }
-                }
-                else {
-                    if (pharmacy !== 0 && taxvalue !== 0 && pay !== 0) {
-
-                        if (pay === 'I') {
-                            const phrma = getarry.filter((val) => val.OUCODE === pharmacy && val.TAXPER === taxvalue && val.CACR === pay)
-                            setDisArray(phrma)
-                        }
-                        else {
-                            const phrma = getarry.filter((val) => val.OUCODE === pharmacy && val.TAXPER === taxvalue && val.CACR !== pay)
-                            setDisArray(phrma)
-                        }
-                    }
-                    else if (pharmacy !== 0 && taxvalue === 0 && pay !== 0) {
-                        if (pay === 'I') {
-                            const phrma = getarry.filter((val) => val.OUCODE === pharmacy && val.CACR === pay)
-                            setDisArray(phrma)
-                        }
-                        else {
-                            const phrma = getarry.filter((val) => val.OUCODE === pharmacy && val.CACR !== pay)
-                            setDisArray(phrma)
-                        }
-                    }
-                    else if (pharmacy !== 0 && taxvalue !== 0 && pay === 0) {
-                        if (pay === 'I') {
-                            const phrma = getarry.filter((val) => val.OUCODE === pharmacy && val.TAXPER === taxvalue)
-                            setDisArray(phrma)
-                        }
-                        else {
-                            const phrma = getarry.filter((val) => val.OUCODE === pharmacy && val.TAXPER === taxvalue)
-                            setDisArray(phrma)
-                        }
-                    }
-                }
-            }
-            else {
-                warningNofity("No Data Found");
-            }
-        }
-        processdata(postdata)
-
-    }, [startDate, endDate, dispatch, pay, disArray, pharmacy, taxvalue, allselect])
+        // }
+    }, [disArray])
 
     const Closepage = useCallback(() => {
         navigate("/Menu/PharmacyBilling")
 
     }, [])
+    useEffect(() => {
+        if (viewreport.length !== 0) {
+            setLoading(false)
+            setflag(1)
+        } else {
+            setflag(0)
+        }
+    }, [viewreport.length !== 0])
 
-    const gridRef = useRef();
-
-    const ExportToExcel = useCallback(() => {
-        gridRef.current.api.exportDataAsCsv();
-    }, [])
-
+    const ExportToExcel = async () => {
+        setValClick(1)
+    }
 
     return (
         <Fragment>
@@ -354,7 +363,7 @@ const GstReportPharmacyWise = () => {
                                         borderRadius: '3px'
                                     }}
                                     value={fromdate}
-                                    // name="fromdate"
+                                    name="fromdate"
                                     onChange={(e) => ChangeDate(e)}
                                 />
                             </Box>
@@ -466,6 +475,39 @@ const GstReportPharmacyWise = () => {
                                 </FormControl>
                             </Box>
                         </Box>
+                        <Box sx={{ display: "flex", flexDirection: 'row', pl: 1, pt: 0.7 }}>
+
+                            <FormControl fullWidth
+                                size='small'   >
+                                <Select
+                                    variant='outlined'
+                                    size="small"
+                                    fullWidth
+                                    style={{
+                                        height: 40,
+                                        paddingBottom: 1,
+                                        width: 150,
+                                        BorderAllRounded: 1,
+                                        fontSize: '15px',
+                                        fontFamily: 'Arial',
+                                        borderRadius: '3px'
+                                    }}
+                                    defaultValue={0}
+                                    value={queryselect}
+                                    onChange={(e) => ChangeQuery(e)}
+                                >
+                                    <MenuItem disabled value={0}>-Select Query-</MenuItem>
+                                    {
+                                        query?.map((val, index) => (
+                                            <MenuItem key={index} value={val.id}>
+                                                {val.qname}
+                                            </MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+
+                        </Box>
 
                         <Box sx={{ pl: 1, pt: 0.5 }}>
                             <Button variant="outlined"
@@ -491,7 +533,51 @@ const GstReportPharmacyWise = () => {
                     </Box>
 
                     <Paper sx={{ display: "flex", flexDirection: 'row', height: '75px', pt: 2, justifyContent: 'center' }}>
+
                         <Box sx={{}}>
+                            <Typography
+                                style={{
+
+                                    fontSize: 20,
+                                    fontFamily: "Calibri",
+                                }}>
+                                Net Amount :{totamount}
+                            </Typography>
+
+                        </Box>
+                        <Box sx={{ pl: 5 }}>
+                            <Typography style={{
+
+                                fontSize: 20,
+                                fontFamily: "Calibri",
+                            }}>
+                                Total Discount :{totdisc}
+                            </Typography>
+
+                        </Box>
+                        <Box sx={{ pl: 5 }}>
+                            <Typography style={{
+
+                                fontSize: 20,
+                                fontFamily: "Calibri",
+                            }}>
+                                Total Tax Amount:{tottax}
+                            </Typography>
+
+                        </Box>
+
+                        <Box sx={{ pl: 5 }}>
+                            <Typography
+                                style={{
+                                    fontSize: 20,
+                                    fontFamily: "Calibri",
+                                }}>
+                                Gross Amount :{grossamount}
+                            </Typography>
+
+                        </Box>
+
+                        {/* <Box sx={{}}>
                             <Typography
                                 style={{
 
@@ -531,37 +617,32 @@ const GstReportPharmacyWise = () => {
                                 Grand Total of Amount :{amount}
                             </Typography>
 
-                        </Box>
+                        </Box> */}
 
                     </Paper>
 
+
+                    {/* Material Table */}
+
+                    {/* <Box sx={{ display: "flex", flexDirection: 'column', height: '520px' }}>
+                        {flag === 1 ?
+                            <PharmacyReportTable
+                                reportData={viewreport}
+                            />
+                            : null}
+                    </Box> */}
+
+
                     {/* agegrid */}
-                    <Box sx={{ display: "flex", flexDirection: 'column', height: '570px' }}>
-                        <Box style={{ height: '100%', boxSizing: 'border-box' }}>
-
-                            <div className="ag-theme-alpine" style={{ height: '570px', minWidth: '100%' }}>
-                                <Suspense fallback={<LinearProgress />} >
-                                    {
-                                        viewDis === 1 ? < AgGridReact
-                                            ref={gridRef}
-                                            columnDefs={columnDefs}
-                                            rowData={viewreport}
-                                            defaultColDef={defaultColDef}
-                                            rowHeight={rowHeight}
-                                            headerHeight={headerHeight}
-                                            rowDragManaged={true}
-                                            animateRows={true}
-                                            onGridReady={onGridReady}
-                                            rowSelection="multiple"
-                                            rowStyle={rowStyle}
-                                        /> : null
-                                    }
-                                </Suspense>
-                            </div>
-                        </Box>
-
-
+                    <Box sx={{ display: "flex", flexDirection: 'column', height: '620px' }}>
+                        {flag === 1 ?
+                            <ReportAGgrid
+                                reportData={viewreport}
+                                valClick={valClick}
+                            />
+                            : null}
                     </Box>
+
                     <Box sx={{ display: "flex", flexDirection: 'column', height: '18px', pt: 1 }}>
                         <Divider flexItem sx={{ borderBlockColor: 'grey' }}></Divider>
                     </Box>

@@ -6,6 +6,8 @@ import incomeSlice from './Redux-Slice/incomeCollectionSlice/incomeSlice'
 import incomeProcedureSlice from './Redux-Slice/incomeCollectionSlice/incomeProcedureSlice'
 import misGroupMastSlice from './Redux-Slice/incomeCollectionSlice/misGroupMastSlice'
 import AdmissionInfoSlice from './Redux-Slice/ipAdmissionInfo/AdmissionInfoSlice'
+import sliceDashBoard from './Redux-Slice/dashboard/sliceDashBoard'
+import pharmacyTaxSlice from './Redux-Slice/pharmacyBilling/pharmacyTaxSlice'
 
 export const store = configureStore({
     reducer: {
@@ -15,6 +17,8 @@ export const store = configureStore({
         pharmacyIncome: incomeSlice,
         procedureIncome: incomeProcedureSlice,
         misGroup: misGroupMastSlice,
-        admissionList: AdmissionInfoSlice
+        admissionList: AdmissionInfoSlice,
+        dashBoardSlice: sliceDashBoard,
+        gstReportPharmacy: pharmacyTaxSlice
     },
 })
