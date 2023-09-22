@@ -49,10 +49,12 @@ const ReportAGgrid = ({ reportData, valClick }) => {
 
     const [columnDefs, setColumnDefs] = useState([
         { headerName: 'Pharmacy Code', field: 'OUCODE', minWidth: 150, filter: 'agTextColumnFilter' },
+        { headerName: 'Pharmacy', field: 'OUC_DESC', minWidth: 200, filter: 'agTextColumnFilter' },
         { headerName: "Item Code", field: 'CODE', minWidth: 100 },
+        { headerName: "Item", field: 'ITC_DESC', minWidth: 200, filter: 'agTextColumnFilter' },
         { headerName: "Bill No", field: 'BILL', minWidth: 100, filter: 'agTextColumnFilter' },
         { headerName: "Bill Date", field: 'BILLDATE', minWidth: 200, filter: 'agTextColumnFilter' },
-        { headerName: "CACR", field: 'CACR', minWidth: 100 },
+        { headerName: "CACR", field: 'CACR', minWidth: 100, filter: 'agTextColumnFilter' },
         { headerName: "Quantity", field: 'QTY', minWidth: 100 },
         { headerName: "Loose", field: 'LOOSE', minWidth: 80 },
         { headerName: "Purcahse Rate", field: 'PRATE', minWidth: 150 },
@@ -60,12 +62,10 @@ const ReportAGgrid = ({ reportData, valClick }) => {
         { headerName: "Actual MRP", field: 'ACTMRP', minWidth: 150 },
         { headerName: "Amount", field: 'AMT', minWidth: 110 },
         { headerName: "Discount", field: 'DIS', minWidth: 100 },
+        { headerName: "Tax Amount", field: 'TAXAMT', minWidth: 120 },
         { headerName: "Tax Code", field: 'TAXCODE', minWidth: 100 },
         { headerName: "Tax %", field: 'TAXPER', minWidth: 100 },
-        { headerName: "Tax Amount", field: 'TAXAMT', minWidth: 120 },
-        { headerName: 'Pharmacy', field: 'OUC_DESC', minWidth: 200, filter: 'agTextColumnFilter' },
-        { headerName: "Item", field: 'ITC_DESC', minWidth: 200, filter: 'agTextColumnFilter' },
-        { headerName: "Tax Description", field: 'TXC_DESC', minWidth: 150 },
+        { headerName: "Tax Description", field: 'TXC_DESC', minWidth: 150, filter: 'agTextColumnFilter' },
 
     ]);
     return (
