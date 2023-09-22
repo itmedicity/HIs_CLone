@@ -17,16 +17,18 @@ import {
     getPharmacyTaxReportIpReturn
 } from '../../../../../Redux-Slice/pharmacyBilling/pharmacyTaxSlice'
 import { useDispatch, useSelector } from 'react-redux';
-import { endOfMonth, format, startOfMonth } from 'date-fns'
+import { endOfMonth, startOfMonth } from 'date-fns'
 import CustomCircularProgress from '../../../../Components/CustomCircularProgress'
-import PharmacyReportTable from './Components/PharmacyReportTable'
-import ReportAGgrid from './Components/ReportAGgrid'
+import { infoNofity } from '../../../../../Constant/Constants'
+import VirtuosoTableReport from './Components/VirtuosoTableReport'
+import { GstExcelExport } from './Components/GstExcelExport'
 
-
+// import PharmacyReportTable from './Components/PharmacyReportTable'
+// import ReportAGgrid from './Components/ReportAGgrid'
 const GstReportPharmacyWise = () => {
     const navigate = useNavigate();
     const [pharmacy, setpharmacy] = useState(0)
-    const [taxvalue, setTaxvalue] = useState(0)
+    // const [taxvalue, setTaxvalue] = useState(0)
     const [pay, setPay] = useState(0)
     const [allselect, setAllselect] = useState(true)
     const [fromdate, setFromdate] = useState(moment(new Date()))
@@ -42,36 +44,21 @@ const GstReportPharmacyWise = () => {
     const [tottax, setTottax] = useState(0)
     const [queryselect, setQueryselect] = useState(0)
     const [gstdata, setGstdata] = useState([])
-    const dispatch = useDispatch();
     const [flag, setflag] = useState(0)
-    // const [check, setCheck] = useState(0)
     const [valClick, setValClick] = useState(0)
+    const [procesClick, setProcesClick] = useState(0)
+    const dispatch = useDispatch();
+    const fileName = "GST Report";
+    const [check, setCheck] = useState(0)
+    const [viewcheck, setViewcheck] = useState(0)
 
-    const ClearDetails = useCallback(() => {
-        setpharmacy(0)
-        setTaxvalue(0)
-        setPay(0)
-        setAllselect(true)
-        // setPurchase(0)
-        // setMrp(0)
-        // setActualMrp(0)
-        setTotdisc(0)
-        setTottax(0)
-        setTotAmount(0)
-        setGrossAmount(0)
-        setViewReport([])
-        setDisArray([])
-        setGstdata([])
-        setflag(0)
-    }, [])
-
-    const [taxList] = useState([
-        { id: 1, desc: "0%", num: 0 },
-        { id: 2, desc: "5%", num: 5 },
-        { id: 3, desc: "12%", num: 12 },
-        { id: 4, desc: "18%", num: 18 },
-        { id: 5, desc: "28%", num: 24 },
-    ]);
+    // const [taxList] = useState([
+    //     { id: 1, desc: "0%", num: 0 },
+    //     { id: 2, desc: "5%", num: 5 },
+    //     { id: 3, desc: "12%", num: 12 },
+    //     { id: 4, desc: "18%", num: 18 },
+    //     { id: 5, desc: "28%", num: 24 },
+    // ]);
 
     const [paytype] = useState([
         { id: 'I', desc: "In Patient" },
@@ -86,44 +73,19 @@ const GstReportPharmacyWise = () => {
 
     ]);
 
-
     // var startDate = format(startOfMonth(new Date(fromdate)), 'dd/MM/yyyy')
     // var endDate = format(endOfMonth(new Date(fromdate)), 'dd/MM/yyyy')
 
     // var startDate = moment('03/01/2023').format('DD/MM/yyyy 00:00:00')
     // var endDate = moment('03/31/2023').format('DD/MM/yyyy 23:59:59')
 
-    var startDate = moment(startOfMonth(new Date(fromdate))).format('DD/MM/yyyy 00:00:00')
-    var endDate = moment(endOfMonth(new Date(fromdate))).format('DD/MM/yyyy 23:59:59')
+    const Closepage = useCallback(() => {
+        navigate("/Menu/PharmacyBilling")
 
-
-    const CheckAllSelect = (e) => {
-        if (e.target.checked === true) {
-            setAllselect(true)
-            setpharmacy(0)
-        }
-        else {
-            setAllselect(false)
-        }
-    }
-    const ResetTotal = useCallback(() => {
-        setTotdisc(0)
-        setTottax(0)
-        setTotAmount(0)
-        setGrossAmount(0)
-        setflag(0)
-        setLoading(false)
-        setValClick(0)
     }, [])
 
-    const ChangeDate = (e) => {
-        ResetTotal()
-        setFromdate(e.target.value)
-    }
-    const ChangeQuery = (e) => {
-        ResetTotal()
-        setQueryselect(e.target.value)
-    }
+    var startDate = moment(startOfMonth(new Date(fromdate))).format('DD/MM/yyyy 00:00:00')
+    var endDate = moment(endOfMonth(new Date(fromdate))).format('DD/MM/yyyy 23:59:59')
 
     const postdata = useMemo(() => {
         return {
@@ -132,103 +94,161 @@ const GstReportPharmacyWise = () => {
         }
     }, [startDate, endDate])
 
-    useEffect(() => {
-        dispatch(getPharmacyTaxReport(postdata))
-        dispatch(getPharmacyTaxReportIpReturn(postdata))
-        dispatch(getPharmacyTaxReportIp(postdata))
-    }, [postdata, dispatch])
-
     const reportdata1 = useSelector(getGstTaxReportSelect)
     const reportdata2 = useSelector(getGstTaxReportSelect2)
     const reportdata3 = useSelector(getGstTaxReportSelect3)
 
-    useEffect(() => {
+    const CheckAllSelect = (e) => {
+        if (e.target.checked === true) {
+            setAllselect(true)
+            setpharmacy(0)
+        }
+        else {
+            ResetData()
+            setAllselect(false)
+        }
+    }
+    const ResetData = useCallback(() => {
+        setTotdisc(0)
+        setTottax(0)
+        setTotAmount(0)
+        setGrossAmount(0)
+        setflag(0)
+        setLoading(false)
+        setValClick(0)
+        // setQueryselect(0)
+        // setGstdata([])
+        // setDisArray([])
+        // setViewReport([])
+        setProcesClick(0)
+        setCheck(0)
+        setViewcheck(0)
+    }, [])
 
-        if (queryselect === 1) {
-            setGstdata(reportdata1)
-        }
-        else if (queryselect === 2) {
-            setGstdata(reportdata2)
-        }
-        else if (queryselect === 3) {
-            setGstdata(reportdata3)
-        }
+    const ChangeDate = (e) => {
+        ResetData()
+        setFromdate(e.target.value)
 
-    }, [queryselect, reportdata1, reportdata2, reportdata3])
+    }
+    const ChangeQuery = (e) => {
+        ResetData()
+        setQueryselect(e.target.value)
+    }
+
+
+    const ViewasExcel = useCallback((e) => {
+        GstExcelExport(viewreport, fileName)
+    }, [viewreport])
 
     const ProcessDetails = useCallback(() => {
-        if (flag === 0) {
-            setLoading(true)
+
+        if (queryselect === 0) {
+            infoNofity("Select Query For Process")
         } else {
-            setLoading(false)
-        }
-        if (allselect === true && taxvalue === 0 && pay === 0) {
-            setDisArray(gstdata)
-        }
-        else if (allselect === true && taxvalue !== 0 && pay === 0) {
-            const phrma = gstdata.filter((val) => val.TAXPER === taxvalue)
-            setDisArray(phrma)
-        }
-        else if (allselect === true && taxvalue === 0 && pay !== 0) {
-            if (pay === 'I') {
-                const phrma = gstdata.filter((val) => val.CACR === pay)
-                setDisArray(phrma)
 
-            }
-            else {
-                const phrma = gstdata.filter((val) => val.CACR !== pay)
-                setDisArray(phrma)
-            }
+            setLoading(true)
+            dispatch(getPharmacyTaxReport(postdata))
+            dispatch(getPharmacyTaxReportIpReturn(postdata))
+            dispatch(getPharmacyTaxReportIp(postdata))
+            setProcesClick(1)
+            setGstdata([])
+            setDisArray([])
+            setViewReport([])
         }
-        else if (allselect === true && taxvalue !== 0 && pay !== 0) {
-            if (pay === 'I') {
-                const phrma = gstdata.filter((val) => val.CACR === pay && val.TAXPER === taxvalue)
-                setDisArray(phrma)
-            }
-            else {
-                const phrma = gstdata.filter((val) => val.CACR !== pay && val.TAXPER === taxvalue)
-                setDisArray(phrma)
-            }
-        }
+    }, [dispatch, postdata, queryselect])
 
-        // checkbox false
-        else if (allselect === false && pharmacy !== 0 && taxvalue !== 0 && pay !== 0) {
-            if (pay === 'I') {
-                const phrma = gstdata.filter((val) => val.OUCODE === pharmacy && val.TAXPER === taxvalue && val.CACR === pay)
-                setDisArray(phrma)
-            }
-            else {
-                const phrma = gstdata.filter((val) => val.OUCODE === pharmacy && val.TAXPER === taxvalue && val.CACR !== pay)
-                setDisArray(phrma)
-            }
-        }
-        else if (allselect === false && pharmacy !== 0 && taxvalue === 0 && pay !== 0) {
-            if (pay === 'I') {
-                const phrma = gstdata.filter((val) => val.OUCODE === pharmacy && val.CACR === pay)
-                setDisArray(phrma)
-            }
-            else {
-                const phrma = gstdata.filter((val) => val.OUCODE === pharmacy && val.CACR !== pay)
-                setDisArray(phrma)
-            }
-        }
-        else if (allselect === false && pharmacy !== 0 && taxvalue !== 0 && pay === 0) {
 
-            const phrma = gstdata.filter((val) => val.OUCODE === pharmacy && val.TAXPER === taxvalue)
-            setDisArray(phrma)
-
-        }
-
-    }, [pay, pharmacy, taxvalue, allselect, gstdata, flag])
+    // useEffect(() => {
+    //     if (ckeck === 1) {
+    //         return () => {
+    //             dispatch(getPharmacyTaxReport())
+    //             dispatch(getPharmacyTaxReportIpReturn())
+    //             dispatch(getPharmacyTaxReportIp())
+    //         }
+    //     }
+    // }, [])
 
     useEffect(() => {
-        // if (check === 1) {
+        //  if (gstdata.length === 0) {
+        if (procesClick === 1) {
+            if (queryselect === 1) {
+                setGstdata(reportdata1)
+                setCheck(1)
+            }
+            else if (queryselect === 2) {
+                setGstdata(reportdata2)
+                setCheck(1)
+            }
+            else if (queryselect === 3) {
+                setGstdata(reportdata3)
+                setCheck(1)
 
-        if (disArray.length !== 0) {
+            } else {
+                setGstdata([])
+                setCheck(0)
+
+            }
+        } else {
+            setGstdata([])
+            setflag(0)
+            setCheck(0)
+        }
+        // }
+
+    }, [queryselect, reportdata1, reportdata2, reportdata3, procesClick])
+
+
+    useEffect(() => {
+        if (Object.keys(gstdata).length !== 0 && check === 1) {
+            setViewcheck(1)
+            // setDisArray(gstdata)
+            if (allselect === true && pay === 0) {
+                setDisArray(gstdata)
+                // setLoading(false)
+            }
+            else if (allselect === true && pay !== 0) {
+                if (pay === 'I') {
+                    const phrma = gstdata.filter((val) => val.CACR === pay)
+                    setDisArray(phrma)
+                }
+                else {
+                    const phrma = gstdata.filter((val) => val.CACR !== pay)
+                    setDisArray(phrma)
+                }
+            }
+            else if (allselect === false && pharmacy !== 0 && pay !== 0) {
+                if (pay === 'I') {
+                    const phrma = gstdata.filter((val) => val.OUCODE === pharmacy && val.CACR === pay)
+                    setDisArray(phrma)
+                }
+                else {
+                    const phrma = gstdata.filter((val) => val.OUCODE === pharmacy && val.CACR !== pay)
+                    setDisArray(phrma)
+                }
+            }
+            else {
+                const phrma = gstdata.filter((val) => val.OUCODE === pharmacy)
+                setDisArray(phrma)
+
+            }
+        }
+        else {
+            setDisArray([])
+            setflag(0)
+            setViewcheck(0)
+        }
+
+    }, [gstdata, check, allselect, pay, pharmacy])
+
+    useEffect(() => {
+        if (Object.keys(disArray).length !== 0 && viewcheck === 1) {
+
             const newdata = disArray?.map((val) => {
                 const obj = {
                     OUCODE: val.OUCODE,
+                    OUC_DESC: val.OUC_DESC,
                     CODE: val.CODE,
+                    ITC_DESC: val.ITC_DESC,
                     BILL: val.BILL,
                     BILLDATE: moment(val.BILLDATE).format('YYYY-MM-DD HH:mm:ss'),
                     CACR: val.CACR,
@@ -237,31 +257,19 @@ const GstReportPharmacyWise = () => {
                     PRATE: Math.floor(val.PRATE * 100) / 100,
                     MRP: Math.floor(val.MRP * 100) / 100,
                     ACTMRP: Math.floor(val.ACTMRP * 100) / 100,
-                    AMT: Math.floor(val.AMT * 100) / 100,
                     DIS: Math.floor(val.DIS * 100) / 100,
+                    AMT: Math.floor(val.AMT * 100) / 100,
+                    TAXAMT: Math.floor(val.TAXAMT * 100) / 100,
                     TAXCODE: val.TAXCODE,
                     TAXPER: val.TAXPER,
-                    TAXAMT: Math.floor(val.TAXAMT * 100) / 100,
-                    OUC_DESC: val.OUC_DESC,
-                    ITC_DESC: val.ITC_DESC,
                     TXC_DESC: val.TXC_DESC,
                 }
                 return obj
 
             })
             setViewReport(newdata)
-            // setLoading(false)
-            // setflag(1)
-
-            // const purtotal = disArray.map(val => val.PRATE).reduce((prev, next) => Number(prev) + Number(next))
-            // setPurchase(Math.floor(purtotal * 100) / 100)
-
-            // const mrptotal = disArray.map(val => val.MRP).reduce((prev, next) => Number(prev) + Number(next))
-            // setMrp(Math.floor(mrptotal * 100) / 100)
-
-            // const actmrptotal = disArray.map(val => val.ACTMRP).reduce((prev, next) => Number(prev) + Number(next))
-            // setActualMrp(Math.floor(actmrptotal * 100) / 100)
-
+            setLoading(false)
+            setflag(1)
             const amounttotal = disArray?.map(val => val.AMT).reduce((prev, next) => Number(prev) + Number(next))
             setTotAmount(Math.floor(amounttotal * 100) / 100)
 
@@ -275,25 +283,71 @@ const GstReportPharmacyWise = () => {
             setGrossAmount(Math.floor(grossamount * 100) / 100)
 
         }
-        // }
-    }, [disArray])
-
-    const Closepage = useCallback(() => {
-        navigate("/Menu/PharmacyBilling")
-
-    }, [])
-    useEffect(() => {
-        if (viewreport.length !== 0) {
-            setLoading(false)
-            setflag(1)
-        } else {
+        else {
+            setViewReport([])
             setflag(0)
+            setViewcheck(0)
         }
-    }, [viewreport.length !== 0])
+    }, [disArray, viewcheck])
 
-    const ExportToExcel = async () => {
-        setValClick(1)
-    }
+
+
+
+
+
+
+
+    // useEffect(() => {
+    //     if (gstdata.length !== 0) {
+    //         setLoading(false)
+    //         setflag(1)
+    //     } else {
+    //         setflag(0)
+    //     }
+    // }, [gstdata])
+
+    // else if (allselect === true && taxvalue !== 0 && pay === 0) {
+    //     const phrma = gstdata.filter((val) => val.TAXPER === taxvalue)
+    //     setDisArray(phrma)
+    // }
+    // else if (allselect === true && taxvalue !== 0 && pay !== 0) {
+    //     if (pay === 'I') {
+    //         const phrma = gstdata.filter((val) => val.CACR === pay && val.TAXPER === taxvalue)
+    //         setDisArray(phrma)
+    //     }
+    //     else {
+    //         const phrma = gstdata.filter((val) => val.CACR !== pay && val.TAXPER === taxvalue)
+    //         setDisArray(phrma)
+    //     }
+    // }
+
+    // checkbox false
+
+    // else if (allselect === false && pharmacy !== 0 && taxvalue === 0 && pay !== 0) {
+    //     if (pay === 'I') {
+    //         const phrma = gstdata.filter((val) => val.OUCODE === pharmacy && val.CACR === pay)
+    //         setDisArray(phrma)
+    //     }
+    //     else {
+    //         const phrma = gstdata.filter((val) => val.OUCODE === pharmacy && val.CACR !== pay)
+    //         setDisArray(phrma)
+    //     }
+    // }
+
+    // if (flag === 0) {
+    //     setLoading(true)
+    // } else {
+    //     setLoading(false)
+    // }
+
+    // const purtotal = disArray.map(val => val.PRATE).reduce((prev, next) => Number(prev) + Number(next))
+    // setPurchase(Math.floor(purtotal * 100) / 100)
+
+    // const mrptotal = disArray.map(val => val.MRP).reduce((prev, next) => Number(prev) + Number(next))
+    // setMrp(Math.floor(mrptotal * 100) / 100)
+
+    // const actmrptotal = disArray.map(val => val.ACTMRP).reduce((prev, next) => Number(prev) + Number(next))
+    // setActualMrp(Math.floor(actmrptotal * 100) / 100)
 
     return (
         <Fragment>
@@ -408,7 +462,7 @@ const GstReportPharmacyWise = () => {
                         </Box>
 
                         {/* tax */}
-                        <Box sx={{ display: "flex", flexDirection: 'row', pl: 1 }}>
+                        {/* <Box sx={{ display: "flex", flexDirection: 'row', pl: 1 }}>
                             <Box sx={{ pt: 0.7 }}>
                                 <FormControl fullWidth
                                     size='small'   >
@@ -440,7 +494,7 @@ const GstReportPharmacyWise = () => {
                                     </Select>
                                 </FormControl>
                             </Box>
-                        </Box>
+                        </Box> */}
                         {/* pay type */}
                         <Box sx={{ display: "flex", flexDirection: 'row', pl: 1 }}>
                             <Box sx={{ pt: 0.7 }}>
@@ -621,6 +675,29 @@ const GstReportPharmacyWise = () => {
 
                     </Paper>
 
+                    {/* Virtuoso Table */}
+
+                    <Box sx={{ display: "flex", flexDirection: 'column', height: '620px' }}>
+                        {flag === 1 ?
+                            <VirtuosoTableReport
+                                reportData={viewreport}
+                                valClick={valClick} />
+                            : null}
+                    </Box>
+
+
+
+                    {/* agegrid */}
+                    {/* <Box sx={{ display: "flex", flexDirection: 'column', height: '620px' }}>
+                        {flag === 1 ?
+                            <ReportAGgrid
+                                reportData={viewreport}
+                                valClick={valClick}
+                            />
+                            : null}
+                    </Box> */}
+
+
 
                     {/* Material Table */}
 
@@ -632,16 +709,6 @@ const GstReportPharmacyWise = () => {
                             : null}
                     </Box> */}
 
-
-                    {/* agegrid */}
-                    <Box sx={{ display: "flex", flexDirection: 'column', height: '620px' }}>
-                        {flag === 1 ?
-                            <ReportAGgrid
-                                reportData={viewreport}
-                                valClick={valClick}
-                            />
-                            : null}
-                    </Box>
 
                     <Box sx={{ display: "flex", flexDirection: 'column', height: '18px', pt: 1 }}>
                         <Divider flexItem sx={{ borderBlockColor: 'grey' }}></Divider>
@@ -676,7 +743,7 @@ const GstReportPharmacyWise = () => {
                                         borderRadius: '3px',
                                         color: 'black'
                                     }}
-                                    onClick={ExportToExcel}
+                                    onClick={(e) => ViewasExcel(e)}
                                 >
                                     Export To Excel
                                 </Button>
