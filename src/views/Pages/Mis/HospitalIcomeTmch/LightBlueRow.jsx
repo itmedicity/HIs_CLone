@@ -11,7 +11,7 @@ const LightBlueRow = ({ data }) => {
             display: grossAmount == 0 ? 'none' : ''
         }} key={data.groupDesc} >
             <TableCell align="right" sx={{ width: '2%', fontWeight: 'bolder', fontSize: '12px' }} ></TableCell>
-            <TableCell align="left" colSpan={6} sx={{ fontWeight: 'bolder', fontSize: '12px', textTransform: 'capitalize' }} >{data.groupDesc.toLowerCase()}</TableCell>
+            <TableCell align="left" colSpan={6} sx={{ fontWeight: 'bolder', fontSize: '12px', textTransform: 'capitalize' }} >{data?.groupDesc?.toLowerCase()}</TableCell>
         </TableRow>
     )
 }

@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 import { Box, Button, FormControl, MenuItem, Paper, Select, TextField, Typography } from '@mui/material'
 import React, { Fragment, useState, useCallback, useRef, useEffect } from 'react'

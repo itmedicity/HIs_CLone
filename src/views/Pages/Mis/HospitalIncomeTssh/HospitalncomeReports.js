@@ -25,11 +25,15 @@ const HospitalncomeReports = () => {
             toDate: moment(endDate).format('YYYY-MM-DD')
         }
 
-        await axiosinstance.post('/admission/getTsshPatient', postDataForMysql).then((result) => {
+        const postData2 = {
+            from: moment(startDate).format('YYYY-MM-DD 00:00:00'),
+            to: moment(endDate).format('YYYY-MM-DD 23:59:59')
+        }
+
+        await axiosinstance.post('/admission/getIpNumber', postData2).then((result) => {
             const { success, data } = result.data;
             if (success === 1) {
                 const ipNumber = data?.map((e) => e.ip_no)
-                console.log(ipNumber)
                 navigate('/Menu/income-reports-tssh', {
                     state: {
                         from: postDate.from,

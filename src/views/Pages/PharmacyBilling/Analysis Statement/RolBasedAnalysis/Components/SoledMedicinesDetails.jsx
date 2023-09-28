@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { Fragment, useState } from 'react'
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 const SoledMedicinesDetails = ({ value, setcount, monthwise }) => {

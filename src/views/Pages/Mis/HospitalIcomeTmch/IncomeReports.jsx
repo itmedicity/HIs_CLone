@@ -1,8 +1,9 @@
 // @ts-nocheck
-import React, { Fragment, memo, useMemo, useState } from 'react'
+import React, { Fragment, memo, useCallback, useMemo, useState } from 'react'
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+
 import {
     // getAdvanceCollection,
     getAdvanceCollectionTmch,
@@ -70,6 +71,7 @@ import WhiteRowTotal from './WhiteRowTotal';
 import { getGrandTotal, getIncomeReportList, getMisGroupMasterList, getPhamracyIncome } from '../func/misFunc';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import _ from 'underscore';
+import ReportModal from './ReportModal';
 
 const IncomeReports = () => {
 
@@ -157,6 +159,10 @@ const IncomeReports = () => {
     const collectionAgainReturn = parseFloat(collectionAgainstSalesDeduction)
     // @ts-ignore
     const collAgainSale = collectionAgainSale + collectionAgainReturn;
+
+    console.log(collectionAgainSale)
+
+    console.log(collectionAgainReturn)
 
     //  DISPATCH ALL THE ACTION
 
@@ -445,15 +451,23 @@ const IncomeReports = () => {
 
     // const generalDiscount = patientDiscount
 
+    //FOR MODEL OPENING STATES
+    const [layout, setLayout] = React.useState(undefined);
+
+    const pharmacyMedicineSalesModal = useCallback(async () => {
+        setLayout('fullscreen');
+    }, [])
+
     return (
         <Box flex={1} sx={{ backgroundColor: 'lightgray', p: '1%' }} >
+            <ReportModal layout={layout} setLayout={setLayout} selectedDate={state} />
             <Paper square sx={{ borderColor: 'black', border: 1 }}  >
                 <ReportHeader name="Hospital Income" data={state} />
                 <Box sx={{
                     overflow: 'auto',
                     padding: '15px'
                 }} >
-                    <Box>Tmch</Box>
+                    {/* <Box>Tmch</Box> */}
                     <TableContainer component={Box}>
                         <Table padding='none' sx={{}} size="small" aria-label="a dense table" >
                             <TableHead sx={{
@@ -501,7 +515,8 @@ const IncomeReports = () => {
                                     <TableCell align="right" sx={{ width: '2%', textAlign: 'center', alignItems: 'center' }} ><ArrowRightIcon sx={{ display: 'flex', fontSize: 15 }} /></TableCell>
                                     <TableCell align="left" sx={{ width: '25%', fontSize: '12px', textTransform: 'capitalize' }} >Pharmacy Medicine Sale</TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} ></TableCell>
-                                    <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} >
+                                    <TableCell align="right" sx={{ width: '20%', fontSize: '12px', cursor: 'pointer', textDecoration: 'underline', color: '#0000EE' }}
+                                        onClick={pharmacyMedicineSalesModal}>
                                         {netAmount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                     </TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} >

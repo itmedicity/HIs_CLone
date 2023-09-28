@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { memo, useState, useEffect } from 'react'
 import ContentMain from '../Components/ContentMain';
 import ContentSecondary from '../Components/ContentSecondary';

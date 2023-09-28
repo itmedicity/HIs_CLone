@@ -136,6 +136,10 @@ const IncomeReports = () => {
     // @ts-ignore
     const collAgainSale = collectionAgainSale + collectionAgainReturn;
 
+    console.log(collectionAgainSale)
+
+    console.log(collectionAgainReturn)
+
     //  DISPATCH ALL THE ACTION
 
     useEffect(() => {

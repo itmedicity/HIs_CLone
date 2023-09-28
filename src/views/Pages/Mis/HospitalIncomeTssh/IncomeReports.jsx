@@ -121,6 +121,8 @@ const IncomeReports = () => {
     // @ts-ignore
     const procedureIncome = useSelector((state) => state.procedureIncomeTssh);
     const proIncome = useMemo(() => procedureIncome, [procedureIncome]);
+
+    console.log(proIncome)
     // @ts-ignore
     const misGroup = useSelector((state) => state.misGroup);
     const misGroupLst = useMemo(() => misGroupList, [misGroupList])
@@ -159,6 +161,10 @@ const IncomeReports = () => {
     const collectionAgainReturn = parseFloat(collectionAgainstSalesDeduction)
     // @ts-ignore
     const collAgainSale = collectionAgainSale + collectionAgainReturn;
+
+    // console.log(collectionAgainSale)
+
+    // console.log(collectionAgainReturn)
 
     //  DISPATCH ALL THE ACTION
 
@@ -377,10 +383,10 @@ const IncomeReports = () => {
         const incomeArrayData = incomeData?.filter(val => val.income === true)
             .map(val => val.status === 1 ? val.data : null)
             .flat()
-
+        // console.log(incomeArrayData)
         getIncomeReportList(incomeArrayData, misGroupLst).then((report) => {
+            console.log(report)
             if (report !== undefined) {
-                // console.log(report) 
                 setMisReportList(report)
             }
         })
@@ -455,7 +461,7 @@ const IncomeReports = () => {
                     overflow: 'auto',
                     padding: '15px'
                 }} >
-                    <Box>Tssh</Box>
+                    {/* <Box>Tssh</Box> */}
                     <TableContainer component={Box}>
                         <Table padding='none' sx={{}} size="small" aria-label="a dense table" >
                             <TableHead sx={{
