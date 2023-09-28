@@ -12,25 +12,31 @@ import incomeTmchSlice from './Redux-Slice/incomeCollectionTmchSlice/incomeTmchS
 import collectionTsshSlice from './Redux-Slice/incomeCollectionTsshSlice/collectionTsshSlice'
 import incomeProcedureTsshSlice from './Redux-Slice/incomeCollectionTsshSlice/incomeProcedureTsshSlice'
 import incomeTsshSlice from './Redux-Slice/incomeCollectionTsshSlice/incomeTsshSlice'
+import sliceDashBoard from './Redux-Slice/dashboard/sliceDashBoard'
+import pharmacyTaxSlice from './Redux-Slice/pharmacyBilling/pharmacyTaxSlice'
+
 
 export const store = configureStore({
-    reducer: {
-        counter: counterSlice,
-        login: loginInformSlice,
+        reducer: {
+                counter: counterSlice,
+                login: loginInformSlice,
 
-        collection: collectionSlice,
-        pharmacyIncome: incomeSlice,
-        procedureIncome: incomeProcedureSlice,
+                collection: collectionSlice,
+                pharmacyIncome: incomeSlice,
+                procedureIncome: incomeProcedureSlice,
 
-        misGroup: misGroupMastSlice,
-        admissionList: AdmissionInfoSlice,
+                misGroup: misGroupMastSlice,
+                admissionList: AdmissionInfoSlice,
 
-        collectionTmch: collectionTmchSlice,
-        procedureIncomeTmch: incomeProcedureTmchSlice,
-        pharmacyIncomeTmch: incomeTmchSlice,
+                collectionTmch: collectionTmchSlice,
+                procedureIncomeTmch: incomeProcedureTmchSlice,
+                pharmacyIncomeTmch: incomeTmchSlice,
 
-        collectionTssh: collectionTsshSlice,
-        procedureIncomeTssh: incomeProcedureTsshSlice,
-        pharmacyIncomeTssh: incomeTsshSlice,
-    },
+                collectionTssh: collectionTsshSlice,
+                procedureIncomeTssh: incomeProcedureTsshSlice,
+                pharmacyIncomeTssh: incomeTsshSlice,
+                dashBoardSlice: sliceDashBoard,
+                gstReportPharmacy: pharmacyTaxSlice
+
+        },
 })

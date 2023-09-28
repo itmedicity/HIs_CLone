@@ -275,8 +275,6 @@ const RolBasedAnalysis = () => {
             }
         })
 
-
-
         const postmed = {
             from: moment(startOfMonth(new Date(firstmonth))).format('DD/MM/YYYY 00:00:00'),
             to: moment(endOfMonth(new Date(lastmonth))).format('DD/MM/YYYY 23:59:59'),

@@ -59,7 +59,6 @@ const SoledMedicinesDetails = ({ value, setcount, monthwise }) => {
                                     <Box sx={{ display: 'flex', flexDirection: 'row' }}>
 
                                         {
-
                                             monthwise && monthwise.map((val) => {
 
                                                 return <TableRow key={val.month}>

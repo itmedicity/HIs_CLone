@@ -48,6 +48,7 @@ const Login = () => {
 
                 if (moment(expireDate) > moment(new Date())) {
                     navigate('/Menu')
+                    navigate('/Menu/DashBoardData')
                 }
             } else {
                 errorNofity("Invalid Login")
