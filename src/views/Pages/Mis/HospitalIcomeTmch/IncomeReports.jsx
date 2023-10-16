@@ -99,15 +99,10 @@ const IncomeReports = () => {
         tax: 0
     });
 
-    // @ts-ignore
     const {
-        // @ts-ignore
         discount,
-        // @ts-ignore
         grossAmount,
-        // @ts-ignore
         netAmount,
-        // @ts-ignore
         tax
     } = pharamcyIc;
 
@@ -159,10 +154,6 @@ const IncomeReports = () => {
     const collectionAgainReturn = parseFloat(collectionAgainstSalesDeduction)
     // @ts-ignore
     const collAgainSale = collectionAgainSale + collectionAgainReturn;
-
-    console.log(collectionAgainSale)
-
-    console.log(collectionAgainReturn)
 
     //  DISPATCH ALL THE ACTION
 
@@ -452,15 +443,30 @@ const IncomeReports = () => {
     // const generalDiscount = patientDiscount
 
     //FOR MODEL OPENING STATES
-    const [layout, setLayout] = React.useState(undefined);
+    const [layout, setLayout] = useState(undefined);
+    const [modalData, setModalData] = useState([])
 
-    const pharmacyMedicineSalesModal = useCallback(async () => {
+    const onClickFuncLevelOne = useCallback(async (data) => {
+        const reportName = data?.groupName;
         setLayout('fullscreen');
+        console.log(reportName)
+        if (reportName === 'BED') {
+            setModalData([])
+            console.log(reportName)
+        }
+
     }, [])
 
     return (
         <Box flex={1} sx={{ backgroundColor: 'lightgray', p: '1%' }} >
-            <ReportModal layout={layout} setLayout={setLayout} selectedDate={state} />
+            {/* Detailed report model when open based on selected group using the "onClickFuncLevelOne" function */}
+            <ReportModal
+                layout={layout}
+                setLayout={setLayout}
+                state={state}
+                data={modalData}
+            />
+            {/* Hospital income reports */}
             <Paper square sx={{ borderColor: 'black', border: 1 }}  >
                 <ReportHeader name="Hospital Income" data={state} />
                 <Box sx={{
@@ -495,7 +501,7 @@ const IncomeReports = () => {
                                             {
                                                 // @ts-ignore
                                                 val.groupList?.map((ele, idex) => {
-                                                    return <WhiteRow data={ele} key={idex} />
+                                                    return <WhiteRow data={ele} key={idex} onClick={onClickFuncLevelOne} />
                                                 })
                                             }
                                             < WhiteRowTotal data={val} />
@@ -515,8 +521,11 @@ const IncomeReports = () => {
                                     <TableCell align="right" sx={{ width: '2%', textAlign: 'center', alignItems: 'center' }} ><ArrowRightIcon sx={{ display: 'flex', fontSize: 15 }} /></TableCell>
                                     <TableCell align="left" sx={{ width: '25%', fontSize: '12px', textTransform: 'capitalize' }} >Pharmacy Medicine Sale</TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} ></TableCell>
-                                    <TableCell align="right" sx={{ width: '20%', fontSize: '12px', cursor: 'pointer', textDecoration: 'underline', color: '#0000EE' }}
-                                        onClick={pharmacyMedicineSalesModal}>
+                                    <TableCell
+                                        align="right"
+                                        sx={{ width: '20%', fontSize: '12px', cursor: 'pointer', textDecoration: 'underline', color: '#0000EE' }}
+                                        onClick={() => onClickFuncLevelOne('pharmacy')}
+                                    >
                                         {netAmount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                     </TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} >

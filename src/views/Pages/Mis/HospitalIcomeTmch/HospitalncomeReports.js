@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Paper, Box, Divider } from '@mui/material'
 import React, { memo, useCallback, useState } from 'react'
 import DatePicker from "react-datepicker";

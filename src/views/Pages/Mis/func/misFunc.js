@@ -15,16 +15,10 @@ export const getMisGroupMasterList = async (misGroupState, misGroupMaster) => {
 }
 
 export const getIncomeReportList = async (incomeArrayData, misGroupLst) => {
-
-    // console.log(incomeArrayData)
-
     const firstArray = incomeArrayData?.find((val) => val !== null);
-
-    console.log(firstArray)
 
     if (firstArray !== undefined && (misGroupLst !== undefined)) {
         return await misGroupLst?.map((val) => {
-            // console.log(val)
             return {
                 groupCode: val.groupCode,
                 groupDesc: val.groupDesc,
