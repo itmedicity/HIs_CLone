@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { axiosinstance } from '../../controllers/AxiosConfig'
 
 const getPhaSalePartTmch1 = createAsyncThunk('api/phaSalePartTmch1', (postData) => {
+    console.log(postData)
     return axiosinstance.post("/pharmacyTmch/phaSalePart1", postData)
         .then((response) => {
             return response.data;

@@ -39,12 +39,13 @@ const HospitalncomeReports = () => {
             const { success, data } = result.data;
             if (success === 1) {
                 const ipNumber = data?.map((e) => e.ip_no)
-                console.log(ipNumber)
+                const rmIpNumber = data?.filter((e) => e.tmch_status === '0').map(e => e.ip_no)
                 navigate('/Menu/income-reports-tmch', {
                     state: {
                         from: postDate.from,
                         to: postDate.to,
-                        ptno: ipNumber
+                        ptno: ipNumber,
+                        phar: rmIpNumber
                     }
                 })
             } else {
@@ -52,7 +53,8 @@ const HospitalncomeReports = () => {
                     state: {
                         from: postDate.from,
                         to: postDate.to,
-                        ptno: []
+                        ptno: [],
+                        phar: []
                     }
                 })
             }

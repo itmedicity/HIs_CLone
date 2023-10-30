@@ -11,5 +11,6 @@ export const userSettingMenuName = [
 export const reportGroupingMenu = [
 
     { slno: 9, path: '/Menu/IpPatientGrouping', name: "Patient Grouping" },
+    { slno: 10, path: '/Menu/TmcPatientGrouping', name: "Tmch Patient Grouping" },
 
 ]

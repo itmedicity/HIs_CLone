@@ -11,6 +11,10 @@ import { format } from 'date-fns';
 
 const PharmacyReoprtModal = ({ layout, setLayout, state, data }) => {
     const { pharma1, pharma2, pharma3, pharma4 } = data
+
+    const totalAmountOne = pharma1?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0);
+    const totalAmounTwo = pharma4?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0);
+
     return (
         <Modal open={!!layout} onClose={() => setLayout(undefined)}>
             <ModalDialog
@@ -117,14 +121,15 @@ const PharmacyReoprtModal = ({ layout, setLayout, state, data }) => {
                                     }
                                 </TableBody>
                                 <TableFooter>
-                                    {/* <TableRow >
-                                        <TableCell align="right" sx={{ width: '2%', textAlign: 'center', alignItems: 'center', fontWeight: 700 }} ></TableCell>
-                                        <TableCell align="left" sx={{ width: '25%', fontSize: '12px', textTransform: 'capitalize', fontWeight: 700, color: 'black' }} >Total</TableCell>
-                                        <TableCell align="right" sx={{ width: '20%', fontSize: '12px', fontWeight: 700, color: 'black' }} >
-                                        </TableCell>
-                                        <TableCell align="right" sx={{ width: '20%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} >
-                                        </TableCell>
-                                    </TableRow> */}
+                                    <TableRow >
+                                        <TableCell align="right" sx={{ width: '2%', textAlign: 'center', alignItems: 'center' }} ></TableCell>
+                                        <TableCell align="left" sx={{ width: '10%', fontSize: '12px', textTransform: 'capitalize', color: 'black' }} >Total</TableCell>
+                                        <TableCell align="left" sx={{ width: '10%', fontSize: '12px' }} ></TableCell>
+                                        <TableCell align="left" sx={{ width: '10%', fontSize: '12px', pr: 2 }} ></TableCell>
+                                        <TableCell align="left" sx={{ width: '25%', fontSize: '12px', pr: 2 }} ></TableCell>
+                                        <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2 }} >{(totalAmountOne + totalAmounTwo)?.toLocaleString('en-US', { minimumFractionDigits: 2 })}</TableCell>
+                                        <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2 }} ></TableCell>
+                                    </TableRow>
                                 </TableFooter>
                             </Table>
                         </TableContainer>

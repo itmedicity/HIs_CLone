@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { Fragment, memo } from 'react'
 import { Box, Paper, Typography } from '@mui/material'
 import { ToastContainer } from 'react-toastify'
@@ -11,7 +12,7 @@ const DashboardOP_IP = () => {
     return (
         <Fragment>
             <ToastContainer />
-            <Box sx={{ display: "flex", flexDirection: 'column', width: "100%" }}>
+            {/* <Box sx={{ display: "flex", flexDirection: 'column', width: "100%" }}>
                 <Box sx={{ display: "flex", width: "100%", pt: 1 }}>
 
                     <Box sx={{
@@ -132,7 +133,7 @@ const DashboardOP_IP = () => {
                     </Box>
                 </Box>
 
-            </Box >
+            </Box > */}
         </Fragment >
     )
 }

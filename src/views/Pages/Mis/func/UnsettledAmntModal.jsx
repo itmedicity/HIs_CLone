@@ -11,6 +11,8 @@ import { format } from 'date-fns';
 
 const UnsettledAmntModal = ({ layout, setLayout, state, data }) => {
 
+    const totalAmounTwo = data?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0);
+
     return (
         <Modal open={!!layout} onClose={() => setLayout(undefined)}>
             <ModalDialog
@@ -99,7 +101,7 @@ const UnsettledAmntModal = ({ layout, setLayout, state, data }) => {
                                         </TableCell>
                                         <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
                                         <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
-                                        <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
+                                        <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} >{totalAmounTwo?.toLocaleString('en-US', { minimumFractionDigits: 2 })}</TableCell>
                                         <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
                                         <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
                                         <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>

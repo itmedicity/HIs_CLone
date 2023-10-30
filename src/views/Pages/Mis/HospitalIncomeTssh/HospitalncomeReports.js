@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Paper, Box, Divider } from '@mui/material'
 import React, { memo, useCallback, useState } from 'react'
 import DatePicker from "react-datepicker";
@@ -30,7 +31,7 @@ const HospitalncomeReports = () => {
             to: moment(endDate).format('YYYY-MM-DD 23:59:59')
         }
 
-        await axiosinstance.post('/admission/getIpNumber', postData2).then((result) => {
+        await axiosinstance.post('/admission/getIpNumberTssh', postData2).then((result) => {
             const { success, data } = result.data;
             if (success === 1) {
                 const ipNumber = data?.map((e) => e.ip_no)

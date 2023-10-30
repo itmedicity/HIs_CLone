@@ -12,7 +12,11 @@ import { format } from 'date-fns';
 const CreditInsurBillCollModal = ({ layout, setLayout, state, data }) => {
     const { data0, data1 } = data
     let newArray = data0?.concat(data1);
-    console.log(newArray)
+    const CASH = newArray?.reduce((accumulator, currentValue) => accumulator + currentValue.CASH, 0);
+    const CHEQUE = newArray?.reduce((accumulator, currentValue) => accumulator + currentValue.CHEQUE, 0);
+    const DD = newArray?.reduce((accumulator, currentValue) => accumulator + currentValue.DD, 0);
+    const CARD = newArray?.reduce((accumulator, currentValue) => accumulator + currentValue.CARD, 0);
+    const BANKAMT = newArray?.reduce((accumulator, currentValue) => accumulator + currentValue.BANKAMT, 0);
     return (
         <Modal open={!!layout} onClose={() => setLayout(undefined)}>
             <ModalDialog
@@ -88,11 +92,11 @@ const CreditInsurBillCollModal = ({ layout, setLayout, state, data }) => {
                                     <TableRow >
                                         <TableCell align="right" sx={{ width: '2%', textAlign: 'center', alignItems: 'center', fontWeight: 700 }} ></TableCell>
                                         <TableCell align="left" sx={{ width: '10%', fontSize: '12px', textTransform: 'capitalize', fontWeight: 700, color: 'black' }} >Total</TableCell>
-                                        <TableCell align="right" sx={{ width: '10%', fontSize: '12px', fontWeight: 700, color: 'black' }} ></TableCell>
-                                        <TableCell align="right" sx={{ width: '10%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
-                                        <TableCell align="right" sx={{ width: '10%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
-                                        <TableCell align="right" sx={{ width: '10%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
-                                        <TableCell align="right" sx={{ width: '10%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
+                                        <TableCell align="left" sx={{ width: '10%', fontSize: '12px', fontWeight: 700, color: 'black' }} >{CASH?.toLocaleString('en-US', { minimumFractionDigits: 2 })}</TableCell>
+                                        <TableCell align="left" sx={{ width: '10%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} >{CHEQUE?.toLocaleString('en-US', { minimumFractionDigits: 2 })}</TableCell>
+                                        <TableCell align="right" sx={{ width: '10%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} >{DD?.toLocaleString('en-US', { minimumFractionDigits: 2 })}</TableCell>
+                                        <TableCell align="right" sx={{ width: '10%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} >{CARD?.toLocaleString('en-US', { minimumFractionDigits: 2 })}</TableCell>
+                                        <TableCell align="right" sx={{ width: '10%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} >{BANKAMT?.toLocaleString('en-US', { minimumFractionDigits: 2 })}</TableCell>
                                         <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
                                         <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
                                         <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>

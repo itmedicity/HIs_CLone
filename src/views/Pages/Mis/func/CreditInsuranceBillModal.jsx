@@ -6,12 +6,13 @@ import ModalDialog from '@mui/joy/ModalDialog';
 import Typography from '@mui/joy/Typography';
 import ReportHeader from '../../../Components/ReportHeader';
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from '@mui/material';
-import { axiosinstance } from '../../../../controllers/AxiosConfig';
-import { format } from 'date-fns';
 
 const CreditInsuranceBillModal = ({ layout, setLayout, state, data }) => {
     const newArry = [];
-    const conCatArray = newArry.concat(data.credit1, data.credit2, data.credit3, data.credit4, data.credit5, data.credit6)
+    const conCatArray = newArry.concat(data.credit1, data.credit2, data.credit3, data.credit4, data.credit5, data.credit6);
+
+    const totalAmounTwo = conCatArray?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0);
+
     return (
         <Modal open={!!layout} onClose={() => setLayout(undefined)}>
             <ModalDialog
@@ -96,7 +97,7 @@ const CreditInsuranceBillModal = ({ layout, setLayout, state, data }) => {
                                         </TableCell>
                                         <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
                                         <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
-                                        <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
+                                        <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} >{totalAmounTwo?.toLocaleString('en-US', { minimumFractionDigits: 2 })}</TableCell>
                                         <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
                                         <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
                                     </TableRow>

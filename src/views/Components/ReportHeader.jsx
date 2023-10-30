@@ -1,11 +1,26 @@
+// @ts-nocheck
+import { IconButton, Tooltip } from '@mui/joy';
 import { Box } from '@mui/material'
 import moment from 'moment';
 import React, { memo } from 'react'
+import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
+import CloseIcon from '@mui/icons-material/Close';
+import { useNavigate } from 'react-router-dom';
 
 const ReportHeader = ({ name, data }) => {
     const { from, to } = data;
+
+    const navigate = useNavigate();
+
     return (
         <Box sx={{ m: '25px' }} >
+            <Box display={'flex'} justifyContent='flex-end'  >
+                <Tooltip size="sm" variant="outlined" title="Go Back" color="danger"  >
+                    <IconButton disabled={false} variant="outlined" size="sm" onClick={() => navigate("/Menu/Mis")} >
+                        <CloseIcon />
+                    </IconButton>
+                </Tooltip>
+            </Box>
             <Box
                 sx={{
                     display: 'flex',

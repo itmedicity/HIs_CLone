@@ -10,6 +10,7 @@ import { axiosinstance } from '../../../../controllers/AxiosConfig';
 import { format } from 'date-fns';
 
 const AdvanceCollcetionDetl = ({ layout, setLayout, state, data }) => {
+    const totalAmounTwo = data?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0);
     return (
         <Modal open={!!layout} onClose={() => setLayout(undefined)}>
             <ModalDialog
@@ -80,7 +81,7 @@ const AdvanceCollcetionDetl = ({ layout, setLayout, state, data }) => {
                                         <TableCell align="right" sx={{ width: '10%', fontSize: '12px', fontWeight: 700, color: 'black' }} >
                                         </TableCell>
                                         <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
-                                        <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
+                                        <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} >{totalAmounTwo?.toLocaleString('en-US', { minimumFractionDigits: 2 })}</TableCell>
                                         <TableCell align="right" sx={{ width: '15%', fontSize: '12px', pr: 2, fontWeight: 700, color: 'black' }} ></TableCell>
                                     </TableRow>
                                 </TableFooter>

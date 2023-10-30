@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { Box, Button, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { DatePicker, LocalizationProvider, clockClasses } from '@mui/x-date-pickers'
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { useDispatch, useSelector } from 'react-redux'
@@ -103,18 +103,16 @@ const IpPatientGrouping = () => {
         if (admissionList.status === true) {
             const oraAdmissionList = admissionList.data;
 
-            // console.log(ipListMysql)
-            // console.log(admissionList.data)
             const newPatientLst = oraAdmissionList?.map((e) => {
                 const ipNoIsExcist = ipListMysql?.find(vl => vl.ip_no === e.IP_NO);
-                console.log(ipNoIsExcist)
                 if (ipNoIsExcist !== undefined) {
-                    return { ...e, isTssh: 1, tmch: ipNoIsExcist?.tmch_status === undefined ? "0" : ipNoIsExcist?.tmch_status }
+                    return { ...e, isTssh: ipNoIsExcist?.tmch_status === "0" ? 1 : 0 }
                 } else {
-                    return { ...e, isTssh: 0, tmch: ipNoIsExcist?.tmch_status === undefined ? "0" : ipNoIsExcist?.tmch_status }
+                    return { ...e, isTssh: 2 }
                 }
-            })
-            // console.log(newPatientLst)
+
+            }).filter(e => e.isTssh !== 1)
+            // .filter((e) => (e.isTssh === 1 && e.tmch !== "0") || (e.isTssh === 0 && e.tmch !== "0"))
             setIplist(newPatientLst)
             setApiStatus(false)
         } else {
@@ -183,7 +181,6 @@ const IpPatientGrouping = () => {
                                                 const lastUpdatedDate = {
                                                     date: moment(selectedFormDate).format('YYYY-MM-DD h:m:')
                                                 }
-
                                                 axiosinstance.post('/admission/UpdateLastDischargeDates', lastUpdatedDate).then((result) => {
                                                     const { message, success } = result.data;
                                                     if (success === 1) {
@@ -225,6 +222,9 @@ const IpPatientGrouping = () => {
 
     }, [value])
 
+
+    // console.log(ipList)
+
     return (
         <Paper
             variant="outlined"
@@ -251,7 +251,7 @@ const IpPatientGrouping = () => {
                 alignItems: 'center'
             }} >
                 <Box >
-                    Patient Grouping
+                    Patient Grouping -Tmch
                 </Box>
             </Box>
             <Box
@@ -297,7 +297,7 @@ const IpPatientGrouping = () => {
                         sx={{ mx: 2 }}
                         onClick={getAdmissionListFun}
                     >Get Admission</Button>
-                    <Box
+                    {/* <Box
                         sx={{
                             display: 'flex',
                             alignItems: 'center',
@@ -309,8 +309,8 @@ const IpPatientGrouping = () => {
                         }}
                     >
                         Last Discharge update Time :
-                    </Box>
-                    <Box
+                    </Box> */}
+                    {/* <Box
                         sx={{
                             display: 'flex',
                             alignItems: 'center',
@@ -322,12 +322,12 @@ const IpPatientGrouping = () => {
                         }}
                     >
                         {lastDisUpdateDate}
-                    </Box>
-                    <Button
+                    </Box> */}
+                    {/* <Button
                         variant='outlined'
                         sx={{ mx: 2 }}
                         onClick={dischargeProcess}
-                    >Discharge Process</Button>
+                    >Discharge Process</Button> */}
 
                     <Button
                         variant='outlined'

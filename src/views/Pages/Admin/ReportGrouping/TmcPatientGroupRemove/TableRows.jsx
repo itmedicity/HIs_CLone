@@ -6,18 +6,20 @@ import { errorNofity, succesNofity, warningNofity } from '../../../../../Constan
 
 const TableRows = ({ data, n, setCount }) => {
 
-    const onCLickTransferButton = useCallback(async (data) => {
+    // console.log(data)
+    const onCLickRemovePatientFromTmch = useCallback(async (data) => {
         const postData = {
             date: data.IPD_DATE,
             ip_no: data.IP_NO,
             op_no: data.PT_NO,
             disDate: data.DISDATE,
-            disStatus: data.DISSTATUS
+            disStatus: data.DISSTATUS,
+            status: 1
         }
 
         const val = Math.random()
 
-        const result = await axiosinstance.post('/admission/insertTsshPatient', postData);
+        const result = await axiosinstance.post('/admission/TmchGrouping', postData);
         const { success, message } = await result.data;
         if (success === 1) {
             succesNofity(message)
@@ -29,24 +31,24 @@ const TableRows = ({ data, n, setCount }) => {
         }
     }, [data])
 
-    const onCLickDeleteButton = useCallback(async (data) => {
-        const postData = {
-            ip_no: data.IP_NO,
-        }
+    // const onCLickDeleteButton = useCallback(async (data) => {
+    //     const postData = {
+    //         ip_no: data.IP_NO,
+    //     }
 
-        const val = Math.random()
-        const result = await axiosinstance.post('/admission/removePatiet', postData);
-        const { success, message } = await result.data;
-        if (success === 1) {
-            succesNofity(message)
-            setCount(val)
-        } else if (success === 2) {
-            warningNofity(message)
-        } else {
-            errorNofity(message)
-        }
+    //     const val = Math.random()
+    //     const result = await axiosinstance.post('/admission/removePatiet', postData);
+    //     const { success, message } = await result.data;
+    //     if (success === 1) {
+    //         succesNofity(message)
+    //         setCount(val)
+    //     } else if (success === 2) {
+    //         warningNofity(message)
+    //     } else {
+    //         errorNofity(message)
+    //     }
 
-    }, [data])
+    // }, [data])
 
     return (
         <TableRow>
@@ -57,24 +59,22 @@ const TableRows = ({ data, n, setCount }) => {
             <TableCell padding='checkbox' >{data.PTC_PTNAME}</TableCell>
             <TableCell padding='checkbox' align='center' >
                 {
-                    data.isTssh === 0 ?
+                    data.isTssh === 2 ?
                         <Button
                             variant='outlined'
                             size='small'
                             fullWidth
-                            disabled={data.tmch === "1" ? true : false}
-                            sx={{ textTransform: 'capitalize', }}
-                            onClick={() => onCLickTransferButton(data)}
-                        >Transfer to TSSH</Button> :
+                            sx={{ textTransform: 'capitalize', color: 'blue' }}
+                            onClick={() => onCLickRemovePatientFromTmch(data)}
+                        >Tmch</Button> :
                         <Button
                             variant='outlined'
                             size='small'
-                            color='error'
                             fullWidth
-                            disabled={data.tmch === "1" ? true : false}
-                            sx={{ textTransform: 'capitalize', }}
-                            onClick={() => onCLickDeleteButton(data)}
-                        >Remove From Tssh</Button>
+                            disabled={true}
+                            sx={{ textTransform: 'capitalize', color: 'red' }}
+                        // onClick={() => onCLickDeleteButton(data)}
+                        >Grouped</Button>
                 }
             </TableCell>
         </TableRow>

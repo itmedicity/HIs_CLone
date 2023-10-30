@@ -25,6 +25,7 @@ const incomeReportsTssh = React.lazy(() => import('../views/Pages/Mis/HospitalIn
 
 //Report Grouping
 const IpPatientGroup = React.lazy(() => import('../views/Pages/Admin/ReportGrouping/TsshPatientGroup/IpPatientGrouping'))
+const TmcPatientGrouping = React.lazy(() => import('../views/Pages/Admin/ReportGrouping/TmcPatientGroupRemove/PatientTmcGrouping'))
 
 const User = React.lazy(() => import('../views/Pages/Admin/UserSettings/UserCreation/UserCreation'));
 const UserGroup = React.lazy(() => import('../views/Pages/Admin/UserSettings/UserGroup/UserGroupCreation'));
@@ -61,6 +62,7 @@ const routes = [
 
     { path: '/User', name: 'New User Creation', element: User },
     { path: '/IpPatientGrouping', element: IpPatientGroup, name: "Patient Grouping" },
+    { path: '/TmcPatientGrouping', element: TmcPatientGrouping, name: "TMCH Grouping" },
     { path: '/UserGroup', name: 'User Group', element: UserGroup },
     { path: '/UserRights', name: 'User Rights', element: UserRight },
     { path: '/MenuGroup', name: 'Menu Group Mapping', element: MenuGroups },

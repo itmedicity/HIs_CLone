@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { memo, useEffect, useState } from 'react'
 import ContentMain from '../Components/ContentMain';
 import ContentSecondary from '../Components/ContentSecondary';
@@ -24,7 +25,7 @@ const Dashboard = () => {
 
     return (
         <ContentMain>
-            <ContentSecondary name="DashBoard">
+            {/* <ContentSecondary name="DashBoard">
 
                 <ContentPaper name="OP-IP Statistics">
                     {
@@ -32,13 +33,11 @@ const Dashboard = () => {
                             return <ContentNavLink name={val.name} route={val.path} key={val.slno} />;
                         })
                     }
-
-                    {/* 
                     {
                         dashboard_setting.map((element, idx) => <ContentNavLink name={element.name} route={element.path} key={idx} />)
-                    } */}
+                    }
                 </ContentPaper>
-            </ContentSecondary>
+            </ContentSecondary> */}
         </ContentMain>
     )
 }

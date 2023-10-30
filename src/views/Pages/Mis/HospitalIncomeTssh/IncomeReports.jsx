@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { Fragment, memo, useMemo, useState } from 'react'
+import React, { Fragment, memo, useCallback, useMemo, useState } from 'react'
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom'
@@ -72,14 +72,24 @@ import WhiteRowTotal from './WhiteRowTotal';
 import { getGrandTotal, getIncomeReportList, getMisGroupMasterList, getPhamracyIncome } from '../func/misFunc';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import _ from 'underscore';
+import {
+    advanceCollectionDetail, credInsuranceCollectionModalData1, credInsuranceCollectionModalData2,
+    creditInsuranceBillDetlPart1, creditInsuranceBillDetlPart2, creditInsuranceBillDetlPart3,
+    creditInsuranceBillDetlPart4, creditInsuranceBillDetlPart5, creditInsuranceBillDetlPart6,
+    getUnsettledBillDetl
+} from './TsshFunc';
+import { axiosinstance } from '../../../../controllers/AxiosConfig';
+import ReportModal from '../func/ReportModal';
+import PharmacyReoprtModal from '../func/PharmacyReoprtModal';
+import CreditInsuranceBillModal from '../func/CreditInsuranceBillModal';
+import UnsettledAmntModal from '../func/UnsettledAmntModal';
+import AdvanceCollcetionDetl from '../func/AdvanceCollcetionDetl';
+import CreditInsurBillCollModal from '../func/CreditInsurBillCollModal';
 
 const IncomeReports = () => {
 
     const dispatch = useDispatch();
     const { state } = useLocation();
-    // @ts-ignore
-    // @ts-ignore
-    // @ts-ignore
     const componentState = useMemo(state => state, [state]);
 
     const [misGroupList, setMisGroupList] = useState([]);
@@ -99,15 +109,32 @@ const IncomeReports = () => {
         tax: 0
     });
 
-    // @ts-ignore
+    // Pharmacy 
+    const [pharma1, setPharma1] = useState([])
+    const [pharma2, setPharma2] = useState([])
+    const [pharma3, setPharma3] = useState([])
+    const [pharma4, setPharma4] = useState([])
+
+    const [pharmacyDetl, setPharmacyDetl] = useState({
+        pharma1: [],
+        pharma2: [],
+        pharma3: [],
+        pharma4: [],
+    })
+
+    useEffect(() => {
+        setPharmacyDetl({
+            pharma1: pharma1,
+            pharma2: pharma2,
+            pharma3: pharma3,
+            pharma4: pharma4,
+        })
+    }, [pharma1, pharma2, pharma3, pharma4,])
+
     const {
-        // @ts-ignore
         discount,
-        // @ts-ignore
         grossAmount,
-        // @ts-ignore
         netAmount,
-        // @ts-ignore
         tax
     } = pharamcyIc;
 
@@ -122,7 +149,6 @@ const IncomeReports = () => {
     const procedureIncome = useSelector((state) => state.procedureIncomeTssh);
     const proIncome = useMemo(() => procedureIncome, [procedureIncome]);
 
-    console.log(proIncome)
     // @ts-ignore
     const misGroup = useSelector((state) => state.misGroup);
     const misGroupLst = useMemo(() => misGroupList, [misGroupList])
@@ -385,7 +411,6 @@ const IncomeReports = () => {
             .flat()
         // console.log(incomeArrayData)
         getIncomeReportList(incomeArrayData, misGroupLst).then((report) => {
-            console.log(report)
             if (report !== undefined) {
                 setMisReportList(report)
             }
@@ -453,8 +478,484 @@ const IncomeReports = () => {
 
     // const generalDiscount = patientDiscount
 
+    /**********
+     * MIS REPORTS DETALED REPORTS 
+     */
+
+    //FOR MODEL OPENING STATES
+    const [layout, setLayout] = useState(undefined);
+    const [layout1, setLayout1] = useState(undefined);
+    const [layout2, setLayout2] = useState(undefined);
+    const [layout3, setLayout3] = useState(undefined);
+    const [layout4, setLayout4] = useState(undefined);
+    const [layout5, setLayout5] = useState(undefined);
+
+    const [modalData, setModalData] = useState({
+        status: 0,
+        reportName: '',
+        reportData: []
+    })
+
+    const onClickFuncLevelOne = useCallback(async (data) => {
+        let defautState = {
+            status: 0,
+            reportName: '',
+            reportData: []
+        }
+        const reportName = data?.groupName;
+        setLayout('fullscreen');
+        if (reportName === 'BED') {
+            // setModalData([])
+            const bedIncomeDetl = async (state) => {
+                setModalData(defautState)
+                const result = await axiosinstance.post('/incomeDetlTssh/bedIncome', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setModalData({
+                        status: 1,
+                        reportName: 'Bed',
+                        reportData: data
+                    })
+                } else {
+                    setModalData(defautState)
+                }
+            }
+            bedIncomeDetl(state)
+        } else if (reportName === 'ROOM') {
+            const roomIncomeDetl = async (state) => {
+                setModalData(defautState)
+                const result = await axiosinstance.post('/incomeDetlTssh/roomRentIncome', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setModalData({
+                        status: 1,
+                        reportName: 'Room',
+                        reportData: data
+                    })
+                } else {
+                    setModalData(defautState)
+                }
+            }
+            roomIncomeDetl(state)
+        } else if (reportName === 'NS') {
+            const nsIncomeDetl = async (state) => {
+                setModalData(defautState)
+                const result = await axiosinstance.post('/incomeDetlTssh/nsIncome', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setModalData({
+                        status: 1,
+                        reportName: 'Ns',
+                        reportData: data
+                    })
+                } else {
+                    setModalData(defautState)
+                }
+            }
+            nsIncomeDetl(state)
+        } else if (reportName === 'OTHERS') {
+            const othersIncomeDetl = async (state) => {
+                setModalData(defautState)
+                const result = await axiosinstance.post('/incomeDetlTssh/otherIncome', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setModalData({
+                        status: 1,
+                        reportName: 'Others',
+                        reportData: data
+                    })
+                } else {
+                    setModalData(defautState)
+                }
+            }
+            othersIncomeDetl(state)
+        } else if (reportName === 'CONSULTING') {
+            const consultingIncomeDetl = async (state) => {
+                setModalData(defautState)
+                const result = await axiosinstance.post('/incomeDetlTssh/consultingIncome', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setModalData({
+                        status: 1,
+                        reportName: 'Consulting',
+                        reportData: data
+                    })
+                } else {
+                    setModalData(defautState)
+                }
+            }
+            consultingIncomeDetl(state)
+        } else if (reportName === 'THEATRE') {
+            const theaterIncomeDetl = async (state) => {
+                setModalData(defautState)
+                const result = await axiosinstance.post('/incomeDetlTssh/theaterIncome', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setModalData({
+                        status: 1,
+                        reportName: 'Theater',
+                        reportData: data
+                    })
+                } else {
+                    setModalData(defautState)
+                }
+            }
+            theaterIncomeDetl(state)
+        } else if (reportName === 'OPERATION') {
+            const surgeonIncomeDetl = async (state) => {
+                setModalData(defautState)
+                const result = await axiosinstance.post('/incomeDetlTssh/surgeonIncome', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setModalData({
+                        status: 1,
+                        reportName: 'Operation',
+                        reportData: data
+                    })
+                } else {
+                    setModalData(defautState)
+                }
+            }
+            surgeonIncomeDetl(state)
+        } else if (reportName === 'ANESTHESIA') {
+            const anesthesiaIncomeDetl = async (state) => {
+                setModalData(defautState)
+                const result = await axiosinstance.post('/incomeDetlTssh/anesthetiaIncome', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setModalData({
+                        status: 1,
+                        reportName: 'Anesthesia',
+                        reportData: data
+                    })
+                } else {
+                    setModalData(defautState)
+                }
+            }
+            anesthesiaIncomeDetl(state)
+        } else if (reportName === 'CARDIOLOGY') {
+            const cardiologyIncomeDetl = async (state) => {
+                setModalData(defautState)
+                const result = await axiosinstance.post('/incomeDetlTssh/cardiologyIncome', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setModalData({
+                        status: 1,
+                        reportName: 'Cardiology',
+                        reportData: data
+                    })
+                } else {
+                    setModalData(defautState)
+                }
+            }
+            cardiologyIncomeDetl(state)
+        } else if (reportName === 'DISPOSIBLE') {
+            const disposibleIncomeDetl = async (state) => {
+                setModalData(defautState)
+                const result = await axiosinstance.post('/incomeDetlTssh/disPosibleItemIncome', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setModalData({
+                        status: 1,
+                        reportName: 'Disposible',
+                        reportData: data
+                    })
+                } else {
+                    setModalData(defautState)
+                }
+            }
+            disposibleIncomeDetl(state)
+        } else if (reportName === 'ICU') {
+            const icuIncomeDetl = async (state) => {
+                setModalData(defautState)
+                const result = await axiosinstance.post('/incomeDetlTssh/icuIncome', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setModalData({
+                        status: 1,
+                        reportName: 'Icu',
+                        reportData: data
+                    })
+                } else {
+                    setModalData(defautState)
+                }
+            }
+            icuIncomeDetl(state)
+        } else if (reportName === 'ICU PROC') {
+            const icuProIncomeDetl = async (state) => {
+                setModalData(defautState)
+                const result = await axiosinstance.post('/incomeDetlTssh/icuprocedureIncome', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setModalData({
+                        status: 1,
+                        reportName: 'Icu Procedure',
+                        reportData: data
+                    })
+                } else {
+                    setModalData(defautState)
+                }
+            }
+            icuProIncomeDetl(state)
+        } else if (reportName === 'RADIOLOGY') {
+            const radiologyIncomeDetl = async (state) => {
+                setModalData(defautState)
+                const result = await axiosinstance.post('/incomeDetlTssh/radiologyIncome', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setModalData({
+                        status: 1,
+                        reportName: 'Radiology',
+                        reportData: data
+                    })
+                } else {
+                    setModalData(defautState)
+                }
+            }
+            radiologyIncomeDetl(state)
+        } else if (reportName === 'LAB') {
+            const labIncomeDetl = async (state) => {
+                setModalData(defautState)
+                const result = await axiosinstance.post('/incomeDetlTssh/laboratoryIncome', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setModalData({
+                        status: 1,
+                        reportName: 'Laboratory',
+                        reportData: data
+                    })
+                } else {
+                    setModalData(defautState)
+                }
+            }
+            labIncomeDetl(state)
+        } else if (reportName === 'MRI') {
+            const mriIncomeDetl = async (state) => {
+                setModalData(defautState)
+                const result = await axiosinstance.post('/incomeDetlTssh/mriIncome', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setModalData({
+                        status: 1,
+                        reportName: 'Mri',
+                        reportData: data
+                    })
+                } else {
+                    setModalData(defautState)
+                }
+            }
+            mriIncomeDetl(state)
+        } else if (reportName === 'DIET') {
+            const dietIncomeDetl = async (state) => {
+                setModalData(defautState)
+                const result = await axiosinstance.post('/incomeDetlTssh/dietIncome', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setModalData({
+                        status: 1,
+                        reportName: 'Diet',
+                        reportData: data
+                    })
+                } else {
+                    setModalData(defautState)
+                }
+            }
+            dietIncomeDetl(state)
+        }
+
+
+    }, [state])
+
+
+    const getPharmacyDetl = useCallback(async () => {
+        setLayout1('fullscreen');
+        await axiosinstance.post('/incomeDetlTssh/pharmacyIncomePart1', state).then((res) => {
+            const { success, data } = res.data;
+            if (success === 1) {
+                setPharma1([...data])
+            }
+        })
+        await axiosinstance.post('/incomeDetlTssh/pharmacyIncomePart2', state).then((res) => {
+            const { success, data } = res.data;
+            if (success === 1) {
+                setPharma2([...data])
+            }
+        })
+        await axiosinstance.post('/incomeDetlTssh/pharmacyIncomePart3', state).then((res) => {
+            const { success, data } = res.data;
+            if (success === 1) {
+                setPharma3([...data])
+            }
+        })
+        await axiosinstance.post('/incomeDetlTssh/pharmacyIncomePart4', state).then((res) => {
+            const { success, data } = res.data;
+            if (success === 1) {
+                setPharma4([...data])
+            }
+        })
+    }, [])
+
+    // CREDIT INSURANCE BILLING DETAILS 
+    const [credDetlPard1, setCredDetlPard1] = useState([])
+    const [credDetlPard2, setCredDetlPard2] = useState([])
+    const [credDetlPard3, setCredDetlPard3] = useState([])
+    const [credDetlPard4, setCredDetlPard4] = useState([])
+    const [credDetlPard5, setCredDetlPard5] = useState([])
+    const [credDetlPard6, setCredDetlPard6] = useState([])
+    const [credtInsuranceDetl, setCredtInsuranceDetl] = useState({
+        credit1: [],
+        credit2: [],
+        credit3: [],
+        credit4: [],
+        credit5: [],
+        credit6: []
+    })
+
+    const onClickCreditInsuranceBill = useCallback(async () => {
+        setLayout2('fullscreen');
+
+        creditInsuranceBillDetlPart1(state).then((result) => {
+            if (result !== undefined) {
+                setCredDetlPard1([...result])
+            }
+        })
+
+        creditInsuranceBillDetlPart2(state).then((result) => {
+            if (result !== undefined) {
+                setCredDetlPard2([...result])
+            }
+        })
+
+        creditInsuranceBillDetlPart3(state).then((result) => {
+            if (result !== undefined) {
+                setCredDetlPard3([...result])
+            }
+        })
+
+        creditInsuranceBillDetlPart4(state).then((result) => {
+            if (result !== undefined) {
+                setCredDetlPard4([...result])
+            }
+        })
+
+        creditInsuranceBillDetlPart5(state).then((result) => {
+            if (result !== undefined) {
+                setCredDetlPard5([...result])
+            }
+        })
+
+        creditInsuranceBillDetlPart6(state).then((result) => {
+            if (result !== undefined) {
+                setCredDetlPard6([...result])
+            }
+        })
+
+    }, [state])
+
+    useEffect(() => {
+        setCredtInsuranceDetl({
+            credit1: [...credDetlPard1],
+            credit2: [...credDetlPard2],
+            credit3: [...credDetlPard3],
+            credit4: [...credDetlPard4],
+            credit5: [...credDetlPard5],
+            credit6: [...credDetlPard6]
+        })
+    }, [credDetlPard1, credDetlPard2, credDetlPard3, credDetlPard4, credDetlPard5, credDetlPard6])
+
+    // ONcLICK UNSETTLED DETAILS
+    const [unsettled, setUnsettled] = useState([])
+    const onClickUnsettledAmount = useCallback(() => {
+        setLayout3('fullscreen');
+        getUnsettledBillDetl(state).then((results) => {
+            setUnsettled([...results])
+        })
+    }, [state])
+
+    //ADVANCE COLLCTION DETAILS [C]
+    const [advanceCollDetl, setAdvanceCollDetl] = useState([])
+    const onClickAdvanceCollection = useCallback(async () => {
+        setLayout4('fullscreen');
+        advanceCollectionDetail(state).then((results) => {
+            setAdvanceCollDetl([...results])
+        })
+    }, [state])
+
+    //  ONCLICK CREDIT INSURANCE BILL COLLECTION DETAILS MODAL 
+    const [credInsuColl0, setCredInsuColl0] = useState([])
+    const [credInsuColl1, setCredInsuColl1] = useState([])
+    const [credInsuranceCol, setCredInsuranceCol] = useState({
+        data0: [],
+        data1: [],
+    })
+
+    useEffect(() => {
+        setCredInsuranceCol({
+            data0: [...credInsuColl0],
+            data1: [...credInsuColl1]
+        })
+    }, [credInsuColl0, credInsuColl1])
+
+    const onClickCreditInsuranceBillCollection = useCallback(async () => {
+        setLayout5('fullscreen');
+        credInsuranceCollectionModalData1(state).then((results) => {
+            if (results !== undefined) {
+                setCredInsuColl0([...results])
+            }
+        })
+
+        credInsuranceCollectionModalData2(state).then((results) => {
+            if (results !== undefined) {
+                setCredInsuColl1([...results])
+            }
+        })
+
+    }, [state])
+
     return (
         <Box flex={1} sx={{ backgroundColor: 'lightgray', p: '1%' }} >
+            {/* Detailed report model when open based on selected group using the "onClickFuncLevelOne" function */}
+            <ReportModal
+                layout={layout}
+                setLayout={setLayout}
+                state={state}
+                data={modalData}
+            />
+            {/* pHARMACY rEPORTS dETAILS mODAL */}
+            <PharmacyReoprtModal
+                layout={layout1}
+                setLayout={setLayout1}
+                state={state}
+                data={pharmacyDetl}
+            />
+            {/* Credit insurance Bill details */}
+            <CreditInsuranceBillModal
+                layout={layout2}
+                setLayout={setLayout2}
+                state={state}
+                data={credtInsuranceDetl}
+            />
+            {/* Unsettled amount Details */}
+            <UnsettledAmntModal
+                layout={layout3}
+                setLayout={setLayout3}
+                state={state}
+                data={unsettled}
+            />
+            {/* ADVANCE COLLECTION [C] */}
+            <AdvanceCollcetionDetl
+                layout={layout4}
+                setLayout={setLayout4}
+                state={state}
+                data={advanceCollDetl}
+            />
+            {/* CREDIT INSURANCE BILL COLLECTION  */}
+            <CreditInsurBillCollModal
+                layout={layout5}
+                setLayout={setLayout5}
+                state={state}
+                data={credInsuranceCol}
+            />
             <Paper square sx={{ borderColor: 'black', border: 1 }}  >
                 <ReportHeader name="Hospital Income" data={state} />
                 <Box sx={{
@@ -489,7 +990,7 @@ const IncomeReports = () => {
                                             {
                                                 // @ts-ignore
                                                 val.groupList?.map((ele, idex) => {
-                                                    return <WhiteRow data={ele} key={idex} />
+                                                    return <WhiteRow data={ele} key={idex} onClick={onClickFuncLevelOne} />
                                                 })
                                             }
                                             < WhiteRowTotal data={val} />
@@ -509,7 +1010,9 @@ const IncomeReports = () => {
                                     <TableCell align="right" sx={{ width: '2%', textAlign: 'center', alignItems: 'center' }} ><ArrowRightIcon sx={{ display: 'flex', fontSize: 15 }} /></TableCell>
                                     <TableCell align="left" sx={{ width: '25%', fontSize: '12px', textTransform: 'capitalize' }} >Pharmacy Medicine Sale</TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} ></TableCell>
-                                    <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} >
+                                    <TableCell align="right" sx={{ width: '20%', fontSize: '12px', cursor: 'pointer', textDecoration: 'underline', color: '#0000EE' }}
+                                        onClick={getPharmacyDetl}
+                                    >
                                         {netAmount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                     </TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} >
@@ -616,7 +1119,11 @@ const IncomeReports = () => {
                                         }} />
                                     </TableCell>
                                     <TableCell align="left" sx={{ width: '25%', fontSize: '12px' }} >Credit/Insurance Bill</TableCell>
-                                    <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} >{creditInsuranceBill}</TableCell>
+                                    <TableCell align="right" sx={{ width: '20%', fontSize: '12px', cursor: 'pointer', textDecoration: 'underline', color: '#0000EE' }}
+                                        onClick={onClickCreditInsuranceBill}
+                                    >
+                                        {creditInsuranceBill}
+                                    </TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} ></TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} >0.00</TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px', pr: 2 }} ></TableCell>
@@ -630,7 +1137,11 @@ const IncomeReports = () => {
                                         }} />
                                     </TableCell>
                                     <TableCell align="left" sx={{ width: '25%', fontSize: '12px' }} >UnSettled Amount</TableCell>
-                                    <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} >{unsettledAmount}</TableCell>
+                                    <TableCell align="right" sx={{ width: '20%', fontSize: '12px', cursor: 'pointer', textDecoration: 'underline', color: '#0000EE' }}
+                                        onClick={onClickUnsettledAmount}
+                                    >
+                                        {unsettledAmount}
+                                    </TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} ></TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} >0.00</TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px', pr: 2 }} ></TableCell>
@@ -754,7 +1265,11 @@ const IncomeReports = () => {
                                         }} />
                                     </TableCell>
                                     <TableCell align="left" sx={{ width: '25%', fontSize: '12px', }} >Advance Collection (C)</TableCell>
-                                    <TableCell align="right" sx={{ width: '20%', fontSize: '12px', }} >{advanceCollection}</TableCell>
+                                    <TableCell align="right" sx={{ width: '20%', fontSize: '12px', cursor: 'pointer', textDecoration: 'underline', color: '#0000EE' }}
+                                        onClick={onClickAdvanceCollection}
+                                    >
+                                        {advanceCollection}
+                                    </TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px', }} ></TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px', }} ></TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px', pr: 2 }} ></TableCell>
@@ -768,7 +1283,11 @@ const IncomeReports = () => {
                                         }} />
                                     </TableCell>
                                     <TableCell align="left" sx={{ width: '25%', fontSize: '12px', }} >Credit/Insurance Bill Collection(D)</TableCell>
-                                    <TableCell align="right" sx={{ width: '20%', fontSize: '12px', }} >{creditInsuranceBillCollection}</TableCell>
+                                    <TableCell align="right" sx={{ width: '20%', fontSize: '12px', cursor: 'pointer', textDecoration: 'underline', color: '#0000EE' }}
+                                        onClick={onClickCreditInsuranceBillCollection}
+                                    >
+                                        {creditInsuranceBillCollection}
+                                    </TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px', }} ></TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px', }} ></TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px', pr: 2 }} ></TableCell>

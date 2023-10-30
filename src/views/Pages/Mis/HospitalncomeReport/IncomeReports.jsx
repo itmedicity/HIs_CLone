@@ -46,7 +46,7 @@ import WhiteRowTotal from './WhiteRowTotal';
 import { getGrandTotal, getIncomeReportList, getMisGroupMasterList, getPhamracyIncome } from '../func/misFunc';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import _ from 'underscore';
-import ReportModal from '../HospitalIcomeTmch/ReportModal';
+import ReportModal from '../func/ReportModal';
 import { axiosinstance } from '../../../../controllers/AxiosConfig';
 import PharmacyReoprtModal from '../func/PharmacyReoprtModal';
 import CreditInsuranceBillModal from '../func/CreditInsuranceBillModal';
@@ -443,6 +443,10 @@ const IncomeReports = () => {
     const groupNetddctRoundoff = groupNet + roundOff;
 
     // const generalDiscount = patientDiscount
+
+    /**********
+     * MIS REPORTS DETALED REPORTS 
+     */
 
     //FOR MODEL OPENING STATES
     const [layout, setLayout] = useState(undefined);

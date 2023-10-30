@@ -19,8 +19,8 @@ const ReportModal = ({ layout, setLayout, state, data }) => {
         }
     })
 
-    const totalTax = dataArray.reduce((accumulator, currentValue) => accumulator + currentValue.tax, 0);
-    const totalAmnt = dataArray.reduce((accumulator, currentValue) => accumulator + currentValue.amount, 0);
+    const totalTax = dataArray?.reduce((accumulator, currentValue) => accumulator + currentValue.tax, 0);
+    const totalAmnt = dataArray?.reduce((accumulator, currentValue) => accumulator + currentValue.amount, 0);
 
     return (
         <Modal open={!!layout} onClose={() => setLayout(undefined)}>
