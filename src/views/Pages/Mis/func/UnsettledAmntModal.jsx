@@ -6,10 +6,8 @@ import ModalDialog from '@mui/joy/ModalDialog';
 import Typography from '@mui/joy/Typography';
 import ReportHeader from '../../../Components/ReportHeader';
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from '@mui/material';
-import { axiosinstance } from '../../../../controllers/AxiosConfig';
-import { format } from 'date-fns';
 
-const UnsettledAmntModal = ({ layout, setLayout, state, data }) => {
+const UnsettledAmntModal = ({ layout, setLayout, state, data, name }) => {
 
     const totalAmounTwo = data?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0);
 
@@ -35,7 +33,7 @@ const UnsettledAmntModal = ({ layout, setLayout, state, data }) => {
                         boxShadow: 5
                     }}
                 >
-                    <ReportHeader data={state} name="Unsettled Amount" />
+                    <ReportHeader data={state} name="Unsettled Amount" hosName={name} disable={true} />
                     <Box sx={{
                         overflow: 'auto',
                         paddingBottom: '15px',

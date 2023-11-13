@@ -9,7 +9,7 @@ import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, T
 import { axiosinstance } from '../../../../controllers/AxiosConfig';
 import { format } from 'date-fns';
 
-const AdvanceCollcetionDetl = ({ layout, setLayout, state, data }) => {
+const AdvanceCollcetionDetl = ({ layout, setLayout, state, data, name }) => {
     const totalAmounTwo = data?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0);
     return (
         <Modal open={!!layout} onClose={() => setLayout(undefined)}>
@@ -33,7 +33,7 @@ const AdvanceCollcetionDetl = ({ layout, setLayout, state, data }) => {
                         boxShadow: 5
                     }}
                 >
-                    <ReportHeader data={state} name="Advance Collection" />
+                    <ReportHeader data={state} name="Advance Collection" hosName={name} disable={true} />
                     <Box sx={{
                         overflow: 'auto',
                         paddingBottom: '15px',

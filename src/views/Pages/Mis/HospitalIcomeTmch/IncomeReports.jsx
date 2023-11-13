@@ -893,6 +893,7 @@ const IncomeReports = () => {
                 setLayout={setLayout}
                 state={state}
                 data={modalData}
+                name="TRAVANCORE MEDICAL COLLEGE & HOSPITAL"
             />
             {/* pHARMACY rEPORTS dETAILS mODAL */}
             <PharmacyReoprtModal
@@ -900,6 +901,7 @@ const IncomeReports = () => {
                 setLayout={setLayout1}
                 state={state}
                 data={pharmacyDetl}
+                name="TRAVANCORE MEDICAL COLLEGE & HOSPITAL"
             />
             {/* Credit insurance Bill details */}
             <CreditInsuranceBillModal
@@ -907,6 +909,7 @@ const IncomeReports = () => {
                 setLayout={setLayout2}
                 state={state}
                 data={credtInsuranceDetl}
+                name="TRAVANCORE MEDICAL COLLEGE & HOSPITAL"
             />
             {/* Unsettled amount Details */}
             <UnsettledAmntModal
@@ -914,6 +917,7 @@ const IncomeReports = () => {
                 setLayout={setLayout3}
                 state={state}
                 data={unsettled}
+                name="TRAVANCORE MEDICAL COLLEGE & HOSPITAL"
             />
             {/* ADVANCE COLLECTION [C] */}
             <AdvanceCollcetionDetl
@@ -921,6 +925,7 @@ const IncomeReports = () => {
                 setLayout={setLayout4}
                 state={state}
                 data={advanceCollDetl}
+                name="TRAVANCORE MEDICAL COLLEGE & HOSPITAL"
             />
             {/* CREDIT INSURANCE BILL COLLECTION  */}
             <CreditInsurBillCollModal
@@ -928,10 +933,11 @@ const IncomeReports = () => {
                 setLayout={setLayout5}
                 state={state}
                 data={credInsuranceCol}
+                name="TRAVANCORE MEDICAL COLLEGE & HOSPITAL"
             />
             {/* Hospital income reports */}
             <Paper square sx={{ borderColor: 'black', border: 1 }}  >
-                <ReportHeader name="Hospital Income" data={state} />
+                <ReportHeader name="Hospital Income" data={state} hosName="TRAVANCORE MEDICAL COLLEGE & HOSPITAL" disable={false} />
                 <Box sx={{
                     overflow: 'auto',
                     padding: '15px'

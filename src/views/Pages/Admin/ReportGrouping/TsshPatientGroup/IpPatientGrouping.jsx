@@ -1,51 +1,38 @@
 // @ts-nocheck
 import { Box, Button, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { memo, useCallback, useMemo, useState } from 'react'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { format } from 'date-fns'
-import { getAdmissionList } from '../../../../../Redux-Slice/ipAdmissionInfo/AdmissionInfoSlice'
 import TableRows from './TableRows'
 import { axiosinstance } from '../../../../../controllers/AxiosConfig'
 import { ToastContainer } from 'react-toastify'
 import moment from 'moment/moment'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from '../../../../../Constant/Constants'
 import { useNavigate } from 'react-router-dom'
+import PatientGroupModal from './PatientGroupModal'
 
 const IpPatientGrouping = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [value, setValue] = useState(new Date());
     const [ipList, setIplist] = useState([]);
-    const [ipListMysql, setIpListMysql] = useState([]);
     const [apiStatus, setApiStatus] = useState(false);
     const [minDate, setMinDate] = useState(new Date());
 
     const [cont, setCount] = useState(0);
     const [lastDisUpdateDate, setLastDisUpdateDate] = useState('')
 
-    // GET THE LAST UPDATED DATE AND SET THE DATE FEILD MIN DATE AS THE LAST DISCHAREGE UPDATED DATES
-    useEffect(() => {
-        const getLastDisUpdatedDate = async () => {
-            await axiosinstance.get('/admission/getLastDischargeUpdatedDate').then((result) => {
-                const { success, data } = result.data;
-                if (success === 1) {
-                    const lastDisUpdateDate = data[0]?.Last_dis_updateDate;
-                    const date = new Date(lastDisUpdateDate);
-                    setLastDisUpdateDate(lastDisUpdateDate)
-                    setMinDate(date)
-                }
-            }).catch((e) => {
-                errorNofity(e)
-            })
-        }
-        getLastDisUpdatedDate()
-    }, [])
-
+    const state = useSelector((state) => state.admissionList)
+    const admissionList = useMemo(() => state, [state])
 
     const getAdmissionListFun = useCallback(async () => {
         setApiStatus(true)
+
+        setAdd([])
+        setRemove([])
+        setIplist([])
+
         const selectedDate = format(value, 'dd/MM/yyyy')
         const fromDate = `${selectedDate} 00:00:00`;
         const toDate = `${selectedDate} 23:59:59`;
@@ -55,74 +42,43 @@ const IpPatientGrouping = () => {
             to: toDate
         }
 
-        dispatch(getAdmissionList(postData))
+        // dispatch(getAdmissionList(postData))
 
         const dateForMysql = format(value, 'yyyy-MM-dd');
         const getPostData = {
             date: dateForMysql
         }
 
-        await axiosinstance.post('/admission/getTsshPatientList', getPostData).then((result) => {
-            // console.log(ele)
-            const { success, data } = result.data;
+
+        const oraIp = await axiosinstance.post("/admission/getIpadmissionList", postData);
+        const { success, data } = await oraIp?.data;
+        const oraIpData = data;
+
+        if (success === 1) {
+            const mysqlIp = await axiosinstance.post('/admission/getTsshPatientList', getPostData);
+            const { success, data } = mysqlIp?.data;
+            const mysqlIpData = data;
             if (success === 1) {
-                setIpListMysql(data)
+
+                const filterData = oraIpData?.map((e) => {
+                    const ipNoIsExcist = mysqlIpData?.find(vl => vl.ip_no === e.IP_NO);
+                    if (ipNoIsExcist !== undefined) {
+                        return { ...e, isTssh: true, tmch: ipNoIsExcist?.tmch_status === undefined ? "0" : ipNoIsExcist?.tmch_status, slno: ipNoIsExcist?.ip_slno }
+                    } else {
+                        return { ...e, isTssh: false, tmch: ipNoIsExcist?.tmch_status === undefined ? "0" : ipNoIsExcist?.tmch_status, slno: 0 }
+                    }
+                })
+                setIplist(filterData)
+            } else {
+                errorNofity('error occured getting the oracle IP Data')
             }
-        }).catch((e) => {
-            errorNofity(e)
-        })
 
-    }, [value])
-
-    const state = useSelector((state) => state.admissionList)
-    const admissionList = useMemo(() => state, [state])
-
-    useEffect(() => {
-
-        const dateForMysql = format(value, 'yyyy-MM-dd');
-        const getPostData = {
-            date: dateForMysql
-        }
-        const updateMysqlPatientList = async (getPostData) => {
-
-            await axiosinstance.post('/admission/getTsshPatientList', getPostData).then((result) => {
-                // console.log(ele)
-                const { success, data } = result.data;
-                if (success === 1) {
-                    setIpListMysql(data)
-                }
-            }).catch((e) => {
-                errorNofity(e)
-            })
-        }
-        updateMysqlPatientList(getPostData)
-
-    }, [value, cont])
-
-    useEffect(() => {
-        if (admissionList.status === true) {
-            const oraAdmissionList = admissionList.data;
-
-            // console.log(ipListMysql)
-            // console.log(admissionList.data)
-            const newPatientLst = oraAdmissionList?.map((e) => {
-                const ipNoIsExcist = ipListMysql?.find(vl => vl.ip_no === e.IP_NO);
-                console.log(ipNoIsExcist)
-                if (ipNoIsExcist !== undefined) {
-                    return { ...e, isTssh: 1, tmch: ipNoIsExcist?.tmch_status === undefined ? "0" : ipNoIsExcist?.tmch_status }
-                } else {
-                    return { ...e, isTssh: 0, tmch: ipNoIsExcist?.tmch_status === undefined ? "0" : ipNoIsExcist?.tmch_status }
-                }
-            })
-            // console.log(newPatientLst)
-            setIplist(newPatientLst)
-            setApiStatus(false)
         } else {
-            setApiStatus(false)
+            errorNofity('error occured getting the oracle IP Data')
         }
 
 
-    }, [admissionList, ipListMysql])
+    }, [value, admissionList])
 
     const dischargeProcess = useCallback(async () => {
 
@@ -225,6 +181,37 @@ const IpPatientGrouping = () => {
 
     }, [value])
 
+    const [add, setAdd] = useState([]);
+    const [remove, setRemove] = useState([]);
+
+    const onClickTableRowFun = useCallback(async (data) => {
+        const { check, value } = data;
+        const slNumber = value?.slno;
+        const ipNumber = value?.IP_NO;
+
+        if (check === true) {
+            //SELECTED VALUES
+            if (slNumber === 0) {
+                // ADD TO THE ARRAY FOR DB INSERTION
+                setAdd([...add, value])
+            } else {
+                const filterdRemoveData = remove?.filter(e => e.IP_NO !== ipNumber)
+                setRemove(filterdRemoveData)
+            }
+        } else {
+            //UNSELECTED VALUES
+            if (slNumber === 0) {
+                //REMOVE VALUE FROM ADD ARRAY
+                const filterdAddData = add?.filter(e => e.IP_NO !== ipNumber)
+                setAdd(filterdAddData)
+            } else {
+                //REMOVE VALUE FROM remove array
+                setRemove([...remove, value])
+            }
+        }
+    }, [add, remove])
+    const [open, setOpen] = React.useState(false);
+
     return (
         <Paper
             variant="outlined"
@@ -235,6 +222,15 @@ const IpPatientGrouping = () => {
             }}
         >
             <ToastContainer />
+            <PatientGroupModal
+                open={open}
+                setOpen={setOpen}
+                addData={add}
+                removeData={remove}
+                setIplist={setIplist}
+                setAdd={setAdd}
+                setRemove={setRemove}
+            />
             <Box sx={{
                 display: 'flex',
                 backgroundColor: '#525252',
@@ -260,80 +256,94 @@ const IpPatientGrouping = () => {
                     flex: 1,
                     flexDirection: 'column',
                     borderBottomLeftRadius: '3px',
-                    borderBottomRightRadius: '3px'
+                    borderBottomRightRadius: '3px',
                 }}
             >
                 <Paper
                     square
                     variant='outlined'
-                    sx={{ display: 'flex', mx: 0, p: 0.5, justifyContent: 'center' }}
+                    sx={{ display: 'flex', mx: 0, p: 0.5, justifyContent: 'center', flexDirection: { md: 'column', lg: 'row' } }}
                 >
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            fontFamily: 'Arial',
-                            fontSize: '13px',
-                            fontWeight: 'bold',
-                            color: '#525252',
-                            pr: 2
-                        }}
-                    >
-                        Date :
+                    <Box sx={{ display: 'flex', pb: 0.5, justifyContent: 'center', }} >
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                fontFamily: 'Arial',
+                                fontSize: '13px',
+                                fontWeight: 'bold',
+                                color: '#525252',
+                                pr: 2
+                            }}
+                        >
+                            Date :
+                        </Box>
+                        <LocalizationProvider dateAdapter={AdapterDateFns} >
+                            <DatePicker
+                                // label="Controlled picker"
+                                value={value}
+                                onChange={(newValue) => setValue(newValue)}
+                                disableFuture
+                                disableHighlightToday={true}
+                                slotProps={{ textField: { size: 'small' } }}
+                            // minDate={minDate}
+                            />
+                        </LocalizationProvider>
+                        <Button
+                            variant='outlined'
+                            sx={{ mx: 2 }}
+                            size='small'
+                            onClick={getAdmissionListFun}
+                        >Get Admission</Button>
+                        <Button
+                            variant='outlined'
+                            color='error'
+                            sx={{ mx: 2 }}
+                            size='small'
+                            onClick={() => setOpen(true)}
+                        >Save Patient List</Button>
                     </Box>
-                    <LocalizationProvider dateAdapter={AdapterDateFns} >
-                        <DatePicker
-                            // label="Controlled picker"
-                            value={value}
-                            onChange={(newValue) => setValue(newValue)}
-                            disableFuture
-                            disableHighlightToday={true}
-                            slotProps={{ textField: { size: 'small' } }}
-                            minDate={minDate}
-                        />
-                    </LocalizationProvider>
-                    <Button
-                        variant='outlined'
-                        sx={{ mx: 2 }}
-                        onClick={getAdmissionListFun}
-                    >Get Admission</Button>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            fontFamily: 'Arial',
-                            fontSize: '13px',
-                            fontWeight: 'bold',
-                            color: '#525252',
-                            px: 2
-                        }}
-                    >
-                        Last Discharge update Time :
-                    </Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            fontFamily: 'Arial',
-                            fontSize: '13px',
-                            fontWeight: 'bold',
-                            color: '#525252',
-                            pr: 2
-                        }}
-                    >
-                        {lastDisUpdateDate}
-                    </Box>
-                    <Button
-                        variant='outlined'
-                        sx={{ mx: 2 }}
-                        onClick={dischargeProcess}
-                    >Discharge Process</Button>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', }} >
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                fontFamily: 'Arial',
+                                fontSize: '13px',
+                                fontWeight: 'bold',
+                                color: '#525252',
+                                px: 2
+                            }}
+                        >
+                            Last Discharge update Time :
+                        </Box>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                fontFamily: 'Arial',
+                                fontSize: '13px',
+                                fontWeight: 'bold',
+                                color: '#525252',
+                                pr: 2
+                            }}
+                        >
+                            {lastDisUpdateDate}
+                        </Box>
+                        <Button
+                            variant='outlined'
+                            sx={{ mx: 2 }}
+                            onClick={dischargeProcess}
+                            size='small'
+                        >Discharge Process</Button>
 
-                    <Button
-                        variant='outlined'
-                        sx={{ mx: 2 }}
-                        onClick={() => navigate('/Menu/Admin')}
-                    >Close</Button>
+                        <Button
+                            variant='outlined'
+                            sx={{ mx: 2 }}
+                            onClick={() => navigate('/Menu/Admin')}
+                            size='small'
+                        >Close</Button>
+                    </Box>
                 </Paper>
                 <Paper
                     square
@@ -344,11 +354,11 @@ const IpPatientGrouping = () => {
                     }}
                 >
                     <TableContainer component={Paper} sx={{ maxHeight: 700 }}  >
-                        {apiStatus && <LinearProgress />}
+                        {ipList?.length === 0 && <LinearProgress />}
                         <Table size='small' stickyHeader >
                             <TableHead >
                                 <TableRow>
-                                    <TableCell variant='head' padding='checkbox' >slno</TableCell>
+                                    <TableCell variant='head' padding='checkbox' ></TableCell>
                                     <TableCell variant='head' padding='checkbox' >Date</TableCell>
                                     <TableCell variant='head' padding='checkbox' >Inpatient #</TableCell>
                                     <TableCell variant='head' padding='checkbox' >Outpatient #</TableCell>
@@ -357,7 +367,7 @@ const IpPatientGrouping = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {ipList?.map((val, idx) => <TableRows key={idx} data={val} n={idx} setCount={setCount} />)}
+                                {ipList?.map((val, idx) => <TableRows key={idx} data={val} n={idx} setCount={setCount} onClick={onClickTableRowFun} />)}
                             </TableBody>
                         </Table>
                     </TableContainer>
@@ -367,4 +377,6 @@ const IpPatientGrouping = () => {
     )
 }
 
-export default memo(IpPatientGrouping) 
+export default memo(IpPatientGrouping)
+
+

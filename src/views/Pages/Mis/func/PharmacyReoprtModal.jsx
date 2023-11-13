@@ -6,10 +6,9 @@ import ModalDialog from '@mui/joy/ModalDialog';
 import Typography from '@mui/joy/Typography';
 import ReportHeader from '../../../Components/ReportHeader';
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from '@mui/material';
-import { axiosinstance } from '../../../../controllers/AxiosConfig';
 import { format } from 'date-fns';
 
-const PharmacyReoprtModal = ({ layout, setLayout, state, data }) => {
+const PharmacyReoprtModal = ({ layout, setLayout, state, data, name }) => {
     const { pharma1, pharma2, pharma3, pharma4 } = data
 
     const totalAmountOne = pharma1?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0);
@@ -37,7 +36,7 @@ const PharmacyReoprtModal = ({ layout, setLayout, state, data }) => {
                         boxShadow: 5
                     }}
                 >
-                    <ReportHeader data={state} name="Director Group Wise Sales" />
+                    <ReportHeader data={state} name="Director Group Wise Sales" hosName={name} disable={true} />
                     <Box sx={{
                         overflow: 'auto',
                         paddingBottom: '15px',

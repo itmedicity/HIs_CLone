@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { memo, useCallback, useEffect } from 'react'
+import React, { memo } from 'react'
 import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
 import ModalDialog from '@mui/joy/ModalDialog';
@@ -7,7 +7,7 @@ import Typography from '@mui/joy/Typography';
 import ReportHeader from '../../../Components/ReportHeader';
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from '@mui/material';
 
-const CreditInsuranceBillModal = ({ layout, setLayout, state, data }) => {
+const CreditInsuranceBillModal = ({ layout, setLayout, state, data, name }) => {
     const newArry = [];
     const conCatArray = newArry.concat(data.credit1, data.credit2, data.credit3, data.credit4, data.credit5, data.credit6);
 
@@ -35,7 +35,7 @@ const CreditInsuranceBillModal = ({ layout, setLayout, state, data }) => {
                         boxShadow: 5
                     }}
                 >
-                    <ReportHeader data={state} name="Credit/Insu. Bill" />
+                    <ReportHeader data={state} name="Credit/Insu. Bill" hosName={name} disable={true} />
                     <Box sx={{
                         overflow: 'auto',
                         paddingBottom: '15px',

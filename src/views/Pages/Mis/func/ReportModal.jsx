@@ -7,7 +7,7 @@ import Typography from '@mui/joy/Typography';
 import ReportHeader from '../../../Components/ReportHeader';
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from '@mui/material';
 
-const ReportModal = ({ layout, setLayout, state, data }) => {
+const ReportModal = ({ layout, setLayout, state, data, name }) => {
     const { status, reportName, reportData } = data
 
     const dataArray = reportData?.map((e, idx) => {
@@ -44,7 +44,12 @@ const ReportModal = ({ layout, setLayout, state, data }) => {
                         boxShadow: 5
                     }}
                 >
-                    <ReportHeader data={state} name="Director Group Wise Sales" />
+                    <ReportHeader
+                        data={state}
+                        name="Director Group Wise Sales"
+                        hosName={name}
+                        disable={true}
+                    />
                     <Box sx={{
                         overflow: 'auto',
                         paddingBottom: '15px',

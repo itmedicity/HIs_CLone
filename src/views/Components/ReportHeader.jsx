@@ -7,14 +7,14 @@ import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
 
-const ReportHeader = ({ name, data }) => {
+const ReportHeader = ({ name, data, hosName, disable }) => {
     const { from, to } = data;
 
     const navigate = useNavigate();
 
     return (
         <Box sx={{ m: '25px' }} >
-            <Box display={'flex'} justifyContent='flex-end'  >
+            <Box display={disable === false ? 'flex' : 'none'} justifyContent='flex-end'  >
                 <Tooltip size="sm" variant="outlined" title="Go Back" color="danger"  >
                     <IconButton disabled={false} variant="outlined" size="sm" onClick={() => navigate("/Menu/Mis")} >
                         <CloseIcon />
@@ -31,7 +31,7 @@ const ReportHeader = ({ name, data }) => {
                     textDecoration: 'underline',
                     justifyContent: 'center'
                 }}
-            >TRAVANCORE MEDICAL COLLEGE & HOSPITAL</Box>
+            >{hosName}</Box>
             <Box
                 sx={{
                     display: 'flex',

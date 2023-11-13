@@ -886,6 +886,7 @@ const IncomeReports = () => {
                 setLayout={setLayout}
                 state={state}
                 data={modalData}
+                name="QUILON MEDICAL TRUST"
             />
             {/* pHARMACY rEPORTS dETAILS mODAL */}
             <PharmacyReoprtModal
@@ -893,6 +894,7 @@ const IncomeReports = () => {
                 setLayout={setLayout1}
                 state={state}
                 data={pharmacyDetl}
+                name="QUILON MEDICAL TRUST"
             />
             {/* Credit insurance Bill details */}
             <CreditInsuranceBillModal
@@ -900,6 +902,7 @@ const IncomeReports = () => {
                 setLayout={setLayout2}
                 state={state}
                 data={credtInsuranceDetl}
+                name="QUILON MEDICAL TRUST"
             />
             {/* Unsettled amount Details */}
             <UnsettledAmntModal
@@ -907,6 +910,7 @@ const IncomeReports = () => {
                 setLayout={setLayout3}
                 state={state}
                 data={unsettled}
+                name="QUILON MEDICAL TRUST"
             />
             {/* ADVANCE COLLECTION [C] */}
             <AdvanceCollcetionDetl
@@ -914,6 +918,7 @@ const IncomeReports = () => {
                 setLayout={setLayout4}
                 state={state}
                 data={advanceCollDetl}
+                name="QUILON MEDICAL TRUST"
             />
             {/* CREDIT INSURANCE BILL COLLECTION  */}
             <CreditInsurBillCollModal
@@ -921,10 +926,11 @@ const IncomeReports = () => {
                 setLayout={setLayout5}
                 state={state}
                 data={credInsuranceCol}
+                name="QUILON MEDICAL TRUST"
             />
             {/* Hospital income reports */}
             <Paper square sx={{ borderColor: 'black', border: 1 }}  >
-                <ReportHeader name="Hospital Income" data={state} />
+                <ReportHeader name="Hospital Income" data={state} hosName="QUILON MEDICAL TRUST" disable={false} />
                 <Box sx={{
                     overflow: 'auto',
                     padding: '15px'

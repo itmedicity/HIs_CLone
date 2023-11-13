@@ -920,6 +920,7 @@ const IncomeReports = () => {
                 setLayout={setLayout}
                 state={state}
                 data={modalData}
+                name="TRAVANCORE SUPER SPECIALITY HOSPITAL"
             />
             {/* pHARMACY rEPORTS dETAILS mODAL */}
             <PharmacyReoprtModal
@@ -927,6 +928,7 @@ const IncomeReports = () => {
                 setLayout={setLayout1}
                 state={state}
                 data={pharmacyDetl}
+                name="TRAVANCORE SUPER SPECIALITY HOSPITAL"
             />
             {/* Credit insurance Bill details */}
             <CreditInsuranceBillModal
@@ -934,6 +936,7 @@ const IncomeReports = () => {
                 setLayout={setLayout2}
                 state={state}
                 data={credtInsuranceDetl}
+                name="TRAVANCORE SUPER SPECIALITY HOSPITAL"
             />
             {/* Unsettled amount Details */}
             <UnsettledAmntModal
@@ -941,6 +944,7 @@ const IncomeReports = () => {
                 setLayout={setLayout3}
                 state={state}
                 data={unsettled}
+                name="TRAVANCORE SUPER SPECIALITY HOSPITAL"
             />
             {/* ADVANCE COLLECTION [C] */}
             <AdvanceCollcetionDetl
@@ -948,6 +952,7 @@ const IncomeReports = () => {
                 setLayout={setLayout4}
                 state={state}
                 data={advanceCollDetl}
+                name="TRAVANCORE SUPER SPECIALITY HOSPITAL"
             />
             {/* CREDIT INSURANCE BILL COLLECTION  */}
             <CreditInsurBillCollModal
@@ -955,9 +960,10 @@ const IncomeReports = () => {
                 setLayout={setLayout5}
                 state={state}
                 data={credInsuranceCol}
+                name="TRAVANCORE SUPER SPECIALITY HOSPITAL"
             />
             <Paper square sx={{ borderColor: 'black', border: 1 }}  >
-                <ReportHeader name="Hospital Income" data={state} />
+                <ReportHeader name="Hospital Income" data={state} hosName='TRAVANCORE SUPER SPECIALITY HOSPITAL' disable={false} />
                 <Box sx={{
                     overflow: 'auto',
                     padding: '15px'

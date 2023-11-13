@@ -6,10 +6,8 @@ import ModalDialog from '@mui/joy/ModalDialog';
 import Typography from '@mui/joy/Typography';
 import ReportHeader from '../../../Components/ReportHeader';
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from '@mui/material';
-import { axiosinstance } from '../../../../controllers/AxiosConfig';
-import { format } from 'date-fns';
 
-const CreditInsurBillCollModal = ({ layout, setLayout, state, data }) => {
+const CreditInsurBillCollModal = ({ layout, setLayout, state, data, name }) => {
     const { data0, data1 } = data
     let newArray = data0?.concat(data1);
     const CASH = newArray?.reduce((accumulator, currentValue) => accumulator + currentValue.CASH, 0);
@@ -39,7 +37,7 @@ const CreditInsurBillCollModal = ({ layout, setLayout, state, data }) => {
                         boxShadow: 5
                     }}
                 >
-                    <ReportHeader data={state} name="Credit Collection" />
+                    <ReportHeader data={state} name="Credit Collection" hosName={name} disable={true} />
                     <Box sx={{
                         overflow: 'auto',
                         paddingBottom: '15px',

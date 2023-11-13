@@ -31,21 +31,195 @@ const HospitalncomeReports = () => {
             to: moment(endDate).format('YYYY-MM-DD 23:59:59')
         }
 
+        // await axiosinstance.post('/admission/getIpNumber', postData2).then((result) => {
+        //     const { success, data } = result.data;
+        //     if (success === 1) {
+        //         const ipNumber = data?.map((e) => e.ip_no)
+        //         const rmIpNumber = data?.filter((e) => e.tmch_status === '0').map(e => e.ip_no)
+        //         navigate('/Menu/income-reports-tmch', {
+        //             state: {
+        //                 from: postDate.from,
+        //                 to: postDate.to,
+        //                 ptno: ipNumber,
+        //                 phar: rmIpNumber,
+        //             }
+        //         })
+        //     } else {
+        //         navigate('/Menu/income-reports', {
+        //             state: {
+        //                 from: postDate.from,
+        //                 to: postDate.to,
+        //                 ptno: [],
+        //                 phar: []
+        //             }
+        //         })
+        //     }
+        // })
+
+        // await axiosinstance.post('/admission/getIpNumber', postData2).then((result) => {
+        //     const { success, data } = result.data;
+        //     if (success === 1) {
+        //         const ipNumber = data?.map((e) => e.ip_no)
+        //         const rmIpNumber = data?.filter((e) => e.tmch_status === '0').map(e => e.ip_no)
+
+        //     //GET IP NUMBER AND ADMISSION DATE FROM IPRECEPT FROM PREVIOUS DAY COLLECTION
+
+        //     axiosinstance.post('/admission/getIpReceiptInfo', postDate).then((result2) => {
+        //         const { success, data } = result2.data;
+        //         if (success === 1) {
+
+        //         }else{
+
+        //         }
+        //     })
+
+        //         navigate('/Menu/income-reports-tmch', {
+        //             state: {
+        //                 from: postDate.from,
+        //                 to: postDate.to,
+        //                 ptno: ipNumber,
+        //                 phar: rmIpNumber,
+        //             }
+        //         })
+        //     } else {
+        //         navigate('/Menu/income-reports', {
+        //             state: {
+        //                 from: postDate.from,
+        //                 to: postDate.to,
+        //                 ptno: [],
+        //                 phar: []
+        //             }
+        //         })
+        //     }
+        // })
+
+
+
         // 1 -> GET THE CURRENT DATE ADMISSION
         // 2 -> GET THE CURRENT DATE DISCHARGE
         // 3 -> CURRENT ADMITTED PATIENT
 
+        //GET THE IP INFORMATION FROM MYSQL SERVER
         await axiosinstance.post('/admission/getIpNumber', postData2).then((result) => {
             const { success, data } = result.data;
             if (success === 1) {
                 const ipNumber = data?.map((e) => e.ip_no)
                 const rmIpNumber = data?.filter((e) => e.tmch_status === '0').map(e => e.ip_no)
+
+                //GET THE ORACLE RECEIPT     
+                axiosinstance.post('/admission/getIpReceiptInfo', postDate).then((result2) => {
+                    const { success, data } = result2.data;
+                    if (success === 1) {
+                        const ipReceiptData = data;
+                        if (Object.values(ipReceiptData).length > 0) {
+
+                            //FIND THE MINIMUM DATE (ADMISSION DATE TO THE CORRESPODING IP NUMBER)
+                            let minDate = ipReceiptData.reduce((min, obj) => {
+                                const currentDate = new Date(obj.ADMISSION);
+                                return currentDate < min ? currentDate : min;
+                            }, new Date(ipReceiptData[0].ADMISSION));
+
+                            //GET THE IP NUMBER BASED ON RECEIPT
+                            const post_data0 = {
+                                from: moment(minDate).format('YYYY-MM-DD 00:00:00'),
+                                to: moment(endDate).format('YYYY-MM-DD 23:59:59')
+                            }
+                            //GET THE DISCHARGED IP NUMBER LIST FROM MYSQL BASED ON MINIMUM DATE ( ADMISSION DATE)
+                            axiosinstance.post('/admission/getIpDischargedPatientInfo', post_data0).then((result3) => {
+                                const { success, data } = result3.data;
+                                if (success === 1) {
+                                    const newIpReceiptBased = data;
+                                    if (Object.values(newIpReceiptBased).length > 0) {
+                                        const array1 = newIpReceiptBased?.map(e => e.ip_no);
+                                        const array2 = ipReceiptData?.map(e => e.IP_NO)
+
+                                        const filtedArray = array1.filter(item => array2.includes(item))
+
+                                        navigate('/Menu/income-reports-tmch', {
+                                            state: {
+                                                from: postDate.from,
+                                                to: postDate.to,
+                                                ptno: ipNumber,
+                                                phar: rmIpNumber,
+                                                ipNoColl: ipNumber?.concat(filtedArray)
+                                            }
+                                        })
+                                    } else {
+                                        navigate('/Menu/income-reports-tmch', {
+                                            state: {
+                                                from: postDate.from,
+                                                to: postDate.to,
+                                                ptno: ipNumber,
+                                                phar: rmIpNumber,
+                                                ipNoColl: ipNumber
+                                            }
+                                        })
+                                    }
+                                } else {
+                                    navigate('/Menu/income-reports-tmch', {
+                                        state: {
+                                            from: postDate.from,
+                                            to: postDate.to,
+                                            ptno: ipNumber,
+                                            phar: rmIpNumber,
+                                            ipNoColl: ipNumber
+                                        }
+                                    })
+                                }
+
+                            }).catch(() => {
+                                navigate('/Menu/income-reports-tmch', {
+                                    state: {
+                                        from: postDate.from,
+                                        to: postDate.to,
+                                        ptno: ipNumber,
+                                        phar: rmIpNumber,
+                                        ipNoColl: ipNumber
+                                    }
+                                })
+                            })
+
+                        } else {
+                            navigate('/Menu/income-reports-tmch', {
+                                state: {
+                                    from: postDate.from,
+                                    to: postDate.to,
+                                    ptno: ipNumber,
+                                    phar: rmIpNumber,
+                                    ipNoColl: ipNumber
+                                }
+                            })
+                        }
+                    } else {
+                        navigate('/Menu/income-reports-tmch', {
+                            state: {
+                                from: postDate.from,
+                                to: postDate.to,
+                                ptno: ipNumber,
+                                phar: rmIpNumber,
+                                ipNoColl: ipNumber
+                            }
+                        })
+                    }
+                }).catch((e) => {
+                    navigate('/Menu/income-reports-tmch', {
+                        state: {
+                            from: postDate.from,
+                            to: postDate.to,
+                            ptno: ipNumber,
+                            phar: rmIpNumber,
+                            ipNoColl: ipNumber
+                        }
+                    })
+                })
+
                 navigate('/Menu/income-reports-tmch', {
                     state: {
                         from: postDate.from,
                         to: postDate.to,
                         ptno: ipNumber,
-                        phar: rmIpNumber
+                        phar: rmIpNumber,
+                        ipNoColl: ipNumber
                     }
                 })
             } else {
