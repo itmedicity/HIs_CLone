@@ -20,8 +20,11 @@ const incomeReportsTmch = React.lazy(() => import('../views/Pages/Mis/HospitalIc
 
 //Tssh
 const HospitalIncomeReportsTssh = React.lazy(() => import('../views/Pages/Mis/HospitalIncomeTssh/HospitalncomeReports'))
-
 const incomeReportsTssh = React.lazy(() => import('../views/Pages/Mis/HospitalIncomeTssh/IncomeReports'))
+
+//Grouped
+const HospitalIncomeReportsGrouped = React.lazy(() => import('../views/Pages/Mis/HospitalIncomeTmchGrouped/HospitalncomeReports'))
+const incomeReportsGrouped = React.lazy(() => import('../views/Pages/Mis/HospitalIncomeTmchGrouped/IncomeReports'))
 
 //Report Grouping
 const IpPatientGroup = React.lazy(() => import('../views/Pages/Admin/ReportGrouping/TsshPatientGroup/IpPatientGrouping'))
@@ -50,6 +53,7 @@ const routes = [
     { path: '/PharmacyBilling', element: PharmacyBilling },
     { path: '/DashBoard', element: DashBoard },
     { path: '/Test', element: Test },
+
     //qmt
     { path: '/hospital_income', element: HospitalIncomeReports, name: "Hospital Income Statement" },
     { path: '/income-reports', element: incomeReports, name: "Hospital Income Statement" },
@@ -59,7 +63,11 @@ const routes = [
     //Tssh
     { path: '/hospital_income_tssh', element: HospitalIncomeReportsTssh, name: "Hospital Income Statement" },
     { path: '/income-reports-tssh', element: incomeReportsTssh, name: "Hospital Income Statement" },
+    //Grouped
+    { path: '/hospital_income_grouped', element: HospitalIncomeReportsGrouped, name: "Hospital Income Statement" },
+    { path: '/income-reports-grouped', element: incomeReportsGrouped, name: "Hospital Income Statement" },
 
+    //others
     { path: '/User', name: 'New User Creation', element: User },
     { path: '/IpPatientGrouping', element: IpPatientGroup, name: "Patient Grouping" },
     { path: '/TmcPatientGrouping', element: TmcPatientGrouping, name: "TMCH Grouping" },

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { memo, useEffect, useState } from 'react'
 import ContentMain from '../Components/ContentMain'
 import ContentSecondary from '../Components/ContentSecondary'
@@ -28,13 +29,8 @@ const Mis = () => {
             <ContentSecondary name="MIS" >
                 <ContentPaper name="Top Officials" >
                     {
-                        topoff && topoff.map((val) => {
-                            return <ContentNavLink name={val.name} route={val.path} key={val.slno} />;
-                        })
+                        topoff && topoff.map((val) => <ContentNavLink name={val.name} route={val.path} key={val.slno} />)
                     }
-                    {/* {
-                        top_officials.map((element, idx) => <ContentNavLink name={element.name} route={element.path} key={idx} />)
-                    } */}
                 </ContentPaper>
                 <ContentPaper name="Reg. Cons.">
                     <ContentNavLink name="Query Add/Edit" route="" />
