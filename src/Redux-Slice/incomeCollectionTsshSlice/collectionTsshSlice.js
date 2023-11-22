@@ -87,6 +87,14 @@ const getipcreditInsuranceBillTssh = createAsyncThunk('api/creditInsuranceBillTs
         })
 })
 
+//CREDIT INSURANCE PENDING BILL
+const getipcreditInsuranceBillPending = createAsyncThunk('api/creditInsuranceBillPendingTssh', (postData) => {
+    return axiosinstance.post("/collectionTssh/creditInsuranceBillRefundTssh", postData)
+        .then((response) => {
+            return response.data;
+        })
+})
+
 const initialState = {
     advanceCollection: {
         data: [],
@@ -144,6 +152,11 @@ const initialState = {
         message: "",
     },
     creditInsuranceBill: {
+        data: [],
+        status: 0,
+        message: "",
+    },
+    creditInsuranceBillPending: {
         data: [],
         status: 0,
         message: "",
@@ -395,6 +408,25 @@ const collectionTsshSlice = createSlice({
             state.creditInsuranceBill.data = payload.data
             state.loading = false
         },
+        // @ts-ignore
+        [getipcreditInsuranceBillPending.pending]: (state, { payload }) => {
+            state.creditInsuranceBillPending.status = 0
+            state.creditInsuranceBillPending.message = "pending"
+            state.loading = true
+        },
+        // @ts-ignore
+        [getipcreditInsuranceBillPending.rejected]: (state, { payload }) => {
+            state.creditInsuranceBillPending.status = 2
+            state.creditInsuranceBillPending.message = "Error"
+            state.loading = false
+        },
+        // @ts-ignore
+        [getipcreditInsuranceBillPending.fulfilled]: (state, { payload }) => {
+            state.creditInsuranceBillPending.status = payload.success
+            state.creditInsuranceBillPending.message = payload.message
+            state.creditInsuranceBillPending.data = payload.data
+            state.loading = false
+        },
     }
 })
 
@@ -410,7 +442,8 @@ export {
     getipPreviousDayDiscountTssh,
     getunsettledAmountTssh,
     getipPreviousDayCollectionTssh,
-    getipcreditInsuranceBillTssh
+    getipcreditInsuranceBillTssh,
+    getipcreditInsuranceBillPending
 }
 
 export default collectionTsshSlice.reducer;

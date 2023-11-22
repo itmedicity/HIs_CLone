@@ -15,7 +15,8 @@ import {
     getipPreviousDayDiscount,
     getunsettledAmount,
     getipPreviousDayCollection,
-    getipcreditInsuranceBill
+    getipcreditInsuranceBill,
+    getipcreditInsuranceBillPending
 } from '../../../../Redux-Slice/incomeCollectionSlice/collectionSlice';
 import {
     getProincome1,
@@ -150,6 +151,7 @@ const IncomeReports = () => {
     const unsettledAmount = misCollection?.[9].unsettledAmount?.toLocaleString('en-US', { minimumFractionDigits: 2 })
     const ippreviousDayCollection = misCollection?.[10].ippreviousDayCollection?.toLocaleString('en-US', { minimumFractionDigits: 2 })
     const creditInsuranceBill = misCollection?.[11].creditInsuranceBill?.toLocaleString('en-US', { minimumFractionDigits: 2 })
+    const creditInsuranceBillTax = misCollection?.[11].tax?.toLocaleString('en-US', { minimumFractionDigits: 2 })
 
     // @ts-ignore
     const collectionAgainSale = parseFloat(collectionAgainstSalesTotal)
@@ -193,6 +195,7 @@ const IncomeReports = () => {
             dispatch(getipPreviousDayCollection(state))
             // @ts-ignore
             dispatch(getipcreditInsuranceBill(state))
+            dispatch(getipcreditInsuranceBillPending(state))
 
             //INCOME PART
             // @ts-ignore
@@ -301,9 +304,13 @@ const IncomeReports = () => {
                 },
                 {
                     creditInsuranceBill: collection?.creditInsuranceBill?.status === 1 ?
-                        collection?.creditInsuranceBill?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
+                        collection?.creditInsuranceBill?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) +
+                        collection?.creditInsuranceBillPending?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0)
+                        : 0,
                     tax: collection?.creditInsuranceBill?.status === 1 ?
-                        collection?.creditInsuranceBill?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
+                        collection?.creditInsuranceBill?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) +
+                        collection?.creditInsuranceBillPending?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0)
+                        : 0,
                     status: collection?.creditInsuranceBill?.status === 1 || collection?.creditInsuranceBill?.status === 2 ? true : false
                 }
             ]
@@ -878,6 +885,8 @@ const IncomeReports = () => {
 
     }, [state])
 
+    console.log(misCollection)
+
     return (
         <Box flex={1} sx={{ backgroundColor: 'lightgray', p: '1%' }} >
             {/* Detailed report model when open based on selected group using the "onClickFuncLevelOne" function */}
@@ -1097,7 +1106,7 @@ const IncomeReports = () => {
                                         {creditInsuranceBill}
                                     </TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} ></TableCell>
-                                    <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} >0.00</TableCell>
+                                    <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} >{creditInsuranceBillTax}</TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px', pr: 2 }} ></TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px', pr: 1 }} ></TableCell>
                                 </TableRow>

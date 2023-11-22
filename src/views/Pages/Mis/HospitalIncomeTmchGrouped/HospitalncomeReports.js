@@ -173,7 +173,7 @@ const HospitalncomeReports = () => {
                     })
                 })
 
-                navigate('/Menu/income-reports-tssh', {
+                navigate('/Menu/income-reports-grouped', {
                     state: {
                         from: postDate.from,
                         to: postDate.to,
@@ -184,7 +184,7 @@ const HospitalncomeReports = () => {
                     }
                 })
             } else {
-                navigate('/Menu/income-reports', {
+                navigate('/Menu/income-reports-grouped', {
                     state: {
                         from: postDate.from,
                         to: postDate.to,

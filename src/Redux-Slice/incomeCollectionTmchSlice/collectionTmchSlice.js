@@ -86,6 +86,14 @@ const getipcreditInsuranceBillTmch = createAsyncThunk('api/creditInsuranceBillTm
         })
 })
 
+//CREDIT INSURANCE PENDING BILL
+const getipcreditInsuranceBillPending = createAsyncThunk('api/creditInsuranceBillPendingTmch', (postData) => {
+    return axiosinstance.post("/collectionTmch/creditInsuranceBillRefundTmch", postData)
+        .then((response) => {
+            return response.data;
+        })
+})
+
 const initialState = {
     advanceCollection: {
         data: [],
@@ -143,6 +151,11 @@ const initialState = {
         message: "",
     },
     creditInsuranceBill: {
+        data: [],
+        status: 0,
+        message: "",
+    },
+    creditInsuranceBillPending: {
         data: [],
         status: 0,
         message: "",
@@ -394,6 +407,25 @@ const collectionTmchSlice = createSlice({
             state.creditInsuranceBill.data = payload.data
             state.loading = false
         },
+        // @ts-ignore
+        [getipcreditInsuranceBillPending.pending]: (state, { payload }) => {
+            state.creditInsuranceBillPending.status = 0
+            state.creditInsuranceBillPending.message = "pending"
+            state.loading = true
+        },
+        // @ts-ignore
+        [getipcreditInsuranceBillPending.rejected]: (state, { payload }) => {
+            state.creditInsuranceBillPending.status = 2
+            state.creditInsuranceBillPending.message = "Error"
+            state.loading = false
+        },
+        // @ts-ignore
+        [getipcreditInsuranceBillPending.fulfilled]: (state, { payload }) => {
+            state.creditInsuranceBillPending.status = payload.success
+            state.creditInsuranceBillPending.message = payload.message
+            state.creditInsuranceBillPending.data = payload.data
+            state.loading = false
+        },
     }
 })
 
@@ -409,7 +441,8 @@ export {
     getipPreviousDayDiscountTmch,
     getunsettledAmountTmch,
     getipPreviousDayCollectionTmch,
-    getipcreditInsuranceBillTmch
+    getipcreditInsuranceBillTmch,
+    getipcreditInsuranceBillPending
 }
 
 export default collectionTmchSlice.reducer;
