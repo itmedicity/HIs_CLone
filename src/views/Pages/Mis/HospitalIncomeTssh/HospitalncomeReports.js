@@ -95,7 +95,8 @@ const HospitalncomeReports = () => {
                                                 to: postDate.to,
                                                 ptno: ipNumber,
                                                 phar: rmIpNumber,
-                                                ipNoColl: ipNumber?.concat(filtedArray)
+                                                ipNoColl: ipNumber?.concat(filtedArray),
+                                                group: 0
                                             }
                                         })
                                     } else {
@@ -105,7 +106,8 @@ const HospitalncomeReports = () => {
                                                 to: postDate.to,
                                                 ptno: ipNumber,
                                                 phar: rmIpNumber,
-                                                ipNoColl: ipNumber
+                                                ipNoColl: ipNumber,
+                                                group: 0
                                             }
                                         })
                                     }
@@ -116,7 +118,8 @@ const HospitalncomeReports = () => {
                                             to: postDate.to,
                                             ptno: ipNumber,
                                             phar: rmIpNumber,
-                                            ipNoColl: ipNumber
+                                            ipNoColl: ipNumber,
+                                            group: 0
                                         }
                                     })
                                 }
@@ -128,7 +131,8 @@ const HospitalncomeReports = () => {
                                         to: postDate.to,
                                         ptno: ipNumber,
                                         phar: rmIpNumber,
-                                        ipNoColl: ipNumber
+                                        ipNoColl: ipNumber,
+                                        group: 0
                                     }
                                 })
                             })
@@ -140,7 +144,8 @@ const HospitalncomeReports = () => {
                                     to: postDate.to,
                                     ptno: ipNumber,
                                     phar: rmIpNumber,
-                                    ipNoColl: ipNumber
+                                    ipNoColl: ipNumber,
+                                    group: 0
                                 }
                             })
                         }
@@ -151,7 +156,8 @@ const HospitalncomeReports = () => {
                                 to: postDate.to,
                                 ptno: ipNumber,
                                 phar: rmIpNumber,
-                                ipNoColl: ipNumber
+                                ipNoColl: ipNumber,
+                                group: 0
                             }
                         })
                     }
@@ -162,7 +168,8 @@ const HospitalncomeReports = () => {
                             to: postDate.to,
                             ptno: ipNumber,
                             phar: rmIpNumber,
-                            ipNoColl: ipNumber
+                            ipNoColl: ipNumber,
+                            group: 0
                         }
                     })
                 })
@@ -173,7 +180,8 @@ const HospitalncomeReports = () => {
                         to: postDate.to,
                         ptno: ipNumber,
                         phar: rmIpNumber,
-                        ipNoColl: ipNumber
+                        ipNoColl: ipNumber,
+                        group: 0
                     }
                 })
             } else {
@@ -182,7 +190,8 @@ const HospitalncomeReports = () => {
                         from: postDate.from,
                         to: postDate.to,
                         ptno: [],
-                        phar: []
+                        phar: [],
+                        group: 0
                     }
                 })
             }

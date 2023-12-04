@@ -1394,4 +1394,4 @@ const IncomeReports = () => {
     )
 }
 
-export default memo(IncomeReports) 
+export default memo(IncomeReports)

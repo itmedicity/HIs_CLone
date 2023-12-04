@@ -885,8 +885,6 @@ const IncomeReports = () => {
 
     }, [state])
 
-    console.log(misCollection)
-
     return (
         <Box flex={1} sx={{ backgroundColor: 'lightgray', p: '1%' }} >
             {/* Detailed report model when open based on selected group using the "onClickFuncLevelOne" function */}
