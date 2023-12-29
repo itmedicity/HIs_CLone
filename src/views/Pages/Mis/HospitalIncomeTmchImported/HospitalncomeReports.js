@@ -25,7 +25,6 @@ const HospitalncomeReports = () => {
         //GET THE TMCH DATA
         const result = await axiosinstance.post('/admission/getTmcIncome', postDataForMysql)
         const { success, data } = result.data;
-        console.log(success, data)
         if (success === 1) {
             navigate('/Menu/income-reports-imTmch', {
                 state: {
