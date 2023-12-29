@@ -26,6 +26,15 @@ const incomeReportsTssh = React.lazy(() => import('../views/Pages/Mis/HospitalIn
 const HospitalIncomeReportsGrouped = React.lazy(() => import('../views/Pages/Mis/HospitalIncomeTmchGrouped/HospitalncomeReports'))
 const incomeReportsGrouped = React.lazy(() => import('../views/Pages/Mis/HospitalIncomeTmchGrouped/IncomeReports'))
 
+//Grouped
+const HospitalIncomeReportsTmchImported = React.lazy(() => import('../views/Pages/Mis/HospitalIncomeTmchImported/HospitalncomeReports'))
+const incomeReportsTmchImported = React.lazy(() => import('../views/Pages/Mis/HospitalIncomeTmchImported/IncomeReports'))
+
+//Imported
+const HospitalIncomeReportsTsshImported = React.lazy(() => import('../views/Pages/Mis/HospitalIncomeTsshImported/HospitalncomeReports'))
+const incomeReportsTsshImported = React.lazy(() => import('../views/Pages/Mis/HospitalIncomeTsshImported/IncomeReports'))
+
+
 //Report Grouping
 const IpPatientGroup = React.lazy(() => import('../views/Pages/Admin/ReportGrouping/TsshPatientGroup/IpPatientGrouping'))
 const TmcPatientGrouping = React.lazy(() => import('../views/Pages/Admin/ReportGrouping/TmcPatientGroupRemove/PatientTmcGrouping'))
@@ -66,6 +75,16 @@ const routes = [
     //Grouped
     { path: '/hospital_income_grouped', element: HospitalIncomeReportsGrouped, name: "Hospital Income Statement" },
     { path: '/income-reports-grouped', element: incomeReportsGrouped, name: "Hospital Income Statement" },
+
+
+    //Tmch imported
+    { path: '/hospital_income_imTmch', element: HospitalIncomeReportsTmchImported, name: "Hospital Income Statement-tmch-imported" },
+    { path: '/income-reports-imTmch', element: incomeReportsTmchImported, name: "Hospital Income Statement-tmch-imported" },
+
+    //Tssh Imported
+    { path: '/hospital_income_imTssh', element: HospitalIncomeReportsTsshImported, name: "Hospital Income Statement-tssh-imported" },
+    { path: '/income-reports-imTssh', element: incomeReportsTsshImported, name: "Hospital Income Statement-tssh-imported" },
+
 
     //others
     { path: '/User', name: 'New User Creation', element: User },
