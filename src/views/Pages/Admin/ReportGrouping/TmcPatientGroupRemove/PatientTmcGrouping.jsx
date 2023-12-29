@@ -289,7 +289,7 @@ const IpPatientGrouping = () => {
                             disableFuture
                             disableHighlightToday={true}
                             slotProps={{ textField: { size: 'small' } }}
-                            minDate={minDate}
+                            // minDate={minDate}
                         />
                     </LocalizationProvider>
                     <Button

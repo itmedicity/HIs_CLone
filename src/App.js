@@ -12,7 +12,7 @@ const DefaultLayout = lazy(() => import('./HomeComponents/LayoutComponents/Defau
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename='/' >
       <Suspense fallback={<CircularProgress />} >
         <Provider store={store} >
           <Routes>

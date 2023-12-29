@@ -53,6 +53,7 @@ const HospitalncomeReports = () => {
         //     }
         // })
 
+        //GET THE IP INFORMATION FROM MYSQL SERVER
 
         await axiosinstance.post('/admission/getIpNumberTssh', postData2).then((result) => {
             const { success, data } = result.data;
@@ -196,7 +197,6 @@ const HospitalncomeReports = () => {
                 })
             }
         })
-
 
     }, [startDate, endDate]);
 

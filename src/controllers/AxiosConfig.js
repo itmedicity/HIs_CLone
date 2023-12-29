@@ -1,10 +1,10 @@
 import axios from "axios";
 import { DEV_API_URL, PRODUCTION_API_URL } from '../Constant/Static';
 
-axios.defaults.baseURL = DEV_API_URL;
+axios.defaults.baseURL = PRODUCTION_API_URL;
 
 export const axiosinstance = axios.create({
-    baseURL: DEV_API_URL,
+    baseURL: PRODUCTION_API_URL,
     headers: {
         "Content-Type": 'application/json',
         "Accept": 'application/json',
