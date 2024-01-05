@@ -44,37 +44,45 @@ const getPhaReturnPartTssh3 = createAsyncThunk('api/phaReturnPartTssh3', (postDa
 })
 
 
+
 const initialState = {
     phaSalePart1: {
         data: [],
         status: 0,
+        remove: 0,
         message: "",
     },
     phaReturnPart1: {
         data: [],
         status: 0,
+        remove: 0,
         message: "",
     },
     phaSalePart2: {
         data: [],
         status: 0,
+        remove: 0,
         message: "",
     },
     phaReturnPart2: {
         data: [],
         status: 0,
+        remove: 0,
         message: "",
     },
     phaSalePart3: {
         data: [],
         status: 0,
+        remove: 0,
         message: "",
     },
     phaReturnPart3: {
         data: [],
         status: 0,
+        remove: 0,
         message: "",
     },
+
 }
 
 const incomeSliceTssh = createSlice({
@@ -201,6 +209,8 @@ const incomeSliceTssh = createSlice({
             state.loading = false
             state.phaReturnPart3.data = payload.data
         },
+
+
     }
 })
 
@@ -210,7 +220,7 @@ export {
     getPhaSalePartTssh3,
     getPhaReturnPartTssh1,
     getPhaReturnPartTssh2,
-    getPhaReturnPartTssh3
+    getPhaReturnPartTssh3,
 }
 
 export default incomeSliceTssh.reducer;

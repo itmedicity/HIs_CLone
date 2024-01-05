@@ -3,7 +3,6 @@ import { axiosinstance } from '../../controllers/AxiosConfig'
 
 //ADVANCE COLLECTION
 const getAdvanceCollectionTssh = createAsyncThunk('api/advanceCollectionTssh', (postData) => {
-    console.log(postData)
     return axiosinstance.post("/collectionTssh/advanceCollection", postData)
         .then((response) => {
             return response.data;

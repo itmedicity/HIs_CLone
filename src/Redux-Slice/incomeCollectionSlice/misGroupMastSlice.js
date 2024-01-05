@@ -18,6 +18,13 @@ const getMisGroupMaster = createAsyncThunk('api/misMaster', (postData) => {
         })
 })
 
+const getRoundOff = createAsyncThunk('api/roundOff', (postData) => {
+    return axiosinstance.post("/pharmacyTssh/roundOffTssh", postData)
+        .then((response) => {
+            return response.data;
+        })
+})
+
 
 const initialState = {
     misGroupMaster: {
@@ -27,7 +34,13 @@ const initialState = {
     misGroupState: {
         data: [],
         status: false
-    }
+    },
+    roundOff: {
+        data: [],
+        status: 0,
+        remove: 1,
+        message: "",
+    },
 }
 
 const misGroupSlice = createSlice({
@@ -62,12 +75,33 @@ const misGroupSlice = createSlice({
             state.misGroupState.status = true
             state.misGroupState.data = payload.data
         },
+
+        // @ts-ignore
+        [getRoundOff.pending]: (state, { payload }) => {
+            state.roundOff.status = 0
+            state.roundOff.message = "pending"
+            state.loading = true
+        },
+        // @ts-ignore
+        [getRoundOff.rejected]: (state, { payload }) => {
+            state.roundOff.status = 2
+            state.roundOff.message = "Error"
+            state.loading = false
+        },
+        // @ts-ignore
+        [getRoundOff.fulfilled]: (state, { payload }) => {
+            state.roundOff.status = payload.success
+            state.roundOff.message = payload.message
+            state.loading = false
+            state.roundOff.data = payload.data
+        },
     }
 })
 
 export {
     getMisGroup,
-    getMisGroupMaster
+    getMisGroupMaster,
+    getRoundOff
 }
 
 export default misGroupSlice.reducer

@@ -64,7 +64,7 @@ import {
 import { Box, Icon, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import ReportHeader from '../../../Components/ReportHeader';
 import './Style.css'
-import { getMisGroup } from '../../../../Redux-Slice/incomeCollectionSlice/misGroupMastSlice';
+import { getMisGroup, getRoundOff } from '../../../../Redux-Slice/incomeCollectionSlice/misGroupMastSlice';
 import { getMisGroupMaster } from '../../../../Redux-Slice/incomeCollectionSlice/misGroupMastSlice';
 import LightBlueRow from './LightBlueRow';
 import WhiteRow from './WhiteRow';
@@ -147,6 +147,8 @@ const IncomeReports = () => {
         { creditInsuranceBill: 0, tax: 0, status: false }
     ])
 
+    const [rndOff, setRndOff] = useState([])
+
     const advanceCollection = misCollection?.[0].advanceCollection?.toLocaleString('en-US', { minimumFractionDigits: 2 })
     const advanceRefund = misCollection?.[1].advanceRefund?.toLocaleString('en-US', { minimumFractionDigits: 2 })
     const advanceSettled = misCollection?.[2].advanceSettled?.toLocaleString('en-US', { minimumFractionDigits: 2 })
@@ -205,6 +207,14 @@ const IncomeReports = () => {
             dispatch(getPhaReturnPartTmch2(state))
             dispatch(getPhaReturnPartTmch3(state))
             dispatch(theaterIncomeTmch(state))
+
+            let groupState = {
+                from: state.from,
+                to: state.to,
+                ptno: state.grouped
+            }
+
+            dispatch(getRoundOff(groupState))
         }
     }, [state])
 
@@ -382,7 +392,8 @@ const IncomeReports = () => {
                 ...value
             })
         })
-    }, [pharmacyIncome])
+        setRndOff(misGroup?.roundOff?.data?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0))
+    }, [pharmacyIncome, misGroup])
 
     // @ts-ignore
     const C = parseFloat(misCollection?.[0].advanceCollection);
@@ -428,11 +439,10 @@ const IncomeReports = () => {
     // @ts-ignore
     const groupGross = parseFloat(grand?.groupGross) + GrosPharma;
 
-    const roundOff = groupCollection - groupNet;
+    const roundOff = groupCollection - groupNet + rndOff;
     const groupNetddctRoundoff = groupNet + roundOff;
 
     // const generalDiscount = patientDiscount
-
 
     /**********
      * MIS REPORTS DETALED REPORTS 

@@ -106,6 +106,8 @@ const HospitalncomeReports = () => {
                 const ipNumber = data?.map((e) => e.ip_no)
                 const rmIpNumber = data?.filter((e) => e.tmch_status === '0').map(e => e.ip_no)
 
+                const groupedPatient = data?.filter((e) => e.tmch_status === '1').map(e => e.ip_no)
+
                 //GET THE ORACLE RECEIPT     
                 axiosinstance.post('/admission/getIpReceiptInfo', postDate).then((result2) => {
                     const { success, data } = result2.data;
@@ -141,7 +143,8 @@ const HospitalncomeReports = () => {
                                                 to: postDate.to,
                                                 ptno: ipNumber,
                                                 phar: rmIpNumber,
-                                                ipNoColl: ipNumber?.concat(filtedArray)
+                                                ipNoColl: ipNumber?.concat(filtedArray),
+                                                grouped: groupedPatient
                                             }
                                         })
                                     } else {
@@ -151,7 +154,8 @@ const HospitalncomeReports = () => {
                                                 to: postDate.to,
                                                 ptno: ipNumber,
                                                 phar: rmIpNumber,
-                                                ipNoColl: ipNumber
+                                                ipNoColl: ipNumber,
+                                                grouped: groupedPatient
                                             }
                                         })
                                     }
@@ -162,7 +166,8 @@ const HospitalncomeReports = () => {
                                             to: postDate.to,
                                             ptno: ipNumber,
                                             phar: rmIpNumber,
-                                            ipNoColl: ipNumber
+                                            ipNoColl: ipNumber,
+                                            grouped: groupedPatient
                                         }
                                     })
                                 }
@@ -174,7 +179,8 @@ const HospitalncomeReports = () => {
                                         to: postDate.to,
                                         ptno: ipNumber,
                                         phar: rmIpNumber,
-                                        ipNoColl: ipNumber
+                                        ipNoColl: ipNumber,
+                                        grouped: groupedPatient
                                     }
                                 })
                             })
@@ -186,7 +192,8 @@ const HospitalncomeReports = () => {
                                     to: postDate.to,
                                     ptno: ipNumber,
                                     phar: rmIpNumber,
-                                    ipNoColl: ipNumber
+                                    ipNoColl: ipNumber,
+                                    grouped: groupedPatient
                                 }
                             })
                         }
@@ -197,7 +204,8 @@ const HospitalncomeReports = () => {
                                 to: postDate.to,
                                 ptno: ipNumber,
                                 phar: rmIpNumber,
-                                ipNoColl: ipNumber
+                                ipNoColl: ipNumber,
+                                grouped: groupedPatient
                             }
                         })
                     }
@@ -208,7 +216,8 @@ const HospitalncomeReports = () => {
                             to: postDate.to,
                             ptno: ipNumber,
                             phar: rmIpNumber,
-                            ipNoColl: ipNumber
+                            ipNoColl: ipNumber,
+                            grouped: groupedPatient
                         }
                     })
                 })
@@ -219,7 +228,8 @@ const HospitalncomeReports = () => {
                         to: postDate.to,
                         ptno: ipNumber,
                         phar: rmIpNumber,
-                        ipNoColl: ipNumber
+                        ipNoColl: ipNumber,
+                        grouped: groupedPatient
                     }
                 })
             } else {

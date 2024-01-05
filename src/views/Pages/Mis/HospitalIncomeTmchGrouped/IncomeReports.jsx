@@ -4,68 +4,45 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom'
 import {
-    // getAdvanceCollection,
     getAdvanceCollectionTssh,
-    // getAdvanceRefund,
     getAdvanceRefundTssh,
-    // getAdvanceSettled,
     getAdvanceSettledTssh,
-    // getcollectionagainSaleTotal,
     getcollectionagainSaleTotalTssh,
-    // getcollectionagainSaleDeduction,
     getcollectionagainSaleDeductionTssh,
-    // getcomplimentory,
     getcomplimentoryTssh,
-    // getcreditInsuranceBillCollection,
     getcreditInsuranceBillCollectionTssh,
-    // getIpconsolidatedDiscount,
     getIpconsolidatedDiscountTssh,
-    // getipPreviousDayDiscount,
     getipPreviousDayDiscountTssh,
-    // getunsettledAmount,
     getunsettledAmountTssh,
-    // getipPreviousDayCollection,
     getipPreviousDayCollectionTssh,
-    // getipcreditInsuranceBill,
     getipcreditInsuranceBillTssh,
     getipcreditInsuranceBillPending
 } from '../../../../Redux-Slice/incomeCollectionTsshSlice/collectionTsshSlice';
 // /collectionSlice
 import {
-    // getProincome1,
     getProincomeTssh1,
-    // getProincome2,
     getProincomeTssh2,
-    // getProincome3,
     getProincomeTssh3,
-    // getProincome4,
     getProincomeTssh4,
-    // getPatietTypeDiscount,
     getPatietTypeDiscountTssh,
-    // theaterIncome,
     theaterIncomeTssh
 } from '../../../../Redux-Slice/incomeCollectionTsshSlice/incomeProcedureTsshSlice'
 //incomeProcedureSlice
 import {
-    // getPhaSalePart1,
     getPhaSalePartTssh1,
-    // getPhaSalePart2,
     getPhaSalePartTssh2,
-    // getPhaSalePart3,
     getPhaSalePartTssh3,
-    // getPhaReturnPart1,
     getPhaReturnPartTssh1,
-    // getPhaReturnPart2,
     getPhaReturnPartTssh2,
-    // getPhaReturnPart3,
-    getPhaReturnPartTssh3
+    getPhaReturnPartTssh3,
 } from '../../../../Redux-Slice/incomeCollectionTsshSlice/incomeTsshSlice'
+
 // @ts-ignore
 // @ts-ignore
 import { Box, Icon, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import ReportHeader from '../../../Components/ReportHeader';
 import './Style.css'
-import { getMisGroup } from '../../../../Redux-Slice/incomeCollectionSlice/misGroupMastSlice';
+import { getMisGroup, getRoundOff } from '../../../../Redux-Slice/incomeCollectionSlice/misGroupMastSlice';
 import { getMisGroupMaster } from '../../../../Redux-Slice/incomeCollectionSlice/misGroupMastSlice';
 import LightBlueRow from './LightBlueRow';
 import WhiteRow from './WhiteRow';
@@ -169,6 +146,8 @@ const IncomeReports = () => {
         { creditInsuranceBill: 0, tax: 0, status: false }
     ])
 
+    const [rndOff, setRndOff] = useState([])
+
     const advanceCollection = misCollection?.[0].advanceCollection?.toLocaleString('en-US', { minimumFractionDigits: 2 })
     const advanceRefund = misCollection?.[1].advanceRefund?.toLocaleString('en-US', { minimumFractionDigits: 2 })
     const advanceSettled = misCollection?.[2].advanceSettled?.toLocaleString('en-US', { minimumFractionDigits: 2 })
@@ -189,10 +168,6 @@ const IncomeReports = () => {
     const collectionAgainReturn = parseFloat(collectionAgainstSalesDeduction)
     // @ts-ignore
     const collAgainSale = collectionAgainSale + collectionAgainReturn;
-
-    // console.log(collectionAgainSale)
-
-    // console.log(collectionAgainReturn)
 
     //  DISPATCH ALL THE ACTION
 
@@ -257,6 +232,7 @@ const IncomeReports = () => {
             dispatch(getPhaReturnPartTssh3(state))
             // @ts-ignore
             dispatch(theaterIncomeTssh(state))
+            dispatch(getRoundOff(state))
 
         }
     }, [state])
@@ -351,8 +327,6 @@ const IncomeReports = () => {
             ]
 
             const res = misColl?.find((val) => val.status === false)
-            // console.log(misColl)
-            // console.log(res)
 
             if (res === undefined) {
                 // @ts-ignore
@@ -388,15 +362,10 @@ const IncomeReports = () => {
         }
     }, [collection])
 
-    // console.log(collection)
-    // console.log(procedureIncome)
-
-
     useEffect(() => {
         // @ts-ignore
         const { misGroupState, misGroupMaster } = misGroup;
         getMisGroupMasterList(misGroupState, misGroupMaster).then((misGrpList) => {
-            // console.log(misGrpList)
             // @ts-ignore
             setMisGroupList(misGrpList);
         })
@@ -405,7 +374,6 @@ const IncomeReports = () => {
     //UPDATE THE INCOME PART
     useEffect(() => {
         const incomeData = Object.values(proIncome);
-
 
         if (proIncome?.patientTypeDiscount?.status === 1) {
             // @ts-ignore
@@ -416,7 +384,6 @@ const IncomeReports = () => {
         const incomeArrayData = incomeData?.filter(val => val.income === true)
             .map(val => val.status === 1 ? val.data : null)
             .flat()
-        // console.log(incomeArrayData)
         getIncomeReportList(incomeArrayData, misGroupLst).then((report) => {
             if (report !== undefined) {
                 setMisReportList(report)
@@ -434,7 +401,8 @@ const IncomeReports = () => {
                 ...value
             })
         })
-    }, [pharmacyIncome])
+        setRndOff(misGroup?.roundOff?.data?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0))
+    }, [pharmacyIncome, misGroup])
 
     // @ts-ignore
     const C = parseFloat(misCollection?.[0].advanceCollection);
@@ -460,7 +428,6 @@ const IncomeReports = () => {
         })
     }, [misReortList])
 
-    // console.log(grand)
     // @ts-ignore
     const ipConatedDiscount = parseFloat(misCollection?.[7].ipConsolidatedDiscount)
     // @ts-ignore
@@ -480,7 +447,7 @@ const IncomeReports = () => {
     // @ts-ignore
     const groupGross = parseFloat(grand?.groupGross) + GrosPharma;
 
-    const roundOff = groupCollection - groupNet;
+    const roundOff = groupCollection - groupNet - rndOff;
     const groupNetddctRoundoff = groupNet + roundOff;
 
     // const generalDiscount = patientDiscount
