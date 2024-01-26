@@ -52,6 +52,9 @@ const GstReport = React.lazy(() => import('../views/Pages/PharmacyBilling/Analys
 // dashboard
 const OpIpAnalysis = React.lazy(() => import('../views/Pages/DashBoard/DashboardOP_IP'));
 
+//Pharmacy Reports
+const pharmacyGstReports = React.lazy(() => import('../views/Pages/PharmacyBilling/Analysis Statement/SalesReportTssh/SalesReportsMain'))
+
 
 const routes = [
     { path: '', element: NameDis },
@@ -105,6 +108,8 @@ const routes = [
 
     // dashbord
     { path: '/DashBoardData', name: 'OP-IP Statistics', element: OpIpAnalysis },
+    //Pharmacy Reports
+    { path: '/pharmacyGstSalseReports', name: 'PHARMACY GST Sales Reports', element: pharmacyGstReports },
 
 ]
 export default routes

@@ -7,8 +7,17 @@ export const GstExcelExport = async (reportData, fileName) => {
 
     const ws = XLSX.utils.json_to_sheet(reportData);
 
-    XLSX.utils.sheet_add_aoa(ws, [["Pharmacy Code", "Pharmacy", "Item Code", "Item", "Bill No", "Bill Date", "CACR",
-        "Quantity", "Loose", "Purcahse Rate", "MRP", "Actual MRP", "Discount", "Amount", "Tax Amount", "Tax Code", "Tax %", "Tax Description"]], { origin: "A1" });
+    XLSX.utils.sheet_add_aoa(ws, [[
+        "Item",
+        "Mrp",
+        "Actual Mrp",
+        "Original Mrp",
+        "Rate",
+        "Tax",
+        "Amount",
+        "Loose Qty",
+        "Qty"
+    ]], { origin: "A1" });
     const wb = {
         Sheets: { data: ws },
         SheetNames: ["data"]

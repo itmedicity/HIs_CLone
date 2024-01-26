@@ -1,9 +1,9 @@
+// @ts-nocheck
 import React, { memo, useEffect, useState } from 'react'
 import ContentMain from '../Components/ContentMain';
 import ContentSecondary from '../Components/ContentSecondary';
 import ContentPaper from '../Components/ContentPaper';
 import ContentNavLink from '../Components/ContentNavLink';
-import { analysis_settings, stock_settings } from '../../Routes/routes.pharmacybilling';
 import { analysisMenuName, stockMenuName } from '../../Menu/PharmacyBillingMenu';
 import { getMenuSlno, usergroupid } from '../../HomeComponents/MenuRights/menuRights';
 
@@ -19,7 +19,6 @@ const PharmacyBilling = () => {
             })
             const analysisMenushow = analysisMenuName.filter(val => menuSlno.includes(val.slno));
             setanaList(analysisMenushow)
-
 
             const stockMenushow = stockMenuName.filter(val => menuSlno.includes(val.slno));
             setStockList(stockMenushow)
