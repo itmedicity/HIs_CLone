@@ -54,6 +54,10 @@ const OpIpAnalysis = React.lazy(() => import('../views/Pages/DashBoard/Dashboard
 
 //Pharmacy Reports
 const pharmacyGstReports = React.lazy(() => import('../views/Pages/PharmacyBilling/Analysis Statement/SalesReportTssh/SalesReportsMain'))
+//Collection Reports Tmch
+const CollectionTmch = React.lazy(() => import('../views/Pages/Mis/Collection Reports/CollectionReportTssh'))
+const PharmacySalesGstReports = React.lazy(() => import('../views/Pages/Mis/Collection Reports/PharmacySaleGst'))
+
 
 
 const routes = [
@@ -110,6 +114,11 @@ const routes = [
     { path: '/DashBoardData', name: 'OP-IP Statistics', element: OpIpAnalysis },
     //Pharmacy Reports
     { path: '/pharmacyGstSalseReports', name: 'PHARMACY GST Sales Reports', element: pharmacyGstReports },
+    //Colleciton reports tmch
+    { path: '/CollctionTmch', name: 'Collection Report TMCH', element: CollectionTmch },
+    { path: '/PharmacyGst', name: 'Pharmacy GST TMCH', element: PharmacySalesGstReports },
+
+
 
 ]
 export default routes

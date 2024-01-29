@@ -117,10 +117,6 @@ const GstReportPharmacyWise = () => {
         setflag(0)
         setLoading(false)
         setValClick(0)
-        // setQueryselect(0)
-        // setGstdata([])
-        // setDisArray([])
-        // setViewReport([])
         setProcesClick(0)
         setCheck(0)
         setViewcheck(0)
@@ -157,17 +153,6 @@ const GstReportPharmacyWise = () => {
             setViewReport([])
         }
     }, [dispatch, postdata, queryselect])
-
-
-    // useEffect(() => {
-    //     if (ckeck === 1) {
-    //         return () => {
-    //             dispatch(getPharmacyTaxReport())
-    //             dispatch(getPharmacyTaxReportIpReturn())
-    //             dispatch(getPharmacyTaxReportIp())
-    //         }
-    //     }
-    // }, [])
 
     useEffect(() => {
         //  if (gstdata.length === 0) {
@@ -291,65 +276,6 @@ const GstReportPharmacyWise = () => {
         }
     }, [disArray, viewcheck])
 
-
-
-
-
-
-
-
-    // useEffect(() => {
-    //     if (gstdata.length !== 0) {
-    //         setLoading(false)
-    //         setflag(1)
-    //     } else {
-    //         setflag(0)
-    //     }
-    // }, [gstdata])
-
-    // else if (allselect === true && taxvalue !== 0 && pay === 0) {
-    //     const phrma = gstdata.filter((val) => val.TAXPER === taxvalue)
-    //     setDisArray(phrma)
-    // }
-    // else if (allselect === true && taxvalue !== 0 && pay !== 0) {
-    //     if (pay === 'I') {
-    //         const phrma = gstdata.filter((val) => val.CACR === pay && val.TAXPER === taxvalue)
-    //         setDisArray(phrma)
-    //     }
-    //     else {
-    //         const phrma = gstdata.filter((val) => val.CACR !== pay && val.TAXPER === taxvalue)
-    //         setDisArray(phrma)
-    //     }
-    // }
-
-    // checkbox false
-
-    // else if (allselect === false && pharmacy !== 0 && taxvalue === 0 && pay !== 0) {
-    //     if (pay === 'I') {
-    //         const phrma = gstdata.filter((val) => val.OUCODE === pharmacy && val.CACR === pay)
-    //         setDisArray(phrma)
-    //     }
-    //     else {
-    //         const phrma = gstdata.filter((val) => val.OUCODE === pharmacy && val.CACR !== pay)
-    //         setDisArray(phrma)
-    //     }
-    // }
-
-    // if (flag === 0) {
-    //     setLoading(true)
-    // } else {
-    //     setLoading(false)
-    // }
-
-    // const purtotal = disArray.map(val => val.PRATE).reduce((prev, next) => Number(prev) + Number(next))
-    // setPurchase(Math.floor(purtotal * 100) / 100)
-
-    // const mrptotal = disArray.map(val => val.MRP).reduce((prev, next) => Number(prev) + Number(next))
-    // setMrp(Math.floor(mrptotal * 100) / 100)
-
-    // const actmrptotal = disArray.map(val => val.ACTMRP).reduce((prev, next) => Number(prev) + Number(next))
-    // setActualMrp(Math.floor(actmrptotal * 100) / 100)
-
     return (
         <Fragment>
             <ToastContainer />
@@ -463,39 +389,6 @@ const GstReportPharmacyWise = () => {
                         </Box>
 
                         {/* tax */}
-                        {/* <Box sx={{ display: "flex", flexDirection: 'row', pl: 1 }}>
-                            <Box sx={{ pt: 0.7 }}>
-                                <FormControl fullWidth
-                                    size='small'   >
-                                    <Select
-                                        variant='outlined'
-                                        size="small"
-                                        fullWidth
-                                        style={{
-                                            height: 40,
-                                            paddingBottom: 1,
-                                            width: 130,
-                                            BorderAllRounded: 1,
-                                            fontSize: '15px',
-                                            fontFamily: 'Arial',
-                                            borderRadius: '3px'
-                                        }}
-                                        defaultValue={0}
-                                        value={taxvalue}
-                                        onChange={(e) => setTaxvalue(e.target.value)}
-                                    >
-                                        <MenuItem disabled value={0}>--Tax--</MenuItem>
-                                        {
-                                            taxList?.map((val, index) => (
-                                                <MenuItem key={index} value={val.num}>
-                                                    {val.desc}
-                                                </MenuItem>
-                                            ))
-                                        }
-                                    </Select>
-                                </FormControl>
-                            </Box>
-                        </Box> */}
                         {/* pay type */}
                         <Box sx={{ display: "flex", flexDirection: 'row', pl: 1 }}>
                             <Box sx={{ pt: 0.7 }}>
@@ -631,49 +524,6 @@ const GstReportPharmacyWise = () => {
                             </Typography>
 
                         </Box>
-
-                        {/* <Box sx={{}}>
-                            <Typography
-                                style={{
-
-                                    fontSize: 20,
-                                    fontFamily: "Calibri",
-                                }}>
-                                Grand Total Of Purchase Rate :{purchase}
-                            </Typography>
-
-                        </Box>
-                        <Box sx={{ pl: 5 }}>
-                            <Typography style={{
-
-                                fontSize: 20,
-                                fontFamily: "Calibri",
-                            }}>
-                                Grand Total of MRP :{mrp}
-                            </Typography>
-
-                        </Box>
-                        <Box sx={{ pl: 5 }}>
-                            <Typography style={{
-
-                                fontSize: 20,
-                                fontFamily: "Calibri",
-                            }}>
-                                Grand Total of Actual MRP :{actualMrp}
-                            </Typography>
-
-                        </Box>
-                        <Box sx={{ pl: 5 }}>
-                            <Typography
-                                style={{
-                                    fontSize: 20,
-                                    fontFamily: "Calibri",
-                                }}>
-                                Grand Total of Amount :{amount}
-                            </Typography>
-
-                        </Box> */}
-
                     </Paper>
 
                     {/* Virtuoso Table */}
@@ -685,32 +535,6 @@ const GstReportPharmacyWise = () => {
                                 valClick={valClick} />
                             : null}
                     </Box>
-
-
-
-                    {/* agegrid */}
-                    {/* <Box sx={{ display: "flex", flexDirection: 'column', height: '620px' }}>
-                        {flag === 1 ?
-                            <ReportAGgrid
-                                reportData={viewreport}
-                                valClick={valClick}
-                            />
-                            : null}
-                    </Box> */}
-
-
-
-                    {/* Material Table */}
-
-                    {/* <Box sx={{ display: "flex", flexDirection: 'column', height: '520px' }}>
-                        {flag === 1 ?
-                            <PharmacyReportTable
-                                reportData={viewreport}
-                            />
-                            : null}
-                    </Box> */}
-
-
                     <Box sx={{ display: "flex", flexDirection: 'column', height: '18px', pt: 1 }}>
                         <Divider flexItem sx={{ borderBlockColor: 'grey' }}></Divider>
                     </Box>
@@ -755,7 +579,6 @@ const GstReportPharmacyWise = () => {
                     </Box>
                 </Box>
             </Box>
-
         </Fragment >
     )
 }
