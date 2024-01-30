@@ -21,6 +21,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { AgGridReact } from 'ag-grid-react';
 import { axiosinstance } from '../../../../controllers/AxiosConfig';
+import { useNavigate } from 'react-router-dom';
 
 
 const CollectionReportTssh = () => {
@@ -28,6 +29,8 @@ const CollectionReportTssh = () => {
     //AG GRID TABLE PROPERTIES
 
     const gridRef = useRef();
+    const navigate = useNavigate();
+
     const [collection, setCollection] = useState(0)
 
     const ExportToExcel = useCallback(() => {
@@ -83,30 +86,42 @@ const CollectionReportTssh = () => {
     const [fromDate, ChangeFromDate] = useState(new Date());
     const [toDate, ChangeToDate] = useState(new Date());
 
+    const [loading, setLoading] = useState(0);
+
     const frmDate = moment(fromDate).format('YYYY-MM-DD');
     const tDate = moment(toDate).format('YYYY-MM-DD')
 
     const getCollectionReports = useCallback(async () => {
+        setLoading(1)
         const postData = {
             from: frmDate,
             to: tDate
         }
-        axiosinstance.post('/pharmacytax/collectionTmch', postData).then((result) => {
-            const { success, data } = result.data;
-            if (success === 1) {
-                const newData = data?.map((e) => {
-                    return {
-                        from: frmDate,
-                        to: tDate,
-                        name: e.name,
-                        amount: e.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })
-                    }
-                })
-                setRowData(newData)
-                setCollection(data.reduce((accumulator, currentValue) => accumulator + currentValue.amount, 0))
-            }
-        })
+
+        setTimeout(() => {
+            axiosinstance.post('/pharmacytax/collectionTmch', postData).then((result) => {
+                const { success, data } = result.data;
+                if (success === 1) {
+                    const newData = data?.map((e) => {
+                        return {
+                            from: frmDate,
+                            to: tDate,
+                            name: e.name,
+                            amount: e.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })
+                        }
+                    })
+                    setRowData(newData)
+                    setCollection(data.reduce((accumulator, currentValue) => accumulator + currentValue.amount, 0))
+                }
+            })
+            setLoading(0)
+        }, "3000")
+
     }, [frmDate, tDate])
+
+    const handleClose = () => {
+        navigate("/Menu/Mis")
+    }
 
     return (
         <Fragment>
@@ -265,7 +280,7 @@ const CollectionReportTssh = () => {
                             </Typography>
                         </Box>
                     </Box>
-
+                    {loading === 1 && <Box sx={{ color: 'blue', textAlign: 'center' }} >Loading....</Box>}
                     <Box sx={{
                         //backgroundColor: 'green'
                     }} >

@@ -1,7 +1,6 @@
 // @ts-nocheck
 import {
     Box, TextField, Typography, Button, FormControl, MenuItem, Select, Divider, Paper, TableRow, TableCell,
-    Table, TableBody, TableHead, TableContainer
 } from '@mui/material'
 import React, { Fragment, useState, useCallback, useEffect, memo, useMemo, useRef } from 'react'
 import { ToastContainer } from 'react-toastify'
@@ -10,8 +9,6 @@ import { ToastContainer } from 'react-toastify'
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import moment from 'moment';
-import { useDispatch, useSelector } from 'react-redux';
-import { endOfMonth, startOfMonth } from 'date-fns'
 
 // import { infoNofity } from '../../../../../Constant/Constants'
 import { TableVirtuoso } from 'react-virtuoso'
@@ -21,11 +18,13 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { AgGridReact } from 'ag-grid-react';
 import { axiosinstance } from '../../../../controllers/AxiosConfig';
+import { useNavigate } from 'react-router-dom';
 const PharmacySaleGst = () => {
 
     //AG GRID TABLE PROPERTIES
 
     const gridRef = useRef();
+    const navigate = useNavigate();
 
     const ExportToExcel = useCallback(() => {
         gridRef.current.api.exportDataAsCsv();
@@ -62,6 +61,7 @@ const PharmacySaleGst = () => {
     }
 
     const [rowData, setRowData] = useState([]);
+    const [loading, setLoading] = useState(0);
 
     // Column Definitions: Defines & controls grid columns.
     const [colDefs, setColDefs] = useState([
@@ -86,33 +86,43 @@ const PharmacySaleGst = () => {
     const tDate = moment(toDate).format('YYYY-MM-DD')
 
     const getCollectionReports = useCallback(async () => {
+        setLoading(1)
         const postData = {
             from: frmDate,
             to: tDate
         }
-        axiosinstance.post('/pharmacytax/pharmacySaleGst', postData).then((result) => {
-            const { success, data } = result.data;
-            if (success === 1) {
-                const newData = data?.map((e) => {
-                    return {
-                        from: frmDate,
-                        to: tDate,
-                        ip: e.ip.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                        op0: e.op0.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                        op5: e.op5.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                        op12: e.op12.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                        op18: e.op18.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                        op28: e.op28.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                        tax5: e.tax5.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                        tax12: e.tax12.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                        tax18: e.tax18.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                        tax28: e.tax28.toLocaleString('en-US', { minimumFractionDigits: 2 })
-                    }
-                })
-                setRowData(newData)
-            }
-        })
+        setTimeout(() => {
+            axiosinstance.post('/pharmacytax/pharmacySaleGst', postData).then((result) => {
+                const { success, data } = result.data;
+                if (success === 1) {
+                    const newData = data?.map((e) => {
+                        return {
+                            from: frmDate,
+                            to: tDate,
+                            ip: e.ip.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                            op0: e.op0.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                            op5: e.op5.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                            op12: e.op12.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                            op18: e.op18.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                            op28: e.op28.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                            tax5: e.tax5.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                            tax12: e.tax12.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                            tax18: e.tax18.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                            tax28: e.tax28.toLocaleString('en-US', { minimumFractionDigits: 2 })
+                        }
+                    })
+                    setRowData(newData)
+                }
+            })
+
+            setLoading(0)
+        }, "3000")
     }, [frmDate, tDate])
+
+
+    const handleClose = () => {
+        navigate("/Menu/Mis")
+    }
 
     return (
         <Fragment>
@@ -261,7 +271,7 @@ const PharmacySaleGst = () => {
                             </Button>
                         </Box>
                     </Box>
-
+                    {loading === 1 && <Box sx={{ color: 'blue', textAlign: 'center' }} >Loading....</Box>}
                     <Box sx={{
                         //backgroundColor: 'green'
                     }} >
