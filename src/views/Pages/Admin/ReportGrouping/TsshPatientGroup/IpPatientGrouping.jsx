@@ -70,13 +70,16 @@ const IpPatientGrouping = () => {
                 })
                 setIplist(filterData)
             } else {
-                errorNofity('error occured getting the oracle IP Data')
+
+                const filterData = oraIpData?.map((e) => {
+                    return { ...e, isTssh: false, tmch: "0", slno: 0 }
+                })
+                setIplist(filterData)
             }
 
         } else {
-            errorNofity('error occured getting the oracle IP Data')
+            errorNofity('There is No Patient Admitted in the Ellider Software')
         }
-
 
     }, [value, admissionList])
 
