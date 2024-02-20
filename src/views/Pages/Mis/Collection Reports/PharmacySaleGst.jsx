@@ -247,7 +247,7 @@ const PharmacySaleGst = () => {
                                     borderRadius: '3px',
                                     color: 'black'
                                 }}
-                            // onClick={Closepage}
+                                onClick={handleClose}
                             >
                                 Close
                             </Button>

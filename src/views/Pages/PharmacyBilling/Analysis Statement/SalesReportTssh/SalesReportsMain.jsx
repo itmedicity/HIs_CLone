@@ -1,27 +1,30 @@
 // @ts-nocheck
 import {
-    Box, TextField, Typography, Button, FormControl, MenuItem, Select, Divider, Paper, TableRow, TableCell,
-    Table, TableBody, TableHead, TableContainer
+    Box, Typography, Button
 } from '@mui/material'
-import React, { Fragment, useState, useCallback, useEffect, memo, useMemo } from 'react'
+
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
+
+import React, { Fragment, useState, useCallback, useEffect, memo, useMemo, useRef } from 'react'
 import { ToastContainer } from 'react-toastify'
-import OutletSelect from '../../Stock/CommonComponents/OutletSelect'
-import { useNavigate } from 'react-router-dom'
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import moment from 'moment';
-import { useDispatch, useSelector } from 'react-redux';
 import { endOfMonth, startOfMonth } from 'date-fns'
 
-import { infoNofity } from '../../../../../Constant/Constants'
-import { TableVirtuoso } from 'react-virtuoso'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { axiosinstance } from '../../../../../controllers/AxiosConfig'
-import { GstExcelExport } from '../GstReportPharmacyWise/Components/GstExcelExport'
+
+import { AgGridReact } from 'ag-grid-react';
+import { useNavigate } from 'react-router-dom';
 
 const SalesReportsMain = () => {
+
+    const gridRef = useRef();
+    const navigate = useNavigate();
 
     const [tableData, setTableData] = useState();
     const [selectedDate, ChangeDate] = useState(new Date());
@@ -33,12 +36,64 @@ const SalesReportsMain = () => {
 
     const startDate = startOfMonth(selectedDate);
     const endDate = endOfMonth(selectedDate)
-    const fileName = "GST Report";
 
     const postData2 = {
         from: moment(startDate).format('YYYY-MM-DD 00:00:00'),
         to: moment(endDate).format('YYYY-MM-DD 23:59:59')
     }
+
+    // AG GRID CODES
+    const ExportToExcel = useCallback(() => {
+        gridRef.current.api.exportDataAsCsv();
+    }, [])
+
+    const rowHeight = 30
+    const headerHeight = 30
+    const defaultColDef = useMemo(() => {
+        return {
+            // sortable: true,
+            resizable: true,
+            flex: 1,
+            minWidth: 100,
+            // filter: true,
+        };
+    }, []);
+    const onGridReady = (params) => {
+        params.api.sizeColumnsToFit()
+    }
+
+    const rowStyle = {
+        fontFamily: [
+            '-apple-system',
+            'BlinkMacSystemFont',
+            '"Segoe UI"',
+            'Roboto',
+            '"Helvetica Neue"',
+            'Arial',
+            'sans-serif',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+        ].join(','),
+    }
+
+    const [rowData, setRowData] = useState([]);
+    const [loading, setLoading] = useState(0);
+
+    // Column Definitions: Defines & controls grid columns.
+    const [colDefs, setColDefs] = useState([
+        { headerName: 'Item Name', field: "ITC_DESC", resizable: true },
+        { headerName: 'mrp', field: "MRP" },
+        { headerName: 'Actual mrp', field: "ACTMRP" },
+        { headerName: 'original mrp', field: "ORIGINALMRP", type: 'rightAligned' },
+        { headerName: 'cost rate', field: "PRATE", type: 'rightAligned' },
+        { headerName: 'tax', field: "TXC_DESC", type: 'rightAligned' },
+        { headerName: 'amount', field: "AMNT", type: 'rightAligned' },
+        { headerName: 'loose qty', field: "LOOSE", type: 'rightAligned' },
+        { headerName: 'qty', field: "QTY", type: 'rightAligned' },
+        { headerName: 'discount', field: "DIS", type: 'rightAligned' },
+    ]);
+
 
     //GET THE TSSH PATIENT LIST FROM THE MYSQL SERVER 
     const getPharmacyTsshSales = async () => {
@@ -72,13 +127,6 @@ const SalesReportsMain = () => {
                         setPharData2([...pharData2, ...data])
                     }
                 })
-
-                axiosinstance.post('/pharmacytax/tsshReportFour', postDate).then((result) => {
-                    const { success, data } = result.data;
-                    if (success === 1) {
-                        setPharData3([...pharData3, ...data])
-                    }
-                })
             }
         })
     }
@@ -88,31 +136,22 @@ const SalesReportsMain = () => {
         setViewReport([...pharData, ...pharData1, ...pharData2, ...pharData3]?.map((e) => {
             return {
                 "ITC_DESC": e.ITC_DESC,
-                "MRP": e.MRP,
-                "ACTMRP": e.ACTMRP,
-                "ORIGINALMRP": e.ORIGINALMRP,
-                "PRATE": e.PRATE,
+                "MRP": e.MRP?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
+                "ACTMRP": e.ACTMRP?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
+                "ORIGINALMRP": e.ORIGINALMRP?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
+                "PRATE": e.PRATE?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
                 "TXC_DESC": e.TXC_DESC,
-                "AMNT": e.AMNT,
+                "AMNT": e.AMNT?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
                 "LOOSE": e.LOOSE,
-                "QTY": e.QTY
+                "QTY": e.QTY,
+                "DIS": e.DIS?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
             }
         }))
     }, [pharData, pharData1, pharData2, pharData3])
 
-    const TableComponents = {
-        Scroller: React.forwardRef((props, ref) => <TableContainer component={Paper} {...props} ref={ref} />),
-        Table: (props) => <Table {...props} style={{ borderCollapse: 'separate' }} />,
-        TableHead: TableHead,
-        TableRow: TableRow,
-        TableBody: React.forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
+    const handleClose = () => {
+        navigate("/Menu/Mis")
     }
-
-    const ViewasExcel = useCallback((e) => {
-        GstExcelExport(viewreport, fileName)
-    }, [viewreport, tableData])
-
-    console.log(tableData)
 
     //GET THE PHARMACY SALSES DETAULS
     return (
@@ -217,7 +256,7 @@ const SalesReportsMain = () => {
                                     borderRadius: '3px',
                                     color: 'black'
                                 }}
-                            // onClick={Closepage}
+                                onClick={handleClose}
                             >
                                 Close
                             </Button>
@@ -235,7 +274,7 @@ const SalesReportsMain = () => {
                                     borderRadius: '3px',
                                     color: 'black'
                                 }}
-                                onClick={(e) => ViewasExcel(e)}
+                                onClick={(e) => ExportToExcel(e)}
                             >
                                 Export To Excel
                             </Button>
@@ -247,7 +286,38 @@ const SalesReportsMain = () => {
                     }} >
 
                         <Box>
-                            <TableVirtuoso
+
+                            <Box sx={{
+                                //backgroundColor: 'green'
+                            }} >
+                                <Box sx={{ display: 'flex', flex: 1, height: '100%', boxSizing: 'border-box' }}>
+                                    <div className="ag-theme-alpine" style={{ minHeight: '570px', minWidth: '100%' }}>
+                                        {/* <Suspense fallback={<LinearProgress />} > */}
+                                        < AgGridReact
+                                            ref={gridRef}
+                                            columnDefs={colDefs}
+                                            rowData={viewreport}
+                                            defaultColDef={defaultColDef}
+                                            rowHeight={rowHeight}
+                                            headerHeight={headerHeight}
+                                            rowDragManaged={true}
+                                            animateRows={true}
+                                            onGridReady={onGridReady}
+                                            rowSelection="multiple"
+                                            rowStyle={rowStyle}
+                                            suppressColumnVirtualisation={true}
+                                            suppressRowVirtualisation={true}
+                                            suppressRowClickSelection={true}
+                                            groupSelectsChildren={true}
+                                            rowGroupPanelShow={'always'}
+                                            pivotPanelShow={'always'}
+                                            enableRangeSelection={true}
+                                        />
+                                        {/* </Suspense> */}
+                                    </div>
+                                </Box>
+                            </Box>
+                            {/* <TableVirtuoso
                                 data={tableData}
                                 style={{
                                     height: 500,
@@ -282,7 +352,7 @@ const SalesReportsMain = () => {
                                     </>
                                 )}
 
-                            />
+                            /> */}
 
                         </Box>
 

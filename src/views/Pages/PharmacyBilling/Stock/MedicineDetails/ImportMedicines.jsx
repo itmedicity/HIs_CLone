@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Box, Button, Typography } from '@mui/material'
 import React, { Fragment, useCallback, useMemo, useState, useEffect } from 'react'
 import { ToastContainer } from 'react-toastify'
@@ -42,7 +43,7 @@ const ImportMedicines = () => {
 
     const patchdata = useMemo(() => {
         return {
-            lastupdate: moment(new Date(currentdate)).format('DD/MM/yyyy HH:mm:ss')
+            lastupdate: moment(new Date(currentdate)).format('YYYY-MM-DD HH:mm:ss')
         }
     }, [currentdate])
     const ImportMedicines = useCallback(() => {
