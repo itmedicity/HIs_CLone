@@ -11,7 +11,7 @@ import { ToastContainer } from 'react-toastify'
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import moment from 'moment';
-import { endOfMonth, startOfMonth } from 'date-fns'
+import { endOfMonth, isValid, startOfMonth } from 'date-fns'
 
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers'
@@ -20,6 +20,8 @@ import { axiosinstance } from '../../../../../controllers/AxiosConfig'
 
 import { AgGridReact } from 'ag-grid-react';
 import { useNavigate } from 'react-router-dom';
+import { warningNofity } from '../../../../../Constant/Constants';
+import CustomBackDrop from '../../../../Components/CustomBackDrop';
 
 const SalesReportsMain = () => {
 
@@ -28,6 +30,9 @@ const SalesReportsMain = () => {
 
     const [tableData, setTableData] = useState();
     const [selectedDate, ChangeDate] = useState(new Date());
+    const [toDate, settoDate] = useState(new Date())
+    const [open, setopen] = useState(false)
+
     const [pharData, setPharData] = useState([])
     const [pharData1, setPharData1] = useState([])
     const [pharData2, setPharData2] = useState([])
@@ -39,7 +44,7 @@ const SalesReportsMain = () => {
 
     const postData2 = {
         from: moment(startDate).format('YYYY-MM-DD 00:00:00'),
-        to: moment(endDate).format('YYYY-MM-DD 23:59:59')
+        to: moment(toDate).format('YYYY-MM-DD 23:59:59')
     }
 
     // AG GRID CODES
@@ -88,66 +93,71 @@ const SalesReportsMain = () => {
         { headerName: 'original mrp', field: "ORIGINALMRP", type: 'rightAligned' },
         { headerName: 'cost rate', field: "PRATE", type: 'rightAligned' },
         { headerName: 'tax', field: "TXC_DESC", type: 'rightAligned' },
-        { headerName: 'amount', field: "AMNT", type: 'rightAligned' },
         { headerName: 'loose qty', field: "LOOSE", type: 'rightAligned' },
         { headerName: 'qty', field: "QTY", type: 'rightAligned' },
+        { headerName: 'amount', field: "AMNT", type: 'rightAligned' },
         { headerName: 'discount', field: "DIS", type: 'rightAligned' },
+        { headerName: 'Tax Amount', field: "TAXAMNT", type: 'rightAligned' },
     ]);
 
 
     //GET THE TSSH PATIENT LIST FROM THE MYSQL SERVER 
     const getPharmacyTsshSales = async () => {
+        setViewReport([])
+        setopen(true)
+
+        if ((isValid(selectedDate) && isValid(toDate)) === false) {
+            warningNofity('Both the Date should be a Valid Date Format')
+            setopen(false)
+            setViewReport([])
+            return
+        }
+
+        if (new Date(selectedDate) > new Date(toDate)) {
+            warningNofity("To Data should be greater than From Date")
+            setopen(false)
+            setViewReport([])
+            return
+        }
+
+
         await axiosinstance.post('/admission/getIpNumberTssh', postData2).then((result) => {
             const { success, data } = result.data;
 
             if (success === 1) {
                 const postDate = {
                     from: moment(startDate).format('DD/MM/YYYY 00:00:00'),
-                    to: moment(endDate).format('DD/MM/YYYY 23:59:59'),
+                    to: moment(toDate).format('DD/MM/YYYY 23:59:59'),
                     ptno: data?.map(e => e.ip_no)
                 }
 
-                axiosinstance.post('/pharmacytax/tsshReportOne', postDate).then((result) => {
+                axiosinstance.post('/pharmacytax/tsshGstReport', postDate).then((result) => {
                     const { success, data } = result.data;
                     if (success === 1) {
-                        setPharData([...pharData, ...data])
-                    }
-                })
-
-                axiosinstance.post('/pharmacytax/tsshReportTwo', postDate).then((result) => {
-                    const { success, data } = result.data;
-                    if (success === 1) {
-                        setPharData1([...pharData1, ...data])
-                    }
-                })
-
-                axiosinstance.post('/pharmacytax/tsshReportThree', postDate).then((result) => {
-                    const { success, data } = result.data;
-                    if (success === 1) {
-                        setPharData2([...pharData2, ...data])
+                        setViewReport(data?.map((e) => {
+                            return {
+                                "ITC_DESC": e.ITC_DESC,
+                                "MRP": e.MRP?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
+                                "ACTMRP": e.ACTMRP?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
+                                "ORIGINALMRP": e.ORIGINALMRP?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
+                                "PRATE": e.PRATE?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
+                                "TXC_DESC": e.TXC_DESC,
+                                "LOOSE": e.LOOSE,
+                                "QTY": e.QTY,
+                                "AMNT": e.AMNT?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
+                                "DIS": e.DIS?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
+                                "TAXAMNT": e.TAXAMT?.toLocaleString('en-US', { minimumFractionDigits: 4 })
+                            }
+                        }))
+                        setopen(false)
+                    } else {
+                        setopen(false)
+                        warningNofity('No data to fetch')
                     }
                 })
             }
         })
     }
-
-    useEffect(() => {
-        setTableData([...pharData, ...pharData1, ...pharData2, ...pharData3])
-        setViewReport([...pharData, ...pharData1, ...pharData2, ...pharData3]?.map((e) => {
-            return {
-                "ITC_DESC": e.ITC_DESC,
-                "MRP": e.MRP?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
-                "ACTMRP": e.ACTMRP?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
-                "ORIGINALMRP": e.ORIGINALMRP?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
-                "PRATE": e.PRATE?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
-                "TXC_DESC": e.TXC_DESC,
-                "AMNT": e.AMNT?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
-                "LOOSE": e.LOOSE,
-                "QTY": e.QTY,
-                "DIS": e.DIS?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
-            }
-        }))
-    }, [pharData, pharData1, pharData2, pharData3])
 
     const handleClose = () => {
         navigate("/Menu/Mis")
@@ -157,6 +167,7 @@ const SalesReportsMain = () => {
     return (
         <Fragment>
             <ToastContainer />
+            <CustomBackDrop open={open} handleClose={setopen} />
             <Box sx={{
                 display: "flex",
                 flexDirection: 'row',
@@ -194,7 +205,7 @@ const SalesReportsMain = () => {
                                 fontFamily: 'Arial',
                                 fontWeight: 'bold',
                             }} >
-                            GST Report Tax % And Pharmacy Wise
+                            Sales GST Report TSSH
                         </Typography>
                     </Box>
 
@@ -215,14 +226,35 @@ const SalesReportsMain = () => {
                             <Box sx={{ pl: 1, pt: 0.5 }}>
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <DatePicker
-                                        views={['month', 'year']}
+                                        views={['day']}
                                         slotProps={{ textField: { size: 'small' } }}
                                         value={selectedDate}
                                         onChange={(e) => ChangeDate(e)}
                                     />
                                 </LocalizationProvider>
+                            </Box>
+                        </Box>
 
-
+                        <Box sx={{ display: "flex", flexDirection: 'row' }}>
+                            <Box sx={{ pl: 3, pt: 1.5 }}>
+                                <Typography variant="body1"
+                                    defaultValue
+                                    style={{
+                                        fontFamily: 'Arial',
+                                        width: 50
+                                    }}>
+                                    Date :
+                                </Typography>
+                            </Box>
+                            <Box sx={{ pl: 1, pt: 0.5 }}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DatePicker
+                                        views={['day']}
+                                        slotProps={{ textField: { size: 'small' } }}
+                                        value={toDate}
+                                        onChange={(e) => settoDate(e)}
+                                    />
+                                </LocalizationProvider>
                             </Box>
                         </Box>
 

@@ -11,7 +11,7 @@ import { ToastContainer } from 'react-toastify'
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import moment from 'moment';
-import { endOfMonth, startOfMonth } from 'date-fns'
+import { endOfMonth, isValid, startOfMonth } from 'date-fns'
 
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers'
@@ -21,6 +21,7 @@ import { axiosinstance } from '../../../../../controllers/AxiosConfig'
 import { AgGridReact } from 'ag-grid-react';
 import { useNavigate } from 'react-router-dom';
 import { warningNofity } from '../../../../../Constant/Constants';
+import CustomBackDrop from '../../../../Components/CustomBackDrop';
 
 
 const SalesGstReportMain = () => {
@@ -29,15 +30,18 @@ const SalesGstReportMain = () => {
 
     const [loading] = useState(true);
 
-    const [selectedDate, ChangeDate] = useState(new Date());
+    const [selectedDate, ChangeDate] = useState(new Date())
+    const [toDate, settoDate] = useState(new Date())
     const [viewreport, setViewReport] = useState([])
+
+    const [open, setopen] = useState(false)
 
     const startDate = startOfMonth(selectedDate);
     const endDate = endOfMonth(selectedDate)
 
     const postData2 = {
         from: moment(startDate).format('YYYY-MM-DD 00:00:00'),
-        to: moment(endDate).format('YYYY-MM-DD 23:59:59')
+        to: moment(toDate).format('YYYY-MM-DD 23:59:59')
     }
 
     // AG GRID CODES
@@ -86,23 +90,42 @@ const SalesGstReportMain = () => {
         { headerName: 'original mrp', field: "ORIGINALMRP", type: 'rightAligned' },
         { headerName: 'cost rate', field: "PRATE", type: 'rightAligned' },
         { headerName: 'tax', field: "TXC_DESC", type: 'rightAligned' },
-        { headerName: 'amount', field: "AMNT", type: 'rightAligned' },
         { headerName: 'loose qty', field: "LOOSE", type: 'rightAligned' },
         { headerName: 'qty', field: "QTY", type: 'rightAligned' },
+        { headerName: 'amount', field: "AMNT", type: 'rightAligned' },
         { headerName: 'discount', field: "DIS", type: 'rightAligned' },
+        { headerName: 'Tax Amount', field: "TAXAMNT", type: 'rightAligned' },
     ]);
 
 
     //GET THE TSSH PATIENT LIST FROM THE MYSQL SERVER 
     const getPharmacyTsshSales = async () => {
+        setViewReport([])
+        setopen(true)
+        if ((isValid(selectedDate) && isValid(toDate)) === false) {
+            warningNofity('Both the Date should be a Valid Date Format')
+            setopen(false)
+            setViewReport([])
+            return
+        }
+
+        if (new Date(selectedDate) > new Date(toDate)) {
+            warningNofity("To Data should be greater than From Date")
+            setopen(false)
+            setViewReport([])
+            return
+        }
+
+
         await axiosinstance.post('/admission/getIpNumberTsshGrouped', postData2).then(async (result) => {
             const { success, data } = result.data;
+            const rmIpNumber = data?.filter((e) => e.tmch_status === '0').map(e => e.ip_no)
 
             if (success === 1) {
                 const postDate = {
                     from: moment(startDate).format('DD/MM/YYYY 00:00:00'),
-                    to: moment(endDate).format('DD/MM/YYYY 23:59:59'),
-                    ptno: data?.map(e => e.ip_no)
+                    to: moment(toDate).format('DD/MM/YYYY 23:59:59'),
+                    ptno: rmIpNumber
                 }
 
                 await axiosinstance.post('/pharmacytax/tmchGstReport', postDate).then((result) => {
@@ -116,17 +139,19 @@ const SalesGstReportMain = () => {
                                 "ORIGINALMRP": e.ORIGINALMRP?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
                                 "PRATE": e.PRATE?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
                                 "TXC_DESC": e.TXC_DESC,
-                                "AMNT": e.AMNT?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
                                 "LOOSE": e.LOOSE,
                                 "QTY": e.QTY,
+                                "AMNT": e.AMNT?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
                                 "DIS": e.DIS?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
+                                "TAXAMNT": e.TAXAMT?.toLocaleString('en-US', { minimumFractionDigits: 4 })
                             }
                         }))
+                        setopen(false)
                     } else {
+                        setopen(false)
                         warningNofity('No data to fetch')
                     }
                 })
-
             }
         })
     }
@@ -139,6 +164,7 @@ const SalesGstReportMain = () => {
     return (
         <Fragment>
             <ToastContainer />
+            <CustomBackDrop open={open} handleClose={setopen} />
             <Box sx={{
                 display: "flex",
                 flexDirection: 'row',
@@ -176,7 +202,7 @@ const SalesGstReportMain = () => {
                                 fontFamily: 'Arial',
                                 fontWeight: 'bold',
                             }} >
-                            GST Report Tax % And Pharmacy Wise
+                            Sales GST Report TMCH
                         </Typography>
                     </Box>
 
@@ -191,16 +217,40 @@ const SalesGstReportMain = () => {
                                         fontFamily: 'Arial',
                                         width: 50
                                     }}>
-                                    Date :
+                                    From :
                                 </Typography>
                             </Box>
                             <Box sx={{ pl: 1, pt: 0.5 }}>
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <DatePicker
-                                        views={['month', 'year']}
+                                        views={['day']}
                                         slotProps={{ textField: { size: 'small' } }}
                                         value={selectedDate}
                                         onChange={(e) => ChangeDate(e)}
+                                    />
+                                </LocalizationProvider>
+                            </Box>
+                        </Box>
+
+                        <Box sx={{ display: "flex", flexDirection: 'row' }}>
+                            <Box sx={{ pl: 3, pt: 1.5 }}>
+                                <Typography variant="body1"
+                                    defaultValue
+                                    style={{
+                                        fontFamily: 'Arial',
+                                        width: 50
+                                    }}>
+                                    To :
+                                </Typography>
+                            </Box>
+                            <Box sx={{ pl: 1, pt: 0.5 }}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DatePicker
+                                        views={['day']}
+                                        slotProps={{ textField: { size: 'small' } }}
+                                        value={toDate}
+                                        onChange={(e) => settoDate(e)}
+                                        maxDate={endDate}
                                     />
                                 </LocalizationProvider>
 
@@ -291,7 +341,6 @@ const SalesGstReportMain = () => {
                                             rowGroupPanelShow={'always'}
                                             pivotPanelShow={'always'}
                                             enableRangeSelection={true}
-                                            overlayNoRowsTemplate={loading ? 'Please wait ... !!! Loading...' : 'No data available'}
                                         />
                                     </div>
                                 </Box>
