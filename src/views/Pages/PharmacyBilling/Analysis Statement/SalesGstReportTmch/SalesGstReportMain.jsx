@@ -40,7 +40,7 @@ const SalesGstReportMain = () => {
     const endDate = endOfMonth(selectedDate)
 
     const postData2 = {
-        from: moment(startDate).format('YYYY-MM-DD 00:00:00'),
+        from: moment(selectedDate).format('YYYY-MM-DD 00:00:00'),
         to: moment(toDate).format('YYYY-MM-DD 23:59:59')
     }
 
@@ -95,6 +95,7 @@ const SalesGstReportMain = () => {
         { headerName: 'amount', field: "AMNT", type: 'rightAligned' },
         { headerName: 'discount', field: "DIS", type: 'rightAligned' },
         { headerName: 'Tax Amount', field: "TAXAMNT", type: 'rightAligned' },
+        { headerName: 'Status', field: "STATUS", type: 'rightAligned' },
     ]);
 
 
@@ -123,7 +124,7 @@ const SalesGstReportMain = () => {
 
             if (success === 1) {
                 const postDate = {
-                    from: moment(startDate).format('DD/MM/YYYY 00:00:00'),
+                    from: moment(selectedDate).format('DD/MM/YYYY 00:00:00'),
                     to: moment(toDate).format('DD/MM/YYYY 23:59:59'),
                     ptno: rmIpNumber
                 }
@@ -143,7 +144,8 @@ const SalesGstReportMain = () => {
                                 "QTY": e.QTY,
                                 "AMNT": e.AMNT?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
                                 "DIS": e.DIS?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
-                                "TAXAMNT": e.TAXAMT?.toLocaleString('en-US', { minimumFractionDigits: 4 })
+                                "TAXAMNT": e.TAXAMT?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
+                                "STATUS": e.STATUS
                             }
                         }))
                         setopen(false)
