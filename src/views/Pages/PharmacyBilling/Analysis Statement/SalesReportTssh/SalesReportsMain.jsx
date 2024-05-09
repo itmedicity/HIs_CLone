@@ -99,6 +99,9 @@ const SalesReportsMain = () => {
         { headerName: 'discount', field: "DIS", type: 'rightAligned' },
         { headerName: 'Tax Amount', field: "TAXAMNT", type: 'rightAligned' },
         { headerName: 'Status', field: "STATUS", type: 'rightAligned' },
+        { headerName: 'Bill No', field: "BILLNO", type: 'rightAligned' },
+        { headerName: 'Bill Date', field: "BILDATE", type: 'rightAligned' },
+        { headerName: 'Outlet', field: "OU", type: 'rightAligned' },
     ]);
 
 
@@ -147,7 +150,10 @@ const SalesReportsMain = () => {
                                 "AMNT": e.AMNT?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
                                 "DIS": e.DIS?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
                                 "TAXAMNT": e.TAXAMT?.toLocaleString('en-US', { minimumFractionDigits: 4 }),
-                                "STATUS": e.STATUS
+                                "STATUS": e.STATUS,
+                                "BILLNO": e.BILLNO,
+                                "BILDATE": e.BILDATE,
+                                "OU": e.OU
                             }
                         }))
                         setopen(false)
