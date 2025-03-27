@@ -4,6 +4,7 @@ import { axiosinstance } from '../../controllers/AxiosConfig'
 const getPhaSalePartTssh1 = createAsyncThunk('api/phaSalePartTssh1', (postData) => {
     return axiosinstance.post("/pharmacyTssh/phaSalePart1", postData)
         .then((response) => {
+            console.log(response)
             return response.data;
         })
 })
@@ -11,6 +12,7 @@ const getPhaSalePartTssh1 = createAsyncThunk('api/phaSalePartTssh1', (postData) 
 const getPhaReturnPartTssh1 = createAsyncThunk('api/phaReturnPartTssh1', (postData) => {
     return axiosinstance.post("/pharmacyTssh/phaReturnPart1", postData)
         .then((response) => {
+            console.log(response)
             return response.data;
         })
 })
@@ -18,6 +20,7 @@ const getPhaReturnPartTssh1 = createAsyncThunk('api/phaReturnPartTssh1', (postDa
 const getPhaSalePartTssh2 = createAsyncThunk('api/phaSalePartTssh2', (postData) => {
     return axiosinstance.post("/pharmacyTssh/phaSalePart2", postData)
         .then((response) => {
+            console.log(response)
             return response.data;
         })
 })
@@ -25,6 +28,7 @@ const getPhaSalePartTssh2 = createAsyncThunk('api/phaSalePartTssh2', (postData) 
 const getPhaReturnPartTssh2 = createAsyncThunk('api/phaReturnPartTssh2', (postData) => {
     return axiosinstance.post("/pharmacyTssh/phaReturnPart2", postData)
         .then((response) => {
+            console.log(response)
             return response.data;
         })
 })
@@ -32,6 +36,7 @@ const getPhaReturnPartTssh2 = createAsyncThunk('api/phaReturnPartTssh2', (postDa
 const getPhaSalePartTssh3 = createAsyncThunk('api/phaSalePartTssh3', (postData) => {
     return axiosinstance.post("/pharmacyTssh/phaSalePart3", postData)
         .then((response) => {
+            console.log(response)
             return response.data;
         })
 })
@@ -39,6 +44,7 @@ const getPhaSalePartTssh3 = createAsyncThunk('api/phaSalePartTssh3', (postData) 
 const getPhaReturnPartTssh3 = createAsyncThunk('api/phaReturnPartTssh3', (postData) => {
     return axiosinstance.post("/pharmacyTssh/phaReturnPart3", postData)
         .then((response) => {
+            console.log(response)
             return response.data;
         })
 })

@@ -56,6 +56,9 @@ const HospitalncomeReports = () => {
         //GET THE IP INFORMATION FROM MYSQL SERVER
 
         await axiosinstance.post('/admission/getIpNumberTssh', postData2).then((result) => {
+
+            console.log(postData2)
+
             const { success, data } = result.data;
             if (success === 1) {
                 const ipNumber = data?.map((e) => e.ip_no)
@@ -97,9 +100,12 @@ const HospitalncomeReports = () => {
                                                 ptno: ipNumber,
                                                 phar: rmIpNumber,
                                                 ipNoColl: ipNumber?.concat(filtedArray),
-                                                group: 0
+                                                group: 0,
+                                                groupIdForPrevious: 0
                                             }
                                         })
+
+                                        console.log(ipNumber)
                                     } else {
                                         navigate('/Menu/income-reports-tssh', {
                                             state: {
@@ -108,7 +114,8 @@ const HospitalncomeReports = () => {
                                                 ptno: ipNumber,
                                                 phar: rmIpNumber,
                                                 ipNoColl: ipNumber,
-                                                group: 0
+                                                group: 0,
+                                                groupIdForPrevious: 0
                                             }
                                         })
                                     }
@@ -120,7 +127,8 @@ const HospitalncomeReports = () => {
                                             ptno: ipNumber,
                                             phar: rmIpNumber,
                                             ipNoColl: ipNumber,
-                                            group: 0
+                                            group: 0,
+                                            groupIdForPrevious: 0
                                         }
                                     })
                                 }
@@ -133,7 +141,8 @@ const HospitalncomeReports = () => {
                                         ptno: ipNumber,
                                         phar: rmIpNumber,
                                         ipNoColl: ipNumber,
-                                        group: 0
+                                        group: 0,
+                                        groupIdForPrevious: 0
                                     }
                                 })
                             })
@@ -146,7 +155,8 @@ const HospitalncomeReports = () => {
                                     ptno: ipNumber,
                                     phar: rmIpNumber,
                                     ipNoColl: ipNumber,
-                                    group: 0
+                                    group: 0,
+                                    groupIdForPrevious: 0
                                 }
                             })
                         }
@@ -158,7 +168,8 @@ const HospitalncomeReports = () => {
                                 ptno: ipNumber,
                                 phar: rmIpNumber,
                                 ipNoColl: ipNumber,
-                                group: 0
+                                group: 0,
+                                groupIdForPrevious: 0
                             }
                         })
                     }
@@ -170,7 +181,8 @@ const HospitalncomeReports = () => {
                             ptno: ipNumber,
                             phar: rmIpNumber,
                             ipNoColl: ipNumber,
-                            group: 0
+                            group: 0,
+                            groupIdForPrevious: 0
                         }
                     })
                 })
@@ -182,7 +194,8 @@ const HospitalncomeReports = () => {
                         ptno: ipNumber,
                         phar: rmIpNumber,
                         ipNoColl: ipNumber,
-                        group: 0
+                        group: 0,
+                        groupIdForPrevious: 0
                     }
                 })
             } else {
@@ -192,7 +205,8 @@ const HospitalncomeReports = () => {
                         to: postDate.to,
                         ptno: [],
                         phar: [],
-                        group: 0
+                        group: 0,
+                        groupIdForPrevious: 0
                     }
                 })
             }

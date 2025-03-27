@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Box, Button, Paper } from '@mui/material'
 import React, { useCallback, useState } from 'react'
 // import logo from "../assets/Ellider.png"

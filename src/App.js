@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { lazy, Suspense } from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';

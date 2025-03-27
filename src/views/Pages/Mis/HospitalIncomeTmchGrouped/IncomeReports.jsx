@@ -167,7 +167,7 @@ const IncomeReports = () => {
     // @ts-ignore
     const collectionAgainReturn = parseFloat(collectionAgainstSalesDeduction)
     // @ts-ignore
-    const collAgainSale = collectionAgainSale + collectionAgainReturn;
+    const collAgainSale = collectionAgainSale + collectionAgainReturn - netAmount;
 
     //  DISPATCH ALL THE ACTION
 
@@ -233,6 +233,8 @@ const IncomeReports = () => {
             // @ts-ignore
             dispatch(theaterIncomeTssh(state))
             dispatch(getRoundOff(state))
+
+            console.log(state)
 
         }
     }, [state])
@@ -439,15 +441,15 @@ const IncomeReports = () => {
 
     const groupCollection = unsettledAmnt + creditInsurBill + advSettled + collAgainSale;
     // @ts-ignore
-    const groupTax = parseFloat(grand?.groupTax) + tax;
+    const groupTax = parseFloat(grand?.groupTax) ; // removing "tax" column for Grouped reports
     // @ts-ignore
-    const groupNet = parseFloat(grand?.groupNet) + netAmount + groupTax - ipConatedDiscount;
+    const groupNet = parseFloat(grand?.groupNet) +  groupTax - ipConatedDiscount;   // removing "netAmount" column for Grouped reports
     // @ts-ignore
-    const groupDis = parseFloat(grand?.groupDis) + discount + ipConatedDiscount;
+    const groupDis = parseFloat(grand?.groupDis) + ipConatedDiscount; // removing "discount" column for Grouped reports
     // @ts-ignore
-    const groupGross = parseFloat(grand?.groupGross) + GrosPharma;
+    const groupGross = parseFloat(grand?.groupGross);  // removing "GrosPharma" column for Grouped reports
 
-    const roundOff = groupCollection - groupNet - rndOff;
+    const roundOff = groupCollection - groupNet - rndOff + netAmount;  // add the net amount ( "netAmount" ) for Grouped reports
     const groupNetddctRoundoff = groupNet + roundOff;
 
     // const generalDiscount = patientDiscount
@@ -993,16 +995,20 @@ const IncomeReports = () => {
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px', cursor: 'pointer', textDecoration: 'underline', color: '#0000EE' }}
                                         onClick={getPharmacyDetl}
                                     >
-                                        {netAmount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                        {'0.00'}
+                                        {/* {netAmount?.toLocaleString('en-US', { minimumFractionDigits: 2 })} */}
                                     </TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px' }} >
-                                        {tax?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                    {'0.00'}
+                                        {/* {tax?.toLocaleString('en-US', { minimumFractionDigits: 2 })} */}
                                     </TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px', pr: 2 }} >
-                                        {discount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                    {'0.00'}
+                                        {/* {discount?.toLocaleString('en-US', { minimumFractionDigits: 2 })} */}
                                     </TableCell>
                                     <TableCell align="right" sx={{ width: '20%', fontSize: '12px', pr: 1 }} >
-                                        {GrosPharma?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                    {'0.00'}
+                                        {/* {GrosPharma?.toLocaleString('en-US', { minimumFractionDigits: 2 })} */}
                                     </TableCell>
                                 </TableRow>
                                 <TableRow sx={{

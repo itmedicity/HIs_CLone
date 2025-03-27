@@ -87,6 +87,12 @@ import {
 
 const IncomeReports = () => {
 
+        // GROUPED AMOUNT PHARAMCY 
+        const [groupedPharmacyAmount, setGroupedPharmacyAmount] = useState(0);
+        const { AMT : pharmaAmount,GROSSAMT : pharmaGrossAmount,DISCOUNT : pharmaDiscount,COMP : pharmaComp,TAX : pharmaTax } = groupedPharmacyAmount;
+
+        console.log(pharmaAmount,pharmaGrossAmount,pharmaDiscount,pharmaComp,pharmaTax)
+
     const dispatch = useDispatch();
     const { state } = useLocation();
     // @ts-ignore
@@ -168,9 +174,11 @@ const IncomeReports = () => {
     // @ts-ignore
     const collectionAgainReturn = parseFloat(collectionAgainstSalesDeduction)
     // @ts-ignore
-    const collAgainSale = collectionAgainSale + collectionAgainReturn;
+    const collAgainSale = collectionAgainSale + collectionAgainReturn + parseFloat(pharmaAmount);
 
     //  DISPATCH ALL THE ACTION
+
+
 
     useEffect(() => {
         if (state === null) {
@@ -215,8 +223,18 @@ const IncomeReports = () => {
             }
 
             dispatch(getRoundOff(groupState))
+
+            const getReporstForTmch = async (state)=>{
+                const result = await axiosinstance.post('/pharmacyTssh/groupedTmchReport', state)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setGroupedPharmacyAmount(data)
+                }
+            }
+            getReporstForTmch(state)
         }
     }, [state])
+
 
     // const { state } = locationData;
 
@@ -439,7 +457,7 @@ const IncomeReports = () => {
     // @ts-ignore
     const groupGross = parseFloat(grand?.groupGross) + GrosPharma;
 
-    const roundOff = groupCollection - groupNet + rndOff;
+    const roundOff = groupCollection - groupNet + rndOff - parseFloat(pharmaAmount);
     const groupNetddctRoundoff = groupNet + roundOff;
 
     // const generalDiscount = patientDiscount
