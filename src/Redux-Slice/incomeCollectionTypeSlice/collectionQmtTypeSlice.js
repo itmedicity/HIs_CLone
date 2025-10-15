@@ -7,26 +7,26 @@ const createApiThunk = (actionName, endPoint) =>
       return rejectWithValue("Invalid Data");
     }
     try {
-      const response = await axiosinstance.post(`/collection/${endPoint}`, postData);
+      const response = await axiosinstance.post(`/collectionQmt/${endPoint}`, postData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data || "Network Error");
     }
   });
 
-const getAdvanceCollection = createApiThunk("advanceCollection", "advanceCollection");
-const getAdvanceRefund = createApiThunk("advanceRefund", "advanceRefund");
-const getAdvanceSettled = createApiThunk("advanceSettled", "advanceSettled");
-const getcollectionagainSaleTotal = createApiThunk("collectionagainSaleTotal", "collectionagainSaleTotal");
-const getcollectionagainSaleDeduction = createApiThunk("collectionagainSaleDeduction", "collectionagainSaleDeduction");
-const getcomplimentory = createApiThunk("complimentory", "complimentory");
-const getcreditInsuranceBillCollection = createApiThunk("creditInsuranceBillCollection", "creditInsuranceBillCollection");
-const getIpconsolidatedDiscount = createApiThunk("ipConsolidatedDiscount", "ipConsolidatedDiscount");
-const getipPreviousDayDiscount = createApiThunk("ipPreviousDayDiscount", "ipPreviousDayDiscount");
-const getunsettledAmount = createApiThunk("unsettledAmount", "unsettledAmount");
-const getipPreviousDayCollection = createApiThunk("ippreviousDayCollection", "ipPreviousDayCollection");
-const getipcreditInsuranceBill = createApiThunk("creditInsuranceBill", "creditInsuranceBill");
-const getipcreditInsuranceBillPending = createApiThunk("creditInsuranceBillPending", "creditInsuranceBillRefund");
+const getAdvanceCollection = createApiThunk("advanceCollectionType", "advanceCollection");
+const getAdvanceRefund = createApiThunk("advanceRefundType", "advanceRefund");
+const getAdvanceSettled = createApiThunk("advanceSettledType", "advanceSettled");
+const getcollectionagainSaleTotal = createApiThunk("collectionagainSaleTotalType", "collectionagainSaleTotal");
+const getcollectionagainSaleDeduction = createApiThunk("collectionagainSaleDeductionType", "collectionagainSaleDeduction");
+const getcomplimentory = createApiThunk("complimentoryType", "complimentory");
+const getcreditInsuranceBillCollection = createApiThunk("creditInsuranceBillCollectionType", "creditInsuranceBillCollection");
+const getIpconsolidatedDiscount = createApiThunk("ipConsolidatedDiscountType", "ipConsolidatedDiscount");
+const getipPreviousDayDiscount = createApiThunk("ipPreviousDayDiscountType", "ipPreviousDayDiscount");
+const getunsettledAmount = createApiThunk("unsettledAmountType", "unsettledAmount");
+const getipPreviousDayCollection = createApiThunk("ippreviousDayCollectionType", "ipPreviousDayCollection");
+const getipcreditInsuranceBill = createApiThunk("creditInsuranceBillType", "creditInsuranceBill");
+const getipcreditInsuranceBillPending = createApiThunk("creditInsuranceBillPendingType", "creditInsuranceBillRefund");
 
 const createInitialState = () => ({
   data: [],
@@ -72,7 +72,7 @@ const handleAsyncCases = (builder, thunk, stateKey) => {
     });
 };
 
-const collectionSlice = createSlice({
+const collectionQmtTypeSlice = createSlice({
   name: "incomeData",
   initialState,
   reducers: {},
@@ -109,4 +109,4 @@ export {
   getipcreditInsuranceBillPending,
 };
 
-export default collectionSlice.reducer;
+export default collectionQmtTypeSlice.reducer;

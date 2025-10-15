@@ -6,7 +6,7 @@ import Close from "../../../../assets/Icon_Close.jpg";
 import {Box} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 
-const MenuButton = ({navigateTo}) => {
+const MenuButton = ({navigateTo, layOutClose}) => {
   const navigate = useNavigate();
   return (
     <Box sx={{display: "flex", height: 62}}>
@@ -40,7 +40,7 @@ const MenuButton = ({navigateTo}) => {
           <Box sx={{width: 62, cursor: "pointer"}}>
             <img src={Print} alt="qmt" />
           </Box>
-          <Box sx={{width: 62, cursor: "pointer"}} onClick={() => navigate(`/Menu/${navigateTo}`)}>
+          <Box sx={{width: 62, cursor: "pointer"}} onClick={() => (navigateTo === "" ? layOutClose() : navigate(`/Menu/${navigateTo}`))}>
             <img src={Close} alt="qmt" />
           </Box>
         </Box>

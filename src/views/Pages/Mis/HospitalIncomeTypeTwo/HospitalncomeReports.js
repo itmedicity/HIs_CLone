@@ -1,54 +1,35 @@
 // @ts-nocheck
+import {Paper, Box, Divider} from "@mui/material";
 import React, {memo, useCallback, useState} from "react";
-import {Paper, Box, Divider, Checkbox} from "@mui/material";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
-import ButtonCmp from "../../../Components/ButtonCmp";
-import {imageIcon} from "../../../../assets/ImageExport";
 import {useNavigate} from "react-router-dom";
-import {axiosinstance} from "../../../../controllers/AxiosConfig";
+import {imageIcon} from "../../../../assets/ImageExport";
+import ButtonCmp from "../../../Components/ButtonCmp";
+import "./Style.css";
 import {CustomCalanderComponents} from "../Components/CustomCalenderComp";
 import SearchIcon from "../../../../assets/SearchSmall.png";
-import "./Style.css";
-/**
- * A form component for selecting date ranges and a clinic to generate a grouped hospital income report.
- */
+
 const HospitalncomeReports = () => {
-  /**
-   * Hospital Income Statement - Grouped
+  /*
+   *  Hospital Income Statement - QMT
    */
   const navigate = useNavigate();
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [checked, setChecked] = useState(false);
 
-  /**
-   * Navigates to the grouped income reports page with the provided data.
-   * @param {string[]} ipNumber - Array of IP numbers.
-   * @param {string[]} rmIpNumber - Array of IP numbers with tmch_status '0'.
-   * @param {string[]} ipNoColl - Concatenated IP numbers.
-   */
-
-  const navigateToReport = (ipNumber, rmIpNumber, ipNoColl) => {
-    navigate("/Menu/income-reports-grouped", {
+  const navigateToReport = () => {
+    navigate("/Menu/income-reports_types", {
       state: {
         from: moment(startDate).format("DD/MM/YYYY 00:00:00"),
         to: moment(endDate).format("DD/MM/YYYY 23:59:59"),
-        ptno: ipNumber,
-        phar: rmIpNumber,
-        ipNoColl,
-        group: 0,
-        groupIdForPrevious: 1,
       },
     });
   };
 
-  /**
-   * Handles the "Preview" button click, fetching IP numbers and receipt data before navigating.
-   */
-
-  const handleClick = useCallback(async () => {
+  const handleClick = useCallback(() => {
     if (!checked) {
       alert("Select Clinic");
       return;
@@ -59,55 +40,13 @@ const HospitalncomeReports = () => {
       return;
     }
 
-    try {
-      const postData2 = {
-        from: moment(startDate).format("YYYY-MM-DD 00:00:00"),
-        to: moment(endDate).format("YYYY-MM-DD 23:59:59"),
-      };
-
-      const ipNumberResponse = await axiosinstance.post("/admission/getIpNumberTmchGrouped", postData2);
-      const {success, data} = ipNumberResponse.data;
-      const ipNumber = success === 1 ? data.map((e) => e.ip_no) : [];
-      const rmIpNumber = success === 1 ? data.filter((e) => e.tmch_status === "0").map((e) => e.ip_no) : [];
-
-      const postDate = {
+    navigate("/Menu/income-reports_types", {
+      state: {
         from: moment(startDate).format("DD/MM/YYYY 00:00:00"),
         to: moment(endDate).format("DD/MM/YYYY 23:59:59"),
-      };
-
-      const ipReceiptResponse = await axiosinstance.post("/admission/getIpReceiptInfo", postDate);
-      const {success: receiptSuccess, data: ipReceiptData} = ipReceiptResponse.data;
-
-      let ipNoColl = ipNumber;
-      if (receiptSuccess === 1 && ipReceiptData.length > 0) {
-        const minDate = ipReceiptData.reduce((min, obj) => {
-          const currentDate = new Date(obj.ADMISSION);
-          return currentDate < min ? currentDate : min;
-        }, new Date(ipReceiptData[0].ADMISSION));
-
-        const postData0 = {
-          from: moment(minDate).format("YYYY-MM-DD 00:00:00"),
-          to: moment(endDate).format("YYYY-MM-DD 23:59:59"),
-        };
-
-        const dischargedResponse = await axiosinstance.post("/admission/getIpDischargedPatientInfoGrouped", postData0);
-        const {success: dischargedSuccess, data: newIpReceiptBased} = dischargedResponse.data;
-
-        if (dischargedSuccess === 1 && newIpReceiptBased.length > 0) {
-          const array1 = newIpReceiptBased.map((e) => e.ip_no);
-          const array2 = ipReceiptData.map((e) => e.IP_NO);
-          const filtedArray = array1.filter((item) => array2.includes(item));
-          ipNoColl = ipNumber.concat(filtedArray);
-        }
-      }
-
-      navigateToReport(ipNumber, rmIpNumber, ipNoColl);
-    } catch (error) {
-      console.error("Error fetching report data:", error);
-      alert("Failed to fetch report data. Please try again.");
-      navigateToReport([], [], []);
-    }
-  }, [startDate, endDate, navigate, checked]);
+      },
+    });
+  }, [startDate, endDate, checked, navigate]);
 
   const handleClose = () => {
     navigate("/Menu/Mis");
@@ -140,13 +79,12 @@ const HospitalncomeReports = () => {
             fontFamily: "Arial,Tahoma,Verdana,sans-serif",
           }}
         >
-          Income Report-Grouped
+          Income Report
         </Box>
         <Box
           sx={{
             display: "flex",
             flex: 1,
-            // backgroundColor: "green",
           }}
         >
           <Box
@@ -155,7 +93,6 @@ const HospitalncomeReports = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              // backgroundColor: 'lightcyan'
             }}
           >
             <table style={{display: "flex"}}>

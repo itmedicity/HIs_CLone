@@ -1,68 +1,95 @@
-.tableTextfeild{
-    text-align: right;
-    /* font-weight: 600; */
-    font-size: 12px;
-    font-family: Arial, Helvetica, sans-serif;
+.tableTextfeild {
+  text-align: right;
+  /* font-weight: 600; */
+  font-size: 12px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.grdDetails{
-    width: 100%;
-    margin: 10px;
-    height: 40px;
-    color: #525252;
-    font-size: 12px;
-    /* font-weight: bold; */
-    border: solid 1px #D3DCE5;
-    background-color: #F3F7F8;
-    width: 300px;
-    border-collapse: collapse;
-    outline: medium none;
+.grdDetails {
+  width: 100%;
+  margin: 10px;
+  height: 40px;
+  color: #525252;
+  font-size: 12px;
+  /* font-weight: bold; */
+  border: solid 1px #d3dce5;
+  background-color: #f3f7f8;
+  width: 300px;
+  border-collapse: collapse;
+  outline: medium none;
 }
 
 .grdDetails .grdHeader {
-    height: 40px;
-    color: #525252;
-    font-weight: bold;
-    background-color: #ecebeb;
-    border: 1px #525252;
+  height: 40px;
+  color: #525252;
+  font-weight: bold;
+  background-color: #ecebeb;
+  border: 1px #525252;
 }
 
 .grdDetails .grdItemStyle {
-    background-color: #FFF;
-    border: 1px #525252;
-    font-weight: bold;
-    font-family: Arial, Helvetica, sans-serif;
+  background-color: #fff;
+  border: 1px #525252;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.tableHead{
-    border-width: 0px;
-    border-style: None;
-    height: 86px;
-    width: 98%;
-    border-collapse: collapse;
+.tableHead {
+  border-width: 0px;
+  border-style: None;
+  height: 86px;
+  width: 98%;
+  border-collapse: collapse;
 
-    width: 100%;
-    margin: 10px;
-    border: solid 1px #484848;
-    border-collapse: collapse;
-    font-family: Arial,verdana,Tahoma;
-    font-size: 10px;
-    outline: medium none;
-    border-left-color: #e4e4e4 !important;
-    border-right-color: #e4e4e4 !important;
+  width: 100%;
+  margin: 10px;
+  border: solid 1px #484848;
+  border-collapse: collapse;
+  font-family: Arial, verdana, Tahoma;
+  font-size: 10px;
+  outline: medium none;
+  border-left-color: #e4e4e4 !important;
+  border-right-color: #e4e4e4 !important;
 }
 
-.trHead{
-    height: 30px;
-    font-weight: bold;
-    background-color: #94C5F7;
-    font-size: 13px;
-    border: 1px solid #94C5F7;
-
+.trHead {
+  height: 30px;
+  font-weight: bold;
+  background-color: #94c5f7;
+  font-size: 13px;
+  border: 1px solid #94c5f7;
 }
 
-.tableHead .trHead{
-    /* background-color: #FFFFFF; */
-    white-space: pre;
-    border: 1px solid #94C5F7 !important;
+.tableHead .trHead {
+  /* background-color: #FFFFFF; */
+  white-space: pre;
+  border: 1px solid #94c5f7 !important;
+}
+
+/* styles.css */
+.customCheckbox {
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  cursor: pointer;
+  vertical-align: bottom;
+  background: white;
+  border: 1px solid #c4c4c4;
+  box-sizing: border-box;
+  position: relative;
+  outline: none;
+  margin-right: 2px;
+}
+
+.customCheckbox:focus {
+  border: 1px solid #e99326;
+  border-radius: 3px;
+}
+
+.customCheckbox:checked::after {
+  content: url(../../../../assets/checkmark.png);
+  display: block;
+  position: absolute;
+  top: -6px;
+  left: -5px;
 }

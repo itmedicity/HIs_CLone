@@ -198,24 +198,6 @@ const IncomeReports = () => {
     [collAgainSale, misCollection_advanceCollection, misCollection_creditInsuranceBillCollection, misCollection_ippreviousDayCollection, misCollection_advanceRefund]
   );
 
-  /****
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   */
   useEffect(() => {
     setPharmacyDetl({
       pharma1: pharma1,
@@ -266,124 +248,90 @@ const IncomeReports = () => {
 
   useEffect(() => {
     // Process collection data
-    if (Object.keys(collection).length > 0) {
-      const misColl = [
-        {
-          advanceCollection: collection?.advanceCollection?.status === 1 ? collection?.advanceCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          tax: collection?.advanceCollection?.status === 1 ? collection?.advanceCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-          status: collection?.advanceCollection?.status === 1 || collection?.advanceCollection?.status === 2 ? true : false,
-        },
-        {
-          advanceRefund: collection?.advanceRefund?.status === 1 ? collection?.advanceRefund?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          tax: collection?.advanceRefund?.status === 1 ? collection?.advanceRefund?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-          status: collection?.advanceRefund?.status === 1 || collection?.advanceRefund?.status === 2 ? true : false,
-        },
-        {
-          advanceSettled: collection?.advanceSettled?.status === 1 ? collection?.advanceSettled?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          tax: collection?.advanceSettled?.status === 1 ? collection?.advanceSettled?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-          status: collection?.advanceSettled?.status === 1 || collection?.advanceSettled?.status === 2 ? true : false,
-        },
-        {
-          collectionAgainstSalesDeduction:
-            collection?.collectionAgainstSalesDeduction?.status === 1 ? collection?.collectionAgainstSalesDeduction?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          tax:
-            collection?.collectionAgainstSalesDeduction?.status === 1 ? collection?.collectionAgainstSalesDeduction?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-          status: collection?.collectionAgainstSalesDeduction?.status === 1 || collection?.collectionAgainstSalesDeduction?.status === 2 ? true : false,
-        },
-        {
-          collectionAgainstSalesTotal:
-            collection?.collectionAgainstSalesTotal?.status === 1 ? collection?.collectionAgainstSalesTotal?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          status: collection?.collectionAgainstSalesTotal?.status === 1 || collection?.collectionAgainstSalesTotal?.status === 2 ? true : false,
-        },
-        {
-          complimentory: collection?.complimentory?.status === 1 ? collection?.complimentory?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          tax: collection?.complimentory?.status === 1 ? collection?.complimentory?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-          status: collection?.complimentory?.status === 1 || collection?.complimentory?.status === 2 ? true : false,
-        },
-        {
-          creditInsuranceBillCollection:
-            collection?.creditInsuranceBillCollection?.status === 1 ? collection?.creditInsuranceBillCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          tax: collection?.creditInsuranceBillCollection?.status === 1 ? collection?.creditInsuranceBillCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-          status: collection?.creditInsuranceBillCollection?.status === 1 || collection?.creditInsuranceBillCollection?.status === 2 ? true : false,
-        },
-        {
-          ipConsolidatedDiscount:
-            collection?.ipConsolidatedDiscount?.status === 1 ? collection?.ipConsolidatedDiscount?.data.reduce((accumulator, currentValue) => accumulator + currentValue.DISCOUNT, 0) : 0,
-          status: collection?.ipConsolidatedDiscount?.status === 1 || collection?.ipConsolidatedDiscount?.status === 2 ? true : false,
-        },
-        {
-          ipPreviousDayDiscount:
-            collection?.ipPreviousDayDiscount?.status === 1 ? collection?.ipPreviousDayDiscount?.data.reduce((accumulator, currentValue) => accumulator + currentValue.DISCOUNT, 0) : 0,
-          status: collection?.ipPreviousDayDiscount?.status === 1 || collection?.ipPreviousDayDiscount?.status === 2 ? true : false,
-        },
-        {
-          unsettledAmount: collection?.unsettledAmount?.status === 1 ? collection?.unsettledAmount?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          tax: collection?.unsettledAmount?.status === 1 ? collection?.unsettledAmount?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-          status: collection?.unsettledAmount?.status === 1 || collection?.unsettledAmount?.status === 2 ? true : false,
-        },
-        {
-          ippreviousDayCollection:
-            collection?.ippreviousDayCollection?.status === 1 ? collection?.ippreviousDayCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          tax: collection?.ippreviousDayCollection?.status === 1 ? collection?.ippreviousDayCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-          status: collection?.ippreviousDayCollection?.status === 1 || collection?.ippreviousDayCollection?.status === 2 ? true : false,
-        },
-        {
-          creditInsuranceBill:
-            collection?.creditInsuranceBill?.status === 1
-              ? collection?.creditInsuranceBill?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) +
-                collection?.creditInsuranceBillPending?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0)
-              : 0,
-          tax:
-            collection?.creditInsuranceBill?.status === 1
-              ? collection?.creditInsuranceBill?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) +
-                collection?.creditInsuranceBillPending?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0)
-              : 0,
-          status: collection?.creditInsuranceBill?.status === 1 || collection?.creditInsuranceBill?.status === 2 ? true : false,
-        },
-      ];
+    if (!Object.keys(collection).length) return;
 
-      if (!misColl.some((val) => val.status === false)) {
-        setMisCollrction(misColl);
-      }
+    const misColl = [
+      {
+        advanceCollection: collection?.advanceCollection?.status === 1 ? collection?.advanceCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
+        tax: collection?.advanceCollection?.status === 1 ? collection?.advanceCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
+        status: collection?.advanceCollection?.status === 1 || collection?.advanceCollection?.status === 2 ? true : false,
+      },
+      {
+        advanceRefund: collection?.advanceRefund?.status === 1 ? collection?.advanceRefund?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
+        tax: collection?.advanceRefund?.status === 1 ? collection?.advanceRefund?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
+        status: collection?.advanceRefund?.status === 1 || collection?.advanceRefund?.status === 2 ? true : false,
+      },
+      {
+        advanceSettled: collection?.advanceSettled?.status === 1 ? collection?.advanceSettled?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
+        tax: collection?.advanceSettled?.status === 1 ? collection?.advanceSettled?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
+        status: collection?.advanceSettled?.status === 1 || collection?.advanceSettled?.status === 2 ? true : false,
+      },
+      {
+        collectionAgainstSalesDeduction:
+          collection?.collectionAgainstSalesDeduction?.status === 1 ? collection?.collectionAgainstSalesDeduction?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
+        tax: collection?.collectionAgainstSalesDeduction?.status === 1 ? collection?.collectionAgainstSalesDeduction?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
+        status: collection?.collectionAgainstSalesDeduction?.status === 1 || collection?.collectionAgainstSalesDeduction?.status === 2 ? true : false,
+      },
+      {
+        collectionAgainstSalesTotal:
+          collection?.collectionAgainstSalesTotal?.status === 1 ? collection?.collectionAgainstSalesTotal?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
+        status: collection?.collectionAgainstSalesTotal?.status === 1 || collection?.collectionAgainstSalesTotal?.status === 2 ? true : false,
+      },
+      {
+        complimentory: collection?.complimentory?.status === 1 ? collection?.complimentory?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
+        tax: collection?.complimentory?.status === 1 ? collection?.complimentory?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
+        status: collection?.complimentory?.status === 1 || collection?.complimentory?.status === 2 ? true : false,
+      },
+      {
+        creditInsuranceBillCollection:
+          collection?.creditInsuranceBillCollection?.status === 1 ? collection?.creditInsuranceBillCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
+        tax: collection?.creditInsuranceBillCollection?.status === 1 ? collection?.creditInsuranceBillCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
+        status: collection?.creditInsuranceBillCollection?.status === 1 || collection?.creditInsuranceBillCollection?.status === 2 ? true : false,
+      },
+      {
+        ipConsolidatedDiscount:
+          collection?.ipConsolidatedDiscount?.status === 1 ? collection?.ipConsolidatedDiscount?.data.reduce((accumulator, currentValue) => accumulator + currentValue.DISCOUNT, 0) : 0,
+        status: collection?.ipConsolidatedDiscount?.status === 1 || collection?.ipConsolidatedDiscount?.status === 2 ? true : false,
+      },
+      {
+        ipPreviousDayDiscount:
+          collection?.ipPreviousDayDiscount?.status === 1 ? collection?.ipPreviousDayDiscount?.data.reduce((accumulator, currentValue) => accumulator + currentValue.DISCOUNT, 0) : 0,
+        status: collection?.ipPreviousDayDiscount?.status === 1 || collection?.ipPreviousDayDiscount?.status === 2 ? true : false,
+      },
+      {
+        unsettledAmount: collection?.unsettledAmount?.status === 1 ? collection?.unsettledAmount?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
+        tax: collection?.unsettledAmount?.status === 1 ? collection?.unsettledAmount?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
+        status: collection?.unsettledAmount?.status === 1 || collection?.unsettledAmount?.status === 2 ? true : false,
+      },
+      {
+        ippreviousDayCollection:
+          collection?.ippreviousDayCollection?.status === 1 ? collection?.ippreviousDayCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
+        tax: collection?.ippreviousDayCollection?.status === 1 ? collection?.ippreviousDayCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
+        status: collection?.ippreviousDayCollection?.status === 1 || collection?.ippreviousDayCollection?.status === 2 ? true : false,
+      },
+      {
+        creditInsuranceBill:
+          collection?.creditInsuranceBill?.status === 1
+            ? collection?.creditInsuranceBill?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) +
+              collection?.creditInsuranceBillPending?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0)
+            : 0,
+        tax:
+          collection?.creditInsuranceBill?.status === 1
+            ? collection?.creditInsuranceBill?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) +
+              collection?.creditInsuranceBillPending?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0)
+            : 0,
+        status: collection?.creditInsuranceBill?.status === 1 || collection?.creditInsuranceBill?.status === 2 ? true : false,
+      },
+    ];
+
+    if (!misColl.some((val) => val.status === false)) {
+      setMisCollrction(misColl);
     }
-
-    // // Process misGroup data
-    // const {misGroupState, misGroupMaster} = misGroup;
-    // getMisGroupMasterList(misGroupState, misGroupMaster).then(setMisGroupList);
-
-    // Process procedure income
-    // if (proIncome?.patientTypeDiscount?.status === 1) {
-    //   setGeneral(proIncome.patientTypeDiscount.data[0]?.DISCOUNT || 0);
-    //   setOtherType(proIncome.patientTypeDiscount.data[1]?.DISCOUNT || 0);
-    // }
-    // const incomeArrayData = Object.values(proIncome)
-    //   .filter((val) => val.income === true)
-    //   .map((val) => (val.status === 1 ? val.data : null))
-    //   .flat();
-    // getIncomeReportList(incomeArrayData, misGroupList).then(setMisReportList);
-
-    // Process pharmacy income
-    // getPhamracyIncome(pharmacyIncome).then((value) => setPharamcyIc((prev) => ({...prev, ...value})));
-    // setRndOff(misGroup?.roundOff?.data?.reduce((acc, curr) => acc + curr.AMT, 0) || 0);
-
-    // Calculate grand totals
-    // getGrandTotal(misReortList).then((ele) => {
-    //   const grantTotal = {
-    //     groupNet: ele?.reduce((acc, curr) => acc + curr.groupNet, 0) || 0,
-    //     groupDis: ele?.reduce((acc, curr) => acc + curr.groupDiscnt, 0) || 0,
-    //     groupTax: ele?.reduce((acc, curr) => acc + curr.groupTax, 0) || 0,
-    //     groupGross: ele?.reduce((acc, curr) => acc + curr.groupGross, 0) || 0,
-    //   };
-    //   setGrand(grantTotal);
-    // });
   }, [collection]);
 
   useEffect(() => {
-    // @ts-ignore
     const {misGroupState, misGroupMaster} = misGroup;
     getMisGroupMasterList(misGroupState, misGroupMaster).then((misGrpList) => {
-      // console.log(misGrpList)
-      // @ts-ignore
       setMisGroupList(misGrpList);
     });
   }, [misGroup]);
@@ -416,292 +364,6 @@ const IncomeReports = () => {
       setGrand(grantTotal);
     });
   }, [misReortList]);
-
-  // useEffect(() => {
-  //   if (state === null) {
-  //     return;
-  //   } else {
-  //     //MIS GROUP NAME
-  //     // @ts-ignore
-  //     // dispatch(getMisGroup());
-  //     // // @ts-ignore
-  //     // dispatch(getMisGroupMaster());
-  //     // //COLLECTION PART
-  //     // // @ts-ignore
-  //     // dispatch(getAdvanceCollectionTssh(state));
-  //     // // @ts-ignore
-  //     // dispatch(getAdvanceRefundTssh(state));
-  //     // // @ts-ignore
-  //     // dispatch(getAdvanceSettledTssh(state));
-  //     // // @ts-ignore
-  //     // dispatch(getcollectionagainSaleTotalTssh(state));
-  //     // // @ts-ignore
-  //     // dispatch(getcollectionagainSaleDeductionTssh(state));
-  //     // // @ts-ignore
-  //     // dispatch(getcomplimentoryTssh(state));
-  //     // // @ts-ignore
-  //     // dispatch(getcreditInsuranceBillCollectionTssh(state));
-  //     // // @ts-ignore
-  //     // dispatch(getIpconsolidatedDiscountTssh(state));
-  //     // // @ts-ignore
-  //     // dispatch(getipPreviousDayDiscountTssh(state));
-  //     // // @ts-ignore
-  //     // dispatch(getunsettledAmountTssh(state));
-  //     // // @ts-ignore
-  //     // dispatch(getipPreviousDayCollectionTssh(state));
-  //     // // @ts-ignore
-  //     // dispatch(getipcreditInsuranceBillTssh(state));
-  //     // dispatch(getipcreditInsuranceBillPending(state));
-
-  //     // //INCOME PART
-  //     // // @ts-ignore
-  //     // dispatch(getProincomeTssh1(state));
-  //     // // @ts-ignore
-  //     // dispatch(getProincomeTssh2(state));
-  //     // // @ts-ignore
-  //     // dispatch(getProincomeTssh3(state));
-  //     // // @ts-ignore
-  //     // dispatch(getProincomeTssh4(state));
-  //     // // @ts-ignore
-  //     // dispatch(getPatietTypeDiscountTssh(state));
-  //     // // @ts-ignore
-  //     // dispatch(getPhaSalePartTssh1(state));
-  //     // // @ts-ignore
-  //     // dispatch(getPhaSalePartTssh2(state));
-  //     // // @ts-ignore
-  //     // dispatch(getPhaSalePartTssh3(state));
-  //     // // @ts-ignore
-  //     // dispatch(getPhaReturnPartTssh1(state));
-  //     // // @ts-ignore
-  //     // dispatch(getPhaReturnPartTssh2(state));
-  //     // // @ts-ignore
-  //     // dispatch(getPhaReturnPartTssh3(state));
-  //     // // @ts-ignore
-  //     // dispatch(theaterIncomeTssh(state));
-  //     // dispatch(getRoundOff(state));
-
-  //     // console.log(state);
-  //   }
-  // }, [state]);
-
-  // const { state } = locationData;
-
-  // useEffect(() => {
-  //   if (Object.keys(collection).length > 0) {
-  //     const misColl = [
-  //       {
-  //         advanceCollection: collection?.advanceCollection?.status === 1 ? collection?.advanceCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-  //         tax: collection?.advanceCollection?.status === 1 ? collection?.advanceCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-  //         status: collection?.advanceCollection?.status === 1 || collection?.advanceCollection?.status === 2 ? true : false,
-  //       },
-  //       {
-  //         advanceRefund: collection?.advanceRefund?.status === 1 ? collection?.advanceRefund?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-  //         tax: collection?.advanceRefund?.status === 1 ? collection?.advanceRefund?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-  //         status: collection?.advanceRefund?.status === 1 || collection?.advanceRefund?.status === 2 ? true : false,
-  //       },
-  //       {
-  //         advanceSettled: collection?.advanceSettled?.status === 1 ? collection?.advanceSettled?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-  //         tax: collection?.advanceSettled?.status === 1 ? collection?.advanceSettled?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-  //         status: collection?.advanceSettled?.status === 1 || collection?.advanceSettled?.status === 2 ? true : false,
-  //       },
-  //       {
-  //         collectionAgainstSalesDeduction:
-  //           collection?.collectionAgainstSalesDeduction?.status === 1 ? collection?.collectionAgainstSalesDeduction?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-  //         tax:
-  //           collection?.collectionAgainstSalesDeduction?.status === 1 ? collection?.collectionAgainstSalesDeduction?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-  //         status: collection?.collectionAgainstSalesDeduction?.status === 1 || collection?.collectionAgainstSalesDeduction?.status === 2 ? true : false,
-  //       },
-  //       {
-  //         collectionAgainstSalesTotal:
-  //           collection?.collectionAgainstSalesTotal?.status === 1 ? collection?.collectionAgainstSalesTotal?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-  //         status: collection?.collectionAgainstSalesTotal?.status === 1 || collection?.collectionAgainstSalesTotal?.status === 2 ? true : false,
-  //       },
-  //       {
-  //         complimentory: collection?.complimentory?.status === 1 ? collection?.complimentory?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-  //         tax: collection?.complimentory?.status === 1 ? collection?.complimentory?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-  //         status: collection?.complimentory?.status === 1 || collection?.complimentory?.status === 2 ? true : false,
-  //       },
-  //       {
-  //         creditInsuranceBillCollection:
-  //           collection?.creditInsuranceBillCollection?.status === 1 ? collection?.creditInsuranceBillCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-  //         tax: collection?.creditInsuranceBillCollection?.status === 1 ? collection?.creditInsuranceBillCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-  //         status: collection?.creditInsuranceBillCollection?.status === 1 || collection?.creditInsuranceBillCollection?.status === 2 ? true : false,
-  //       },
-  //       {
-  //         ipConsolidatedDiscount:
-  //           collection?.ipConsolidatedDiscount?.status === 1 ? collection?.ipConsolidatedDiscount?.data.reduce((accumulator, currentValue) => accumulator + currentValue.DISCOUNT, 0) : 0,
-  //         status: collection?.ipConsolidatedDiscount?.status === 1 || collection?.ipConsolidatedDiscount?.status === 2 ? true : false,
-  //       },
-  //       {
-  //         ipPreviousDayDiscount:
-  //           collection?.ipPreviousDayDiscount?.status === 1 ? collection?.ipPreviousDayDiscount?.data.reduce((accumulator, currentValue) => accumulator + currentValue.DISCOUNT, 0) : 0,
-  //         status: collection?.ipPreviousDayDiscount?.status === 1 || collection?.ipPreviousDayDiscount?.status === 2 ? true : false,
-  //       },
-  //       {
-  //         unsettledAmount: collection?.unsettledAmount?.status === 1 ? collection?.unsettledAmount?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-  //         tax: collection?.unsettledAmount?.status === 1 ? collection?.unsettledAmount?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-  //         status: collection?.unsettledAmount?.status === 1 || collection?.unsettledAmount?.status === 2 ? true : false,
-  //       },
-  //       {
-  //         ippreviousDayCollection:
-  //           collection?.ippreviousDayCollection?.status === 1 ? collection?.ippreviousDayCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-  //         tax: collection?.ippreviousDayCollection?.status === 1 ? collection?.ippreviousDayCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-  //         status: collection?.ippreviousDayCollection?.status === 1 || collection?.ippreviousDayCollection?.status === 2 ? true : false,
-  //       },
-  //       {
-  //         creditInsuranceBill:
-  //           collection?.creditInsuranceBill?.status === 1
-  //             ? collection?.creditInsuranceBill?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) +
-  //               collection?.creditInsuranceBillPending?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0)
-  //             : 0,
-  //         tax:
-  //           collection?.creditInsuranceBill?.status === 1
-  //             ? collection?.creditInsuranceBill?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) +
-  //               collection?.creditInsuranceBillPending?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0)
-  //             : 0,
-  //         status: collection?.creditInsuranceBill?.status === 1 || collection?.creditInsuranceBill?.status === 2 ? true : false,
-  //       },
-  //     ];
-
-  //     const res = misColl?.find((val) => val.status === false);
-
-  //     if (res === undefined) {
-  //       // @ts-ignore
-  //       setMisCollrction([
-  //         // @ts-ignore
-  //         // ...misCollection,
-  //         // @ts-ignore
-  //         {
-  //           advanceCollection: misColl[0]?.advanceCollection,
-  //           tax: misColl[0]?.tax,
-  //           status: false,
-  //         },
-  //         // @ts-ignore
-  //         {
-  //           advanceRefund: misColl[1]?.advanceRefund,
-  //           tax: misColl[1]?.tax,
-  //           status: false,
-  //         },
-  //         // @ts-ignore
-  //         {
-  //           advanceSettled: misColl[2]?.advanceSettled,
-  //           tax: misColl[2]?.tax,
-  //           status: false,
-  //         },
-  //         // @ts-ignore
-  //         {
-  //           collectionAgainstSalesDeduction: misColl[3]?.collectionAgainstSalesDeduction,
-  //           tax: misColl[3]?.tax,
-  //           status: false,
-  //         },
-  //         // @ts-ignore
-  //         {
-  //           collectionAgainstSalesTotal: misColl[4]?.collectionAgainstSalesTotal,
-  //           status: false,
-  //         },
-  //         // @ts-ignore
-  //         {
-  //           complimentory: misColl[5]?.complimentory,
-  //           tax: misColl[5]?.tax,
-  //           status: false,
-  //         },
-  //         // @ts-ignore
-  //         {
-  //           creditInsuranceBillCollection: misColl[6]?.creditInsuranceBillCollection,
-  //           tax: misColl[6]?.tax,
-  //           status: false,
-  //         },
-  //         // @ts-ignore
-  //         {
-  //           ipConsolidatedDiscount: misColl[7]?.ipConsolidatedDiscount,
-  //           status: false,
-  //         },
-  //         // @ts-ignore
-  //         {
-  //           ipPreviousDayDiscount: misColl[8]?.ipPreviousDayDiscount,
-  //           status: false,
-  //         },
-  //         // @ts-ignore
-  //         {
-  //           unsettledAmount: misColl[9]?.unsettledAmount,
-  //           tax: misColl[9]?.tax,
-  //           status: false,
-  //         },
-  //         // @ts-ignore
-  //         {
-  //           ippreviousDayCollection: misColl[10]?.ippreviousDayCollection,
-  //           tax: misColl[10]?.tax,
-  //           status: false,
-  //         },
-  //         // @ts-ignore
-  //         {
-  //           creditInsuranceBill: misColl[11]?.creditInsuranceBill,
-  //           tax: misColl[11]?.tax,
-  //           status: false,
-  //         },
-  //       ]);
-  //     }
-  //   }
-  // }, [collection]);
-
-  // useEffect(() => {
-  //   // @ts-ignore
-  //   const {misGroupState, misGroupMaster} = misGroup;
-  //   getMisGroupMasterList(misGroupState, misGroupMaster).then((misGrpList) => {
-  //     // @ts-ignore
-  //     setMisGroupList(misGrpList);
-  //   });
-  // }, [misGroup]);
-
-  //UPDATE THE INCOME PART
-  // useEffect(() => {
-  //   const incomeData = Object.values(proIncome);
-
-  //   if (proIncome?.patientTypeDiscount?.status === 1) {
-  //     // @ts-ignore
-  //     setGeneral(proIncome?.patientTypeDiscount?.data?.[0]?.DISCOUNT);
-  //     setOtherType(proIncome?.patientTypeDiscount?.data?.[1]?.DISCOUNT);
-  //   }
-
-  //   const incomeArrayData = incomeData
-  //     ?.filter((val) => val.income === true)
-  //     .map((val) => (val.status === 1 ? val.data : null))
-  //     .flat();
-  //   getIncomeReportList(incomeArrayData, misGroupLst).then((report) => {
-  //     if (report !== undefined) {
-  //       setMisReportList(report);
-  //     }
-  //   });
-  // }, [misGroupLst, proIncome]);
-
-  //PHARMACY COLLECTION INCOME PART
-  // useEffect(() => {
-  //   getPhamracyIncome(pharmacyIncome).then((value) => {
-  //     // @ts-ignore
-  //     setPharamcyIc({
-  //       ...pharamcyIc,
-  //       ...value,
-  //     });
-  //   });
-  //   setRndOff(misGroup?.roundOff?.data?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0));
-  // }, [pharmacyIncome, misGroup]);
-
-  // @ts-ignore
-  // const C = parseFloat(misCollection?.[0].advanceCollection);
-  // // @ts-ignore
-  // const D = parseFloat(misCollection?.[6].creditInsuranceBillCollection);
-  // // @ts-ignore
-  // const E = parseFloat(misCollection?.[10].ippreviousDayCollection);
-  // // @ts-ignore
-  // const B = parseFloat(misCollection?.[1].advanceRefund);
-  // // @ts-ignore
-  // const totalCounterCollection = collAgainSale + C + D + E - B;
-
-  /**********
-   * MIS REPORTS DETALED REPORTS
-   */
-
-  //FOR MODEL OPENING STATES
 
   const onClickFuncLevelOne = useCallback(
     async (data) => {
@@ -736,399 +398,133 @@ const IncomeReports = () => {
         return;
       }
 
-      // if (reportName === "BED") {
-      //   // setModalData([])
-      //   const bedIncomeDetl = async (state) => {
-      //     setModalData(defautState);
-      //     const result = await axiosinstance.post("/incomeDetlTssh/bedIncome", state);
-      //     const {success, data} = result.data;
-      //     if (success === 1) {
-      //       setModalData({
-      //         status: 1,
-      //         reportName: "Bed",
-      //         reportData: data,
-      //       });
-      //     } else {
-      //       setModalData(defautState);
-      //     }
-      //   };
-      //   bedIncomeDetl(state);
-      // } else if (reportName === "ROOM") {
-      //   const roomIncomeDetl = async (state) => {
-      //     setModalData(defautState);
-      //     const result = await axiosinstance.post("/incomeDetlTssh/roomRentIncome", state);
-      //     const {success, data} = result.data;
-      //     if (success === 1) {
-      //       setModalData({
-      //         status: 1,
-      //         reportName: "Room",
-      //         reportData: data,
-      //       });
-      //     } else {
-      //       setModalData(defautState);
-      //     }
-      //   };
-      //   roomIncomeDetl(state);
-      // } else if (reportName === "NS") {
-      //   const nsIncomeDetl = async (state) => {
-      //     setModalData(defautState);
-      //     const result = await axiosinstance.post("/incomeDetlTssh/nsIncome", state);
-      //     const {success, data} = result.data;
-      //     if (success === 1) {
-      //       setModalData({
-      //         status: 1,
-      //         reportName: "Ns",
-      //         reportData: data,
-      //       });
-      //     } else {
-      //       setModalData(defautState);
-      //     }
-      //   };
-      //   nsIncomeDetl(state);
-      // } else if (reportName === "OTHERS") {
-      //   const othersIncomeDetl = async (state) => {
-      //     setModalData(defautState);
-      //     const result = await axiosinstance.post("/incomeDetlTssh/otherIncome", state);
-      //     const {success, data} = result.data;
-      //     if (success === 1) {
-      //       setModalData({
-      //         status: 1,
-      //         reportName: "Others",
-      //         reportData: data,
-      //       });
-      //     } else {
-      //       setModalData(defautState);
-      //     }
-      //   };
-      //   othersIncomeDetl(state);
-      // } else if (reportName === "CONSULTING") {
-      //   const consultingIncomeDetl = async (state) => {
-      //     setModalData(defautState);
-      //     const result = await axiosinstance.post("/incomeDetlTssh/consultingIncome", state);
-      //     const {success, data} = result.data;
-      //     if (success === 1) {
-      //       setModalData({
-      //         status: 1,
-      //         reportName: "Consulting",
-      //         reportData: data,
-      //       });
-      //     } else {
-      //       setModalData(defautState);
-      //     }
-      //   };
-      //   consultingIncomeDetl(state);
-      // } else if (reportName === "THEATRE") {
-      //   const theaterIncomeDetl = async (state) => {
-      //     setModalData(defautState);
-      //     const result = await axiosinstance.post("/incomeDetlTssh/theaterIncome", state);
-      //     const {success, data} = result.data;
-      //     if (success === 1) {
-      //       setModalData({
-      //         status: 1,
-      //         reportName: "Theater",
-      //         reportData: data,
-      //       });
-      //     } else {
-      //       setModalData(defautState);
-      //     }
-      //   };
-      //   theaterIncomeDetl(state);
-      // } else if (reportName === "OPERATION") {
-      //   const surgeonIncomeDetl = async (state) => {
-      //     setModalData(defautState);
-      //     const result = await axiosinstance.post("/incomeDetlTssh/surgeonIncome", state);
-      //     const {success, data} = result.data;
-      //     if (success === 1) {
-      //       setModalData({
-      //         status: 1,
-      //         reportName: "Operation",
-      //         reportData: data,
-      //       });
-      //     } else {
-      //       setModalData(defautState);
-      //     }
-      //   };
-      //   surgeonIncomeDetl(state);
-      // } else if (reportName === "ANESTHESIA") {
-      //   const anesthesiaIncomeDetl = async (state) => {
-      //     setModalData(defautState);
-      //     const result = await axiosinstance.post("/incomeDetlTssh/anesthetiaIncome", state);
-      //     const {success, data} = result.data;
-      //     if (success === 1) {
-      //       setModalData({
-      //         status: 1,
-      //         reportName: "Anesthesia",
-      //         reportData: data,
-      //       });
-      //     } else {
-      //       setModalData(defautState);
-      //     }
-      //   };
-      //   anesthesiaIncomeDetl(state);
-      // } else if (reportName === "CARDIOLOGY") {
-      //   const cardiologyIncomeDetl = async (state) => {
-      //     setModalData(defautState);
-      //     const result = await axiosinstance.post("/incomeDetlTssh/cardiologyIncome", state);
-      //     const {success, data} = result.data;
-      //     if (success === 1) {
-      //       setModalData({
-      //         status: 1,
-      //         reportName: "Cardiology",
-      //         reportData: data,
-      //       });
-      //     } else {
-      //       setModalData(defautState);
-      //     }
-      //   };
-      //   cardiologyIncomeDetl(state);
-      // } else if (reportName === "DISPOSIBLE") {
-      //   const disposibleIncomeDetl = async (state) => {
-      //     setModalData(defautState);
-      //     const result = await axiosinstance.post("/incomeDetlTssh/disPosibleItemIncome", state);
-      //     const {success, data} = result.data;
-      //     if (success === 1) {
-      //       setModalData({
-      //         status: 1,
-      //         reportName: "Disposible",
-      //         reportData: data,
-      //       });
-      //     } else {
-      //       setModalData(defautState);
-      //     }
-      //   };
-      //   disposibleIncomeDetl(state);
-      // } else if (reportName === "ICU") {
-      //   const icuIncomeDetl = async (state) => {
-      //     setModalData(defautState);
-      //     const result = await axiosinstance.post("/incomeDetlTssh/icuIncome", state);
-      //     const {success, data} = result.data;
-      //     if (success === 1) {
-      //       setModalData({
-      //         status: 1,
-      //         reportName: "Icu",
-      //         reportData: data,
-      //       });
-      //     } else {
-      //       setModalData(defautState);
-      //     }
-      //   };
-      //   icuIncomeDetl(state);
-      // } else if (reportName === "ICU PROC") {
-      //   const icuProIncomeDetl = async (state) => {
-      //     setModalData(defautState);
-      //     const result = await axiosinstance.post("/incomeDetlTssh/icuprocedureIncome", state);
-      //     const {success, data} = result.data;
-      //     if (success === 1) {
-      //       setModalData({
-      //         status: 1,
-      //         reportName: "Icu Procedure",
-      //         reportData: data,
-      //       });
-      //     } else {
-      //       setModalData(defautState);
-      //     }
-      //   };
-      //   icuProIncomeDetl(state);
-      // } else if (reportName === "RADIOLOGY") {
-      //   const radiologyIncomeDetl = async (state) => {
-      //     setModalData(defautState);
-      //     const result = await axiosinstance.post("/incomeDetlTssh/radiologyIncome", state);
-      //     const {success, data} = result.data;
-      //     if (success === 1) {
-      //       setModalData({
-      //         status: 1,
-      //         reportName: "Radiology",
-      //         reportData: data,
-      //       });
-      //     } else {
-      //       setModalData(defautState);
-      //     }
-      //   };
-      //   radiologyIncomeDetl(state);
-      // } else if (reportName === "LAB") {
-      //   const labIncomeDetl = async (state) => {
-      //     setModalData(defautState);
-      //     const result = await axiosinstance.post("/incomeDetlTssh/laboratoryIncome", state);
-      //     const {success, data} = result.data;
-      //     if (success === 1) {
-      //       setModalData({
-      //         status: 1,
-      //         reportName: "Laboratory",
-      //         reportData: data,
-      //       });
-      //     } else {
-      //       setModalData(defautState);
-      //     }
-      //   };
-      //   labIncomeDetl(state);
-      // } else if (reportName === "MRI") {
-      //   const mriIncomeDetl = async (state) => {
-      //     setModalData(defautState);
-      //     const result = await axiosinstance.post("/incomeDetlTssh/mriIncome", state);
-      //     const {success, data} = result.data;
-      //     if (success === 1) {
-      //       setModalData({
-      //         status: 1,
-      //         reportName: "Mri",
-      //         reportData: data,
-      //       });
-      //     } else {
-      //       setModalData(defautState);
-      //     }
-      //   };
-      //   mriIncomeDetl(state);
-      // } else if (reportName === "DIET") {
-      //   const dietIncomeDetl = async (state) => {
-      //     setModalData(defautState);
-      //     const result = await axiosinstance.post("/incomeDetlTssh/dietIncome", state);
-      //     const {success, data} = result.data;
-      //     if (success === 1) {
-      //       setModalData({
-      //         status: 1,
-      //         reportName: "Diet",
-      //         reportData: data,
-      //       });
-      //     } else {
-      //       setModalData(defautState);
-      //     }
-      //   };
-      //   dietIncomeDetl(state);
-      // }
+      try {
+        const result = await axiosinstance.post(endpoint, state);
+        const {success, data} = result.data;
+        setModalData({
+          status: success === 1 ? 1 : 0,
+          reportName: reportName.charAt(0).toUpperCase() + reportName.slice(1).toLowerCase(),
+          reportData: success === 1 ? data : [],
+        });
+      } catch (error) {
+        console.error(`Error fetching ${reportName} details:`, error);
+        setModalData(defaultState);
+      }
     },
     [state]
   );
 
   const getPharmacyDetl = useCallback(async () => {
     setLayout1("fullscreen");
-    await axiosinstance.post("/incomeDetlTssh/pharmacyIncomePart1", state).then((res) => {
-      const {success, data} = res.data;
-      if (success === 1) {
-        setPharma1([...data]);
-      }
-    });
-    await axiosinstance.post("/incomeDetlTssh/pharmacyIncomePart2", state).then((res) => {
-      const {success, data} = res.data;
-      if (success === 1) {
-        setPharma2([...data]);
-      }
-    });
-    await axiosinstance.post("/incomeDetlTssh/pharmacyIncomePart3", state).then((res) => {
-      const {success, data} = res.data;
-      if (success === 1) {
-        setPharma3([...data]);
-      }
-    });
-    await axiosinstance.post("/incomeDetlTssh/pharmacyIncomePart4", state).then((res) => {
-      const {success, data} = res.data;
-      if (success === 1) {
-        setPharma4([...data]);
-      }
-    });
+    try {
+      const [res1, res2, res3, res4] = await Promise.all([
+        axiosinstance.post("/incomeDetlTssh/pharmacyIncomePart1", state),
+        axiosinstance.post("/incomeDetlTssh/pharmacyIncomePart2", state),
+        axiosinstance.post("/incomeDetlTssh/pharmacyIncomePart3", state),
+        axiosinstance.post("/incomeDetlTssh/pharmacyIncomePart4", state),
+      ]);
+
+      setPharma1(res1.data.success === 1 ? res1.data.data : []);
+      setPharma2(res2.data.success === 1 ? res2.data.data : []);
+      setPharma3(res3.data.success === 1 ? res3.data.data : []);
+      setPharma4(res4.data.success === 1 ? res4.data.data : []);
+    } catch (error) {
+      console.error("Error fetching pharmacy details:", error);
+    }
   }, [state]);
 
   const onClickCreditInsuranceBill = useCallback(async () => {
     setLayout2("fullscreen");
+    try {
+      const [res1, res2, res3, res4, res5, res6] = await Promise.all([
+        creditInsuranceBillDetlPart1(state),
+        creditInsuranceBillDetlPart2(state),
+        creditInsuranceBillDetlPart3(state),
+        creditInsuranceBillDetlPart4(state),
+        creditInsuranceBillDetlPart5(state),
+        creditInsuranceBillDetlPart6(state),
+      ]);
 
-    creditInsuranceBillDetlPart1(state).then((result) => {
-      if (result !== undefined) {
-        setCredDetlPard1([...result]);
-      }
-    });
-
-    creditInsuranceBillDetlPart2(state).then((result) => {
-      if (result !== undefined) {
-        setCredDetlPard2([...result]);
-      }
-    });
-
-    creditInsuranceBillDetlPart3(state).then((result) => {
-      if (result !== undefined) {
-        setCredDetlPard3([...result]);
-      }
-    });
-
-    creditInsuranceBillDetlPart4(state).then((result) => {
-      if (result !== undefined) {
-        setCredDetlPard4([...result]);
-      }
-    });
-
-    creditInsuranceBillDetlPart5(state).then((result) => {
-      if (result !== undefined) {
-        setCredDetlPard5([...result]);
-      }
-    });
-
-    creditInsuranceBillDetlPart6(state).then((result) => {
-      if (result !== undefined) {
-        setCredDetlPard6([...result]);
-      }
-    });
+      setCredDetlPard1(res1 || []);
+      setCredDetlPard2(res2 || []);
+      setCredDetlPard3(res3 || []);
+      setCredDetlPard4(res4 || []);
+      setCredDetlPard5(res5 || []);
+      setCredDetlPard6(res6 || []);
+    } catch (error) {
+      console.error("Error fetching credit insurance bill details:", error);
+    }
   }, [state]);
 
   useEffect(() => {
     setCredtInsuranceDetl({
-      credit1: [...credDetlPard1],
-      credit2: [...credDetlPard2],
-      credit3: [...credDetlPard3],
-      credit4: [...credDetlPard4],
-      credit5: [...credDetlPard5],
-      credit6: [...credDetlPard6],
+      credit1: credDetlPard1,
+      credit2: credDetlPard2,
+      credit3: credDetlPard3,
+      credit4: credDetlPard4,
+      credit5: credDetlPard5,
+      credit6: credDetlPard6,
     });
   }, [credDetlPard1, credDetlPard2, credDetlPard3, credDetlPard4, credDetlPard5, credDetlPard6]);
 
-  const onClickUnsettledAmount = useCallback(() => {
+  const onClickUnsettledAmount = useCallback(async () => {
     setLayout3("fullscreen");
-    getUnsettledBillDetl(state).then((results) => {
-      setUnsettled([...results]);
-    });
+    try {
+      const results = await getUnsettledBillDetl(state);
+      setUnsettled(results || []);
+    } catch (error) {
+      console.log("Error fetching unsettled amount details:", error);
+    }
   }, [state]);
 
   //ADVANCE COLLCTION DETAILS [C]
   const onClickAdvanceCollection = useCallback(async () => {
     setLayout4("fullscreen");
-    advanceCollectionDetail(state).then((results) => {
-      setAdvanceCollDetl([...results]);
-    });
+    try {
+      const results = await advanceCollectionDetail(state);
+      setAdvanceCollDetl(results || []);
+    } catch (error) {
+      console.log("Error fetching advance collection details:", error);
+    }
   }, [state]);
 
   useEffect(() => {
-    setCredInsuranceCol({
-      data0: [...credInsuColl0],
-      data1: [...credInsuColl1],
-    });
+    setCredInsuranceCol({data0: credInsuColl0, data1: credInsuColl1});
   }, [credInsuColl0, credInsuColl1]);
 
   const onClickCreditInsuranceBillCollection = useCallback(async () => {
     setLayout5("fullscreen");
-    credInsuranceCollectionModalData1(state).then((results) => {
-      if (results !== undefined) {
-        setCredInsuColl0([...results]);
-      }
-    });
-
-    credInsuranceCollectionModalData2(state).then((results) => {
-      if (results !== undefined) {
-        setCredInsuColl1([...results]);
-      }
-    });
+    try {
+      const [res1, res2] = await Promise.all([credInsuranceCollectionModalData1(state), credInsuranceCollectionModalData2(state)]);
+      setCredInsuColl0(res1 || []);
+      setCredInsuColl1(res2 || []);
+    } catch (error) {
+      console.log("Error fetching credit insurance collection details:", error);
+    }
   }, [state]);
+
+  const reportModalData = useMemo(() => modalData, [modalData]);
+  const pharmacyReportModalData = useMemo(() => pharmacyDetl, [pharmacyDetl]);
+  const credtInsuranceBillDetlData = useMemo(() => creditInsuranceBill, [creditInsuranceBill]);
+  const unsettledAmountData = useMemo(() => unsettled, [unsettled]);
+  const advanceCollectionData = useMemo(() => advanceCollDetl, [advanceCollDetl]);
+  const creditInsuranceCollectionData = useMemo(() => credInsuranceCol, [credInsuranceCol]);
 
   return (
     <Box flex={1} sx={{backgroundColor: "lightgray", p: "1%"}}>
       <MenuButton navigateTo={"hospital_income_grouped"} />
       {/* Detailed report model when open based on selected group using the "onClickFuncLevelOne" function */}
-      <ReportModal layout={layout} setLayout={setLayout} state={state} data={modalData} name="QMT" />
+      <ReportModal layout={layout} setLayout={setLayout} state={state} data={reportModalData} name="QMT" />
       {/* pHARMACY rEPORTS dETAILS mODAL */}
-      <PharmacyReoprtModal layout={layout1} setLayout={setLayout1} state={state} data={pharmacyDetl} name="QMT" />
+      <PharmacyReoprtModal layout={layout1} setLayout={setLayout1} state={state} data={pharmacyReportModalData} name="QMT" />
       {/* Credit insurance Bill details */}
-      <CreditInsuranceBillModal layout={layout2} setLayout={setLayout2} state={state} data={credtInsuranceDetl} name="QMT" />
+      <CreditInsuranceBillModal layout={layout2} setLayout={setLayout2} state={state} data={credtInsuranceBillDetlData} name="QMT" />
       {/* Unsettled amount Details */}
-      <UnsettledAmntModal layout={layout3} setLayout={setLayout3} state={state} data={unsettled} name="QMT" />
+      <UnsettledAmntModal layout={layout3} setLayout={setLayout3} state={state} data={unsettledAmountData} name="QMT" />
       {/* ADVANCE COLLECTION [C] */}
-      <AdvanceCollcetionDetl layout={layout4} setLayout={setLayout4} state={state} data={advanceCollDetl} name="QMT" />
+      <AdvanceCollcetionDetl layout={layout4} setLayout={setLayout4} state={state} data={advanceCollectionData} name="QMT" />
       {/* CREDIT INSURANCE BILL COLLECTION  */}
-      <CreditInsurBillCollModal layout={layout5} setLayout={setLayout5} state={state} data={credInsuranceCol} name="QMT" />
+      <CreditInsurBillCollModal layout={layout5} setLayout={setLayout5} state={state} data={creditInsuranceCollectionData} name="QMT" />
       <Paper square sx={{borderColor: "black", border: 1}}>
         <ReportHeader name="Hospital Income" data={state} hosName="QMT" disable={false} />
         <Box
@@ -1305,22 +701,22 @@ const IncomeReports = () => {
                       textDecoration: "underline",
                       color: "#0000EE",
                     }}
-                    onClick={getPharmacyDetl}
+                    // onClick={getPharmacyDetl}
                   >
                     {"0.00"}
-                    {netAmount?.toLocaleString("en-US", {minimumFractionDigits: 2})}
+                    {/* {netAmount?.toLocaleString("en-US", {minimumFractionDigits: 2})} */}
                   </TableCell>
                   <TableCell align="right" sx={{width: "20%", fontSize: "12px"}}>
                     {"0.00"}
-                    {tax?.toLocaleString("en-US", {minimumFractionDigits: 2})}
+                    {/* {tax?.toLocaleString("en-US", {minimumFractionDigits: 2})} */}
                   </TableCell>
                   <TableCell align="right" sx={{width: "20%", fontSize: "12px", pr: 2}}>
                     {"0.00"}
-                    {discount?.toLocaleString("en-US", {minimumFractionDigits: 2})}
+                    {/* {discount?.toLocaleString("en-US", {minimumFractionDigits: 2})} */}
                   </TableCell>
                   <TableCell align="right" sx={{width: "20%", fontSize: "12px", pr: 1}}>
                     {"0.00"}
-                    {GrosPharma?.toLocaleString("en-US", {minimumFractionDigits: 2})}
+                    {/* {GrosPharma?.toLocaleString("en-US", {minimumFractionDigits: 2})} */}
                   </TableCell>
                 </TableRow>
                 <TableRow

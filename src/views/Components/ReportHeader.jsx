@@ -7,11 +7,11 @@ import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import {useNavigate} from "react-router-dom";
 
 const ReportHeader = ({name, data, hosName, disable}) => {
-  const {from, to} = data;
+  const navigate = useNavigate();
 
+  const {from, to} = data;
   const fromDate = moment(from, "DD/MM/YYYY HH:mm:ss").format("DD-MMM-YYYY");
   const toDate = moment(to, "DD/MM/YYYY HH:mm:ss").format("DD-MMM-YYYY");
-  const navigate = useNavigate();
 
   return (
     <Box sx={{m: "25px"}}>

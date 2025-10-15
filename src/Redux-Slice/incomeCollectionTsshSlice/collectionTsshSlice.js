@@ -1,78 +1,33 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { axiosinstance } from "../../controllers/AxiosConfig";
+import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
+import {axiosinstance} from "../../controllers/AxiosConfig";
 
 const createApiThunk = (actionName, endPoint) =>
-  createAsyncThunk(
-    `api/${actionName}`,
-    async (postData, { rejectWithValue }) => {
-      if (!postData || typeof postData !== "object") {
-        return rejectWithValue("Invalid Data");
-      }
-
-      try {
-        const response = await axiosinstance.post(
-          `/collectionTssh/${endPoint}`,
-          postData
-        );
-        return response.data;
-      } catch (error) {
-        return rejectWithValue(error.response.data || "Network Error");
-      }
+  createAsyncThunk(`api/${actionName}`, async (postData, {rejectWithValue}) => {
+    if (!postData || typeof postData !== "object") {
+      return rejectWithValue("Invalid Data");
     }
-  );
 
-const getAdvanceCollectionTssh = createApiThunk(
-  "advanceCollectionTssh",
-  "advanceCollection"
-);
-const getAdvanceRefundTssh = createApiThunk(
-  "advanceRefundTssh",
-  "advanceRefund"
-);
-const getAdvanceSettledTssh = createApiThunk(
-  "advanceSettledTssh",
-  "advanceSettled"
-);
-const getcollectionagainSaleTotalTssh = createApiThunk(
-  "collectionagainSaleTotalTssh",
-  "collectionagainSaleTotal"
-);
-const getcollectionagainSaleDeductionTssh = createApiThunk(
-  "collectionagainSaleDeductionTssh",
-  "collectionagainSaleDeduction"
-);
-const getcomplimentoryTssh = createApiThunk(
-  "complimentoryTssh",
-  "complimentory"
-);
-const getcreditInsuranceBillCollectionTssh = createApiThunk(
-  "creditInsuranceBillCollectionTssh",
-  "creditInsuranceBillCollection"
-);
-const getIpconsolidatedDiscountTssh = createApiThunk(
-  "ipConsolidatedDiscountTssh",
-  "ipConsolidatedDiscount"
-);
-const getipPreviousDayDiscountTssh = createApiThunk(
-  "ipPreviousDayDiscountTssh",
-  "ipPreviousDayDiscount"
-);
-const getunsettledAmountTssh = createApiThunk(
-  "unsettledAmountTssh",
-  "unsettledAmount"
-);
-const getipPreviousDayCollectionTssh = createApiThunk(
-  "ippreviousDayCollectionTssh",
-  "ipPreviousDayCollection"
-);
-const getipcreditInsuranceBillTssh = createApiThunk(
-  "creditInsuranceBillTssh",
-  "creditInsuranceBill"
-);
-const getipcreditInsuranceBillPending = createApiThunk(
-  "creditInsuranceBillPendingTssh",
-  "creditInsuranceBillRefundTssh"
-);
+    try {
+      const response = await axiosinstance.post(`/collectionTssh/${endPoint}`, postData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data || "Network Error");
+    }
+  });
+
+const getAdvanceCollectionTssh = createApiThunk("advanceCollectionTssh", "advanceCollection");
+const getAdvanceRefundTssh = createApiThunk("advanceRefundTssh", "advanceRefund");
+const getAdvanceSettledTssh = createApiThunk("advanceSettledTssh", "advanceSettled");
+const getcollectionagainSaleTotalTssh = createApiThunk("collectionagainSaleTotalTssh", "collectionagainSaleTotal");
+const getcollectionagainSaleDeductionTssh = createApiThunk("collectionagainSaleDeductionTssh", "collectionagainSaleDeduction");
+const getcomplimentoryTssh = createApiThunk("complimentoryTssh", "complimentory");
+const getcreditInsuranceBillCollectionTssh = createApiThunk("creditInsuranceBillCollectionTssh", "creditInsuranceBillCollection");
+const getIpconsolidatedDiscountTssh = createApiThunk("ipConsolidatedDiscountTssh", "ipConsolidatedDiscount");
+const getipPreviousDayDiscountTssh = createApiThunk("ipPreviousDayDiscountTssh", "ipPreviousDayDiscount");
+const getunsettledAmountTssh = createApiThunk("unsettledAmountTssh", "unsettledAmount");
+const getipPreviousDayCollectionTssh = createApiThunk("ippreviousDayCollectionTssh", "ipPreviousDayCollection");
+const getipcreditInsuranceBillTssh = createApiThunk("creditInsuranceBillTssh", "creditInsuranceBill");
+const getipcreditInsuranceBillPending = createApiThunk("creditInsuranceBillPendingTssh", "creditInsuranceBillRefundTssh");
 
 const createInitialState = () => ({
   data: [],
@@ -110,7 +65,7 @@ const handleAsyncCases = (builder, thunk, stateKey) => {
       state[stateKey].message = "Error";
       state.loading = false;
     })
-    .addCase(thunk.fulfilled, (state, { payload }) => {
+    .addCase(thunk.fulfilled, (state, {payload}) => {
       state[stateKey].status = payload.success;
       state[stateKey].message = payload.message;
       state.loading = false;
@@ -126,48 +81,16 @@ const collectionTsshSlice = createSlice({
     handleAsyncCases(builder, getAdvanceCollectionTssh, "advanceCollection");
     handleAsyncCases(builder, getAdvanceRefundTssh, "advanceRefund");
     handleAsyncCases(builder, getAdvanceSettledTssh, "advanceSettled");
-    handleAsyncCases(
-      builder,
-      getcollectionagainSaleTotalTssh,
-      "collectionAgainstSalesTotal"
-    );
-    handleAsyncCases(
-      builder,
-      getcollectionagainSaleDeductionTssh,
-      "collectionAgainstSalesDeduction"
-    );
+    handleAsyncCases(builder, getcollectionagainSaleTotalTssh, "collectionAgainstSalesTotal");
+    handleAsyncCases(builder, getcollectionagainSaleDeductionTssh, "collectionAgainstSalesDeduction");
     handleAsyncCases(builder, getcomplimentoryTssh, "complimentory");
-    handleAsyncCases(
-      builder,
-      getcreditInsuranceBillCollectionTssh,
-      "creditInsuranceBillCollection"
-    );
-    handleAsyncCases(
-      builder,
-      getIpconsolidatedDiscountTssh,
-      "ipConsolidatedDiscount"
-    );
-    handleAsyncCases(
-      builder,
-      getipPreviousDayDiscountTssh,
-      "ipPreviousDayDiscount"
-    );
+    handleAsyncCases(builder, getcreditInsuranceBillCollectionTssh, "creditInsuranceBillCollection");
+    handleAsyncCases(builder, getIpconsolidatedDiscountTssh, "ipConsolidatedDiscount");
+    handleAsyncCases(builder, getipPreviousDayDiscountTssh, "ipPreviousDayDiscount");
     handleAsyncCases(builder, getunsettledAmountTssh, "unsettledAmount");
-    handleAsyncCases(
-      builder,
-      getipPreviousDayCollectionTssh,
-      "ippreviousDayCollection"
-    );
-    handleAsyncCases(
-      builder,
-      getipcreditInsuranceBillTssh,
-      "creditInsuranceBill"
-    );
-    handleAsyncCases(
-      builder,
-      getipcreditInsuranceBillPending,
-      "creditInsuranceBillPending"
-    );
+    handleAsyncCases(builder, getipPreviousDayCollectionTssh, "ippreviousDayCollection");
+    handleAsyncCases(builder, getipcreditInsuranceBillTssh, "creditInsuranceBill");
+    handleAsyncCases(builder, getipcreditInsuranceBillPending, "creditInsuranceBillPending");
   },
 });
 
