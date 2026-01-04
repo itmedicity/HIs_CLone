@@ -252,8 +252,6 @@ const IncomeReports = () => {
         ].forEach((thunk) => dispatch(thunk(state)));
         dispatch(getRoundOff({from: state.from, to: state.to, ptno: state.grouped}));
         const result = await axiosinstance.post("/pharmacyTssh/groupedTmchReport", state);
-        console.log("state", state);
-        console.log("pharma ---", result);
         if (result.data.success === 1) {
           setGroupedPharmacyAmount(result.data.data || []);
         }

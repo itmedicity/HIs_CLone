@@ -12,7 +12,7 @@ import MenuButton from "../Components/MenuButton";
 
 const AdvanceCollcetionDetl = ({layout, setLayout, state, data, name}) => {
   const totalAmounTwo = useMemo(() => {
-    return data?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) || 0;
+    return (Array.isArray(data) && data?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0)) || 0;
   }, [data]);
 
   return (
@@ -76,28 +76,29 @@ const AdvanceCollcetionDetl = ({layout, setLayout, state, data, name}) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data?.map((e, idx) => (
-                    <TableRow key={idx}>
-                      <TableCell align="right" sx={{width: "2%", textAlign: "center", alignItems: "center"}}>
-                        {idx + 1}
-                      </TableCell>
-                      <TableCell align="left" sx={{width: "15%", fontSize: "12px", textTransform: "capitalize"}}>
-                        {e.PTNAME}
-                      </TableCell>
-                      <TableCell align="left" sx={{width: "10%", fontSize: "12px"}}>
-                        {e.PTNO}
-                      </TableCell>
-                      <TableCell align="left" sx={{width: "15%", fontSize: "12px", pr: 2}}>
-                        {e.BILLNO}
-                      </TableCell>
-                      <TableCell align="right" sx={{width: "15%", fontSize: "12px", pr: 2}}>
-                        {e.AMT?.toLocaleString("en-US", {minimumFractionDigits: 2})}
-                      </TableCell>
-                      <TableCell align="right" sx={{width: "15%", fontSize: "12px", pr: 2}}>
-                        {e.USERNAME}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {Array.isArray(data) &&
+                    data?.map((e, idx) => (
+                      <TableRow key={idx}>
+                        <TableCell align="right" sx={{width: "2%", textAlign: "center", alignItems: "center"}}>
+                          {idx + 1}
+                        </TableCell>
+                        <TableCell align="left" sx={{width: "15%", fontSize: "12px", textTransform: "capitalize"}}>
+                          {e.PTNAME}
+                        </TableCell>
+                        <TableCell align="left" sx={{width: "10%", fontSize: "12px"}}>
+                          {e.PTNO}
+                        </TableCell>
+                        <TableCell align="left" sx={{width: "15%", fontSize: "12px", pr: 2}}>
+                          {e.BILLNO}
+                        </TableCell>
+                        <TableCell align="right" sx={{width: "15%", fontSize: "12px", pr: 2}}>
+                          {e.AMT?.toLocaleString("en-US", {minimumFractionDigits: 2})}
+                        </TableCell>
+                        <TableCell align="right" sx={{width: "15%", fontSize: "12px", pr: 2}}>
+                          {e.USERNAME}
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
                 <TableFooter>
                   <TableRow>

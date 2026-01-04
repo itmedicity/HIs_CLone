@@ -59,9 +59,17 @@ const OpIpAnalysis = React.lazy(() => import("../views/Pages/DashBoard/Dashboard
 const pharmacyGstReports = React.lazy(() => import("../views/Pages/PharmacyBilling/Analysis Statement/SalesReportTssh/SalesReportsMain"));
 const pharmacyGstReptTMCH = React.lazy(() => import("../views/Pages/PharmacyBilling/Analysis Statement/SalesGstReportTmch/SalesGstReportMain"));
 
-//Collection Reports Tmch
-const CollectionTmch = React.lazy(() => import("../views/Pages/Mis/Collection Reports/CollectionReportTssh"));
-const PharmacySalesGstReports = React.lazy(() => import("../views/Pages/Mis/Collection Reports/PharmacySaleGst"));
+//Collection Reports Tmch - imported
+const CollectionTmch = React.lazy(() => import("../views/Pages/Mis/CollectionReports/CollectionReportTssh"));
+const PharmacySalesGstReports = React.lazy(() => import("../views/Pages/Mis/CollectionReports/PharmacySaleGst"));
+
+//Collection Reports Tssh ( Collection Reorts Tmch )
+const CollectionReportTmch = React.lazy(() => import("../views/Pages/Mis/CollectionReports/tmch/collectionReports/CollectionTmchReports"));
+const CollectionReportTmchDetls = React.lazy(() => import("../views/Pages/Mis/CollectionReports/tmch/collectionReports/CollectionTmchDetlReports"));
+
+//Collection Reports Tssh ( Collection Reports Tssh )
+const CollectionReportsCollectionOnly = React.lazy(() => import("../views/Pages/Mis/CollectionReports/tmch/collectionReports-collectionOnly/CollectionReportsCollectionOnly"));
+const CollectionReportCollectionOnlyDetl = React.lazy(() => import("../views/Pages/Mis/CollectionReports/tmch/collectionReports-collectionOnly/CollectionReportsCollOnlyDetl"));
 
 const routes = [
   {path: "", element: NameDis},
@@ -120,8 +128,14 @@ const routes = [
   //Pharmacy Reports
   {path: "/pharmacyGstSalseReports", name: "PHARMACY GST Sales Reports", element: pharmacyGstReports},
   {path: "/pharmacyGstReportTmch", name: "PHARMACY GST Sales Reports", element: pharmacyGstReptTMCH},
-  //Colleciton reports tmch
+  //Colleciton reports tmch - imported
   {path: "/CollctionTmch", name: "Collection Report TMCH", element: CollectionTmch},
   {path: "/PharmacyGst", name: "Pharmacy GST TMCH", element: PharmacySalesGstReports},
+
+  // Collection reports - tmch
+  {path: "/CollectionReportTmch", name: "Collection Report TMCH", element: CollectionReportTmch},
+  {path: "/CollectionReportTmchDetls", name: "Collection Report TMCH Details", element: CollectionReportTmchDetls},
+  {path: "/CollectionReportCollectionOnly", name: "Collection Report TSSH", element: CollectionReportsCollectionOnly},
+  {path: "/CollectionReportCollectionOnlyDetl", name: "CollectionReportCollectionOnlyDetl", element: CollectionReportCollectionOnlyDetl},
 ];
 export default routes;

@@ -1,7 +1,7 @@
 import {forwardRef} from "react";
 import calenderIcon from "../../../../assets/date_pick.png";
 
-export const CustomCalanderComponents = forwardRef(({value, onClick, className}, ref) => (
+export const CustomCalanderComponents = forwardRef(({value, onClick, className, showCalendarIcon = true}, ref) => (
   <div>
     <input
       className={className}
@@ -14,19 +14,21 @@ export const CustomCalanderComponents = forwardRef(({value, onClick, className},
         fontSize: "12px",
       }}
     />
-    <img
-      src={calenderIcon}
-      alt="calendar"
-      onClick={onClick}
-      style={{
-        position: "absolute",
-        right: "55px",
-        top: "50%",
-        transform: "translateY(-35%)",
-        width: "15px",
-        height: "15px",
-        cursor: "pointer",
-      }}
-    />
+    {showCalendarIcon && (
+      <img
+        src={calenderIcon}
+        alt="calendar"
+        onClick={onClick}
+        style={{
+          position: "absolute",
+          right: "55px",
+          top: "50%",
+          transform: "translateY(-35%)",
+          width: "15px",
+          height: "15px",
+          cursor: "pointer",
+        }}
+      />
+    )}
   </div>
 ));

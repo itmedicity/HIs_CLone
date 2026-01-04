@@ -44,10 +44,6 @@ const HospitalncomeReports = () => {
     });
   };
 
-  /**
-   * Handles the "Preview" button click, fetching IP numbers and receipt data before navigating.
-   */
-
   const handleClick = useCallback(async () => {
     if (!checked) {
       alert("Select Clinic");
@@ -101,6 +97,8 @@ const HospitalncomeReports = () => {
         }
       }
 
+      console.log(ipNumber);
+
       navigateToReport(ipNumber, rmIpNumber, ipNoColl);
     } catch (error) {
       console.error("Error fetching report data:", error);
@@ -109,6 +107,11 @@ const HospitalncomeReports = () => {
     }
   }, [startDate, endDate, navigate, checked]);
 
+  /*************  ✨ Windsurf Command ⭐  *************/
+  /**
+   * Navigate back to the Mis menu
+   */
+  /*******  594d8a2f-4ceb-49af-aeaa-813e02e7968f  *******/
   const handleClose = () => {
     navigate("/Menu/Mis");
   };
