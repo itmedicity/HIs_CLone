@@ -63,6 +63,7 @@ const HospitalncomeReports = () => {
 
       const ipNumberResponse = await axiosinstance.post("/admission/getIpNumberTmchGrouped", postData2);
       const {success, data} = ipNumberResponse.data;
+      // console.log(`getIpNumberTmchGrouped ----->`, data);
       const ipNumber = success === 1 ? data.map((e) => e.ip_no) : [];
       const rmIpNumber = success === 1 ? data.filter((e) => e.tmch_status === "0").map((e) => e.ip_no) : [];
 
@@ -73,6 +74,7 @@ const HospitalncomeReports = () => {
 
       const ipReceiptResponse = await axiosinstance.post("/admission/getIpReceiptInfo", postDate);
       const {success: receiptSuccess, data: ipReceiptData} = ipReceiptResponse.data;
+      // console.log(`getIpReceiptInfo ----->`, ipReceiptData);
 
       let ipNoColl = ipNumber;
       if (receiptSuccess === 1 && ipReceiptData.length > 0) {
@@ -88,16 +90,18 @@ const HospitalncomeReports = () => {
 
         const dischargedResponse = await axiosinstance.post("/admission/getIpDischargedPatientInfoGrouped", postData0);
         const {success: dischargedSuccess, data: newIpReceiptBased} = dischargedResponse.data;
+        // console.log(`getIpDischargedPatientInfoGrouped ----->`, newIpReceiptBased);
 
         if (dischargedSuccess === 1 && newIpReceiptBased.length > 0) {
           const array1 = newIpReceiptBased.map((e) => e.ip_no);
           const array2 = ipReceiptData.map((e) => e.IP_NO);
           const filtedArray = array1.filter((item) => array2.includes(item));
+          // console.log(filtedArray);
           ipNoColl = ipNumber.concat(filtedArray);
         }
       }
 
-      console.log(ipNumber);
+      // console.log(ipNoColl);
 
       navigateToReport(ipNumber, rmIpNumber, ipNoColl);
     } catch (error) {
