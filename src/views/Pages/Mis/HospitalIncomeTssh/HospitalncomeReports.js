@@ -87,7 +87,7 @@ const HospitalncomeReports = () => {
           ipNoColl = ipNumber.concat(filtedArray);
         }
       }
-      console.log(ipNumber);
+      // console.log(ipNumber);
 
       navigateToReport(ipNumber, rmIpNumber, ipNoColl);
     } catch (error) {

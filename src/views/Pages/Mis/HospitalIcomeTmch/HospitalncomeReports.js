@@ -56,7 +56,7 @@ const HospitalncomeReports = () => {
       const ipNumber = success === 1 ? data?.map((e) => e.ip_no) : [];
       const rmIpNumber = success === 1 ? data?.filter((e) => e.tmch_status === "0").map((e) => e.ip_no) : [];
       const groupedPatient = success === 1 ? data?.filter((e) => e.tmch_status === "1").map((e) => e.ip_no) : [];
-      console.log(ipNumber);
+      // console.log(`getIpNumber--->`, data);
 
       const postDate = {
         from: moment(startDate).format("DD/MM/YYYY 00:00:00"),
@@ -65,6 +65,7 @@ const HospitalncomeReports = () => {
 
       const ipReceiptResponse = await axiosinstance.post("/admission/getIpReceiptInfo", postDate);
       const {success: ipReceiptResponseSuccess, data: ipReceiptResponseData} = ipReceiptResponse.data;
+      // console.log(`getIpNumber--->`, ipReceiptResponseData);
       let ipNoColl = ipNumber;
       if (ipReceiptResponseSuccess === 1 && ipReceiptResponseData.length > 0) {
         const minDate = ipReceiptResponseData.reduce((min, obj) => {
@@ -72,21 +73,24 @@ const HospitalncomeReports = () => {
           return currentDate < min ? currentDate : min;
         }, new Date(ipReceiptResponseData[0].ADMISSION));
 
-        console.log(minDate);
+        // console.log(minDate);
 
         const postData0 = {
           from: moment(minDate).format("YYYY-MM-DD 00:00:00"),
           to: moment(endDate).format("YYYY-MM-DD 23:59:59"),
         };
-        console.log(postData0);
+        // console.log(postData0);
 
         const dischargedResponse = await axiosinstance.post("/admission/getIpDischargedPatientInfo", postData0);
         const {success: dischargedSuccess, data: newIpReceiptBased} = dischargedResponse.data;
+
+        // console.log(`getIpNumber--->`, newIpReceiptBased);
 
         if (dischargedSuccess === 1 && newIpReceiptBased.length > 0) {
           const array1 = newIpReceiptBased.map((e) => e.ip_no);
           const array2 = ipReceiptResponseData.map((e) => e.IP_NO);
           const filtedArray = array1.filter((item) => array2.includes(item));
+          // console.log(filtedArray);
           ipNoColl = ipNumber.concat(filtedArray);
         }
       }

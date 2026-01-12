@@ -27,7 +27,7 @@ const CollectionReportsCollOnlyDetl = () => {
     const getData = async () => {
       //fetch data logic here
       const data = await axiosinstance.get("/collectionOnlyQmt/getUnsettledAmountUserWise");
-      console.log("Fetched data:", data);
+      // console.log("Fetched data:", data);
     };
     try {
       getData();

@@ -10,7 +10,7 @@ import MenuButton from "../Components/MenuButton";
 
 const ReportModal = ({layout, setLayout, state, data, name}) => {
   const {status, reportName, reportData} = data;
-  console.log(data);
+  // console.log(data);
   const reportLength = reportData?.length;
 
   const dataArray = reportData?.map((e, idx) => {
