@@ -56,7 +56,7 @@ const HospitalncomeReports = () => {
       const ipNumber = success === 1 ? data?.map((e) => e.ip_no) : [];
       const rmIpNumber = success === 1 ? data?.filter((e) => e.tmch_status === "0").map((e) => e.ip_no) : [];
       const groupedPatient = success === 1 ? data?.filter((e) => e.tmch_status === "1").map((e) => e.ip_no) : [];
-      // console.log(`getIpNumber--->`, data);
+      // console.log(`getIpNumber--->`, ipNumber);
 
       const postDate = {
         from: moment(startDate).format("DD/MM/YYYY 00:00:00"),
@@ -81,7 +81,7 @@ const HospitalncomeReports = () => {
         };
         // console.log(postData0);
 
-        const dischargedResponse = await axiosinstance.post("/admission/getIpDischargedPatientInfo", postData0);
+        const dischargedResponse = await axiosinstance.post("/admission/getIpDischargedPatientInfoTMCH", postData0);
         const {success: dischargedSuccess, data: newIpReceiptBased} = dischargedResponse.data;
 
         // console.log(`getIpNumber--->`, newIpReceiptBased);
@@ -92,6 +92,7 @@ const HospitalncomeReports = () => {
           const filtedArray = array1.filter((item) => array2.includes(item));
           // console.log(filtedArray);
           ipNoColl = ipNumber.concat(filtedArray);
+          // console.log(ipNoColl);
         }
       }
       navigateToReport(ipNumber, rmIpNumber, ipNoColl, groupedPatient);
