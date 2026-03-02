@@ -19,6 +19,9 @@ import collectionQmtTypeSlice from "./Redux-Slice/incomeCollectionTypeSlice/coll
 import incomeTypeSlice from "./Redux-Slice/incomeCollectionTypeSlice/incomeTypeSlice";
 import incomeProcedureTypeSlice from "./Redux-Slice/incomeCollectionTypeSlice/incomeProcedureTypeSlice";
 
+// MIS REPORT VERTSION V5.0.0
+import misReportQmtSlice from "./Redux-Slice/incomeCollectionSlice/misReportQMT";
+
 export const store = configureStore({
   reducer: {
     counter: counterSlice,
@@ -42,7 +45,11 @@ export const store = configureStore({
     collectionTssh: collectionTsshSlice,
     procedureIncomeTssh: incomeProcedureTsshSlice,
     pharmacyIncomeTssh: incomeTsshSlice,
+
     dashBoardSlice: sliceDashBoard,
     gstReportPharmacy: pharmacyTaxSlice,
+
+    // MIS REPORT VERTSION V.5.0.0
+    misReportQmt: misReportQmtSlice,
   },
 });

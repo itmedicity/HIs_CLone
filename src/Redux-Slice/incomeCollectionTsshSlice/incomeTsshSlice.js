@@ -1,7 +1,91 @@
 import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
 import {axiosinstance} from "../../controllers/AxiosConfig";
 
-const getPhaSalePartTssh1 = createAsyncThunk("api/phaSalePartTssh1", (postData) => {
+const createApiThunk = (actionName, endPoint, stateKey) =>
+  createAsyncThunk(
+    `api/${actionName}`,
+    async (postData, {rejectWithValue}) => {
+      if (!postData || typeof postData !== "object") {
+        return rejectWithValue("Invalid Data");
+      }
+
+      try {
+        const response = await axiosinstance.post(`/pharmacyTssh/${endPoint}`, postData);
+        return response.data;
+      } catch (error) {
+        return rejectWithValue(error?.response?.data || "Network Error");
+      }
+    },
+    {
+      // prevents duplicate call if already successful
+      condition: (_, {getState}) => {
+        const state = getState().pharmacyIncomeTssh[stateKey];
+        if (state?.status === 1) return false;
+      },
+    },
+  );
+
+export const getPhaSalePartTssh1 = createApiThunk("phaSalePartTssh1", "phaSalePart1", "phaSalePart1");
+export const getPhaReturnPartTssh1 = createApiThunk("phaReturnPartTssh1", "phaReturnPart1", "phaReturnPart1");
+export const getPhaSalePartTssh2 = createApiThunk("phaSalePartTssh2", "phaSalePart2", "phaSalePart2");
+export const getPhaReturnPartTssh2 = createApiThunk("phaReturnPartTssh2", "phaReturnPart2", "phaReturnPart2");
+export const getPhaSalePartTssh3 = createApiThunk("phaSalePartTssh3", "phaSalePart3", "phaSalePart3");
+export const getPhaReturnPartTssh3 = createApiThunk("phaReturnPartTssh3", "phaReturnPart3", "phaReturnPart3");
+
+const createInitialState = () => ({
+  data: [],
+  status: 0, // 0=pending, 1=success, 2=error
+  message: "",
+});
+
+const initialState = {
+  phaSalePart1: createInitialState(),
+  phaReturnPart1: createInitialState(),
+  phaSalePart2: createInitialState(),
+  phaReturnPart2: createInitialState(),
+  phaSalePart3: createInitialState(),
+  phaReturnPart3: createInitialState(),
+};
+
+const incomeSliceTssh = createSlice({
+  name: "incomeDataPartTssh",
+  initialState,
+  reducers: {
+    resetIncomeTsshState: () => initialState,
+  },
+  extraReducers: (builder) => {
+    const addCases = (thunk, key) => {
+      builder
+        .addCase(thunk.pending, (state) => {
+          state[key].status = 0;
+          state[key].message = "pending";
+        })
+        .addCase(thunk.fulfilled, (state, {payload}) => {
+          state[key].status = payload?.success ?? 2;
+          state[key].message = payload?.message ?? "";
+          state[key].data = payload?.data ?? [];
+        })
+        .addCase(thunk.rejected, (state, action) => {
+          state[key].status = 2;
+          state[key].message = action.payload || "Error";
+        });
+    };
+
+    addCases(getPhaSalePartTssh1, "phaSalePart1");
+    addCases(getPhaReturnPartTssh1, "phaReturnPart1");
+    addCases(getPhaSalePartTssh2, "phaSalePart2");
+    addCases(getPhaReturnPartTssh2, "phaReturnPart2");
+    addCases(getPhaSalePartTssh3, "phaSalePart3");
+    addCases(getPhaReturnPartTssh3, "phaReturnPart3");
+  },
+});
+
+export const {resetIncomeTsshState} = incomeSliceTssh.actions;
+export default incomeSliceTssh.reducer;
+
+/***
+ * 
+ * const getPhaSalePartTssh1 = createAsyncThunk("api/phaSalePartTssh1", (postData) => {
   return axiosinstance.post("/pharmacyTssh/phaSalePart1", postData).then((response) => {
     return response.data;
   });
@@ -36,6 +120,7 @@ const getPhaReturnPartTssh3 = createAsyncThunk("api/phaReturnPartTssh3", (postDa
     return response.data;
   });
 });
+
 
 const initialState = {
   phaSalePart1: {
@@ -76,11 +161,9 @@ const initialState = {
   },
 };
 
-const incomeSliceTssh = createSlice({
-  name: "incomeDataPartTssh",
-  initialState,
-  reducers: {},
-  extraReducers: {
+ * 
+
+
     // @ts-ignore
     [getPhaSalePartTssh1.pending]: (state, {payload}) => {
       state.phaSalePart1.status = 0;
@@ -200,9 +283,16 @@ const incomeSliceTssh = createSlice({
       state.loading = false;
       state.phaReturnPart3.data = payload.data;
     },
-  },
-});
-
-export {getPhaSalePartTssh1, getPhaSalePartTssh2, getPhaSalePartTssh3, getPhaReturnPartTssh1, getPhaReturnPartTssh2, getPhaReturnPartTssh3};
-
-export default incomeSliceTssh.reducer;
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */

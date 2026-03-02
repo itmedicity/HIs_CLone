@@ -7,7 +7,7 @@ export const topOfficilasMenu = [
   {slno: 17, path: "/Menu/hospital_income_imTssh", name: "Hospital Income Statement -- TSSH"},
   {slno: 19, path: "/Menu/CollctionTmch", name: "Collection Report - TMCH (i)"},
   {slno: 20, path: "/Menu/PharmacyGst", name: "Pharmacy Sales Gst Reports"},
-  {slno: 23, path: "/Menu/hospital_income_types", name: "Hospital Income Statement -- RMT"},
-  {slno: 21, path: "/Menu/CollectionReportTmch", name: "Collection Reports - Tmch"},
-  {slno: 22, path: "/Menu/CollectionReportCollectionOnly", name: "Collection Reports(Collection Only) - Tmch"},
+  {slno: 21, path: "/Menu/hospital_income_types", name: "Hospital Income Statement -- RMT"},
+  {slno: 22, path: "/Menu/CollectionReportTmch", name: "Collection Reports - Tmch"},
+  {slno: 23, path: "/Menu/CollectionReportCollectionOnly", name: "Collection Reports(Collection Only) - Tmch"},
 ];

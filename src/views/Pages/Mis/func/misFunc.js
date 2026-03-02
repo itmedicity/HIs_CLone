@@ -1,62 +1,81 @@
-export const getMisGroupMasterList = async (misGroupState, misGroupMaster) => {
-    if (misGroupState.status === true && misGroupMaster.status === true) {
-        return await misGroupState?.data?.map((val) => {
-            return {
-                groupDesc: val.DM_GRDESC,
-                groupOrder: val.DM_ORDER,
-                groupCode: val.DM_GRCODE,
-                groupList: misGroupMaster?.data
-                    .map((ele) => val.DM_GRCODE === ele.DM_GRCODE ? ele : null)
-                    .filter((val) => val !== null)
-            }
-        }).sort((firstItem, secondItem) => firstItem.groupOrder - secondItem.groupOrder)
+export const getMisGroupMasterList = (misList) => {
+  if (!misList?.misGroup || !misList?.misGroupMast) return [];
+  // console.log(misList);
+  const {misGroup, misGroupMast} = misList;
+  return misGroupMast
+    ?.map((val) => {
+      return {
+        groupDesc: val.DM_GRDESC,
+        groupOrder: val.DM_ORDER,
+        groupCode: val.DM_GRCODE,
+        groupList: misGroup?.map((ele) => (val.DM_GRCODE === ele.DM_GRCODE ? ele : null)).filter((val) => val !== null),
+      };
+    })
+    .sort((firstItem, secondItem) => firstItem.groupOrder - secondItem.groupOrder);
+  // }
+};
 
+export const getIncomeReportList = (incomeArrayData = [], misGroupLst = []) => {
+  // Build lookup map once
+  // console.log(misGroupLst, "misGroupLst");
+  const incomeMap = {};
+
+  incomeArrayData.forEach((item) => {
+    if (!item?.CODE) return;
+
+    if (!incomeMap[item.CODE]) {
+      incomeMap[item.CODE] = {
+        groupNet: 0,
+        groupDiscnt: 0,
+        groupTax: 0,
+        groupGross: 0,
+      };
     }
-}
 
-export const getIncomeReportList = async (incomeArrayData, misGroupLst) => {
-    const firstArray = incomeArrayData?.find((val) => val !== null);
+    incomeMap[item.CODE].groupNet += item.AMT || 0;
+    incomeMap[item.CODE].groupDiscnt += item.DISCOUNT || 0;
+    incomeMap[item.CODE].groupTax += item.TAX || 0;
+    incomeMap[item.CODE].groupGross += item.GROSSAMT || 0;
+  });
 
-    if (firstArray !== undefined && (misGroupLst !== undefined)) {
-        return await misGroupLst?.map((val) => {
-            return {
-                groupCode: val.groupCode,
-                groupDesc: val.groupDesc,
-                groupList: val.groupList?.map((e) => {
-                    return {
-                        groupName: e.DG_DESC,
-                        groupNet: incomeArrayData?.filter((ele) => ele?.CODE === e?.DG_GRCODE)
-                            .reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0),
-                        groupDiscnt: incomeArrayData?.filter((ele) => ele?.CODE === e?.DG_GRCODE)
-                            .reduce((accumulator, currentValue) => accumulator + currentValue.DISCOUNT, 0),
-                        groupTax: incomeArrayData?.filter((ele) => ele?.CODE === e?.DG_GRCODE)
-                            .reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0),
-                        groupGross: incomeArrayData?.filter((ele) => ele?.CODE === e?.DG_GRCODE)
-                            .reduce((accumulator, currentValue) => accumulator + currentValue.GROSSAMT, 0)
-                    }
-                    // @ts-ignore
-                }).filter((val, idx) => val.groupGross !== 0),
-            }
-        })
-    }
-}
+  return misGroupLst.map((group) => ({
+    groupCode: group.groupCode,
+    groupDesc: group.groupDesc,
+    groupList: group.groupList
+      ?.map((e) => ({
+        groupName: e.DG_DESC,
+        ...(incomeMap[e.DG_GRCODE] || {
+          groupNet: 0,
+          groupDiscnt: 0,
+          groupTax: 0,
+          groupGross: 0,
+        }),
+      }))
+      .filter((val) => val.groupGross !== 0),
+  }));
+};
 
 //CALCULATE PHARMACY INCOME
-export const getPhamracyIncome = async (pharmacyIncome) => {
-    const phaIncome = Object.values(pharmacyIncome);
-    const pharma = phaIncome?.map((val) => val.data).filter((val) => val !== undefined).flat();
-    if (pharma?.length !== 0) {
-        return {
-            netAmount: pharma.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0),
-            tax: pharma.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0),
-            discount: pharma.reduce((accumulator, currentValue) => accumulator + currentValue.DISCOUNT, 0) ?? 0,
-            grossAmount: pharma.reduce((accumulator, currentValue) => accumulator + currentValue.GROSSAMT, 0)
-        }
-    }
-}
+export const getPhamracyIncome = (pharmacyIncome = {}) => {
+  const pharma = Object.values(pharmacyIncome).flat();
+
+  if (!pharma.length) {
+    return {netAmount: 0, tax: 0, discount: 0, grossAmount: 0};
+  }
+
+  return pharma.reduce(
+    (acc, curr) => {
+      acc.netAmount += curr.AMT || 0;
+      acc.tax += curr.TAX || 0;
+      acc.discount += curr.DISCOUNT || 0;
+      acc.grossAmount += curr.GROSSAMT || 0;
+      return acc;
+    },
+    {netAmount: 0, tax: 0, discount: 0, grossAmount: 0},
+  );
+};
 
 //CALCULATE GRAND TOTAL
-export const getGrandTotal = async (misReortList) => {
-    return misReortList?.map((val) => val.groupList).flat()
-}
-
+export const getGrandTotal = (misReortList) => {
+  return misReortList?.map((val) => val.groupList).flat();
+};

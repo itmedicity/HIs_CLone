@@ -187,7 +187,7 @@ const IncomeReports = () => {
 
   const collAgainSale = useMemo(
     () => parseFloat(collectionAgainstSalesTotal || 0) + parseFloat(collectionAgainstSalesDeduction || 0) + parseFloat(pharmaAmount || 0),
-    [collectionAgainstSalesTotal, collectionAgainstSalesDeduction, pharmaAmount]
+    [collectionAgainstSalesTotal, collectionAgainstSalesDeduction, pharmaAmount],
   );
 
   const {ipConatedDiscount, advSettled, creditInsurBill, unsettledAmnt, groupCollection, groupTax, groupNet, groupDis, groupGross, roundOff, groupNetddctRoundoff} = useMemo(() => {
@@ -214,54 +214,56 @@ const IncomeReports = () => {
       ensureNumber(misCollection?.[6].creditInsuranceBillCollection) +
       ensureNumber(misCollection?.[10].ippreviousDayCollection) -
       ensureNumber(misCollection?.[1].advanceRefund),
-    [collAgainSale, misCollection]
+    [collAgainSale, misCollection],
   );
+
+  const fetchData = async () => {
+    try {
+      const result = await axiosinstance.post("/pharmacyTssh/groupedTmchReport", state);
+      if (result.data.success === 1) {
+        setGroupedPharmacyAmount(result.data.data || []);
+      }
+    } catch (error) {
+      console.log("Error fetching data:", error);
+    }
+  };
 
   useEffect(() => {
     if (!state) return;
-    const fetchData = async () => {
-      try {
-        dispatch(getMisGroup());
-        dispatch(getMisGroupMaster());
-        [
-          getAdvanceCollectionTmch,
-          getAdvanceRefundTmch,
-          getAdvanceSettledTmch,
-          getcollectionagainSaleTotalTmch,
-          getcollectionagainSaleDeductionTmch,
-          getcomplimentoryTmch,
-          getcreditInsuranceBillCollectionTmch,
-          getIpconsolidatedDiscountTmch,
-          getipPreviousDayDiscountTmch,
-          getunsettledAmountTmch,
-          getipPreviousDayCollectionTmch,
-          getipcreditInsuranceBillTmch,
-          getipcreditInsuranceBillPending,
-          getProincomeTmch1,
-          getProincomeTmch2,
-          getProincomeTmch3,
-          getProincomeTmch4,
-          getPatietTypeDiscountTmch,
-          getPhaSalePartTmch1,
-          getPhaSalePartTmch2,
-          getPhaSalePartTmch3,
-          getPhaReturnPartTmch1,
-          getPhaReturnPartTmch2,
-          getPhaReturnPartTmch3,
-          theaterIncomeTmch,
-        ].forEach((thunk) => dispatch(thunk(state)));
-        dispatch(getRoundOff({from: state.from, to: state.to, ptno: state.grouped}));
-        const result = await axiosinstance.post("/pharmacyTssh/groupedTmchReport", state);
-        if (result.data.success === 1) {
-          setGroupedPharmacyAmount(result.data.data || []);
-        }
-      } catch (error) {
-        console.log("Error fetching data:", error);
-      }
-    };
 
+    dispatch(getMisGroup());
+    dispatch(getMisGroupMaster());
+
+    dispatch(getAdvanceCollectionTmch(state));
+    dispatch(getAdvanceRefundTmch(state));
+    dispatch(getAdvanceSettledTmch(state));
+    dispatch(getcollectionagainSaleTotalTmch(state));
+    dispatch(getcollectionagainSaleDeductionTmch(state));
+    dispatch(getcomplimentoryTmch(state));
+    dispatch(getcreditInsuranceBillCollectionTmch(state));
+    dispatch(getIpconsolidatedDiscountTmch(state));
+    dispatch(getipPreviousDayDiscountTmch(state));
+    dispatch(getunsettledAmountTmch(state));
+    dispatch(getipPreviousDayCollectionTmch(state));
+    dispatch(getipcreditInsuranceBillTmch(state));
+    dispatch(getipcreditInsuranceBillPending(state));
+    dispatch(getProincomeTmch1(state));
+    dispatch(getProincomeTmch2(state));
+    dispatch(getProincomeTmch3(state));
+    dispatch(getProincomeTmch4(state));
+    dispatch(getPatietTypeDiscountTmch(state));
+    dispatch(getPhaSalePartTmch1(state));
+    dispatch(getPhaSalePartTmch2(state));
+    dispatch(getPhaSalePartTmch3(state));
+    dispatch(getPhaReturnPartTmch1(state));
+    dispatch(getPhaReturnPartTmch2(state));
+    dispatch(getPhaReturnPartTmch3(state));
+    dispatch(theaterIncomeTmch(state));
+    dispatch(getRoundOff({from: state.from, to: state.to, ptno: state.grouped}));
+
+    // loadReports();
     fetchData();
-  }, [dispatch, state]);
+  }, [state, dispatch]);
 
   // const { state } = locationData;
 
@@ -342,13 +344,14 @@ const IncomeReports = () => {
       },
     ];
 
-    if (!misColl.some((val) => val.status === false)) {
+    if (misColl.every((val) => val.status !== undefined)) {
       setMisCollrction(misColl);
     }
   }, [collection]);
 
   useEffect(() => {
     const {misGroupState, misGroupMaster} = misGroup;
+    console.log(misGroup);
     getMisGroupMasterList(misGroupState, misGroupMaster).then((misGrpList) => {
       setMisGroupList(misGrpList || []);
     });
@@ -448,7 +451,7 @@ const IncomeReports = () => {
         setModalData(defaultState);
       }
     },
-    [state]
+    [state],
   );
 
   const getPharmacyDetl = useCallback(async () => {

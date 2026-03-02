@@ -197,7 +197,7 @@ const IncomeReports = () => {
 
   const totalCounterCollection = useMemo(
     () => collAgainSale + misCollectionAdvanceCollection + misCollectionCreditInsuranceBillCollection + misCollectionIppreviousDayCollection - misCollectionAdvanceRefund,
-    [misCollectionAdvanceCollection, misCollectionCreditInsuranceBillCollection, misCollectionIppreviousDayCollection, misCollectionAdvanceRefund, collAgainSale]
+    [misCollectionAdvanceCollection, misCollectionCreditInsuranceBillCollection, misCollectionIppreviousDayCollection, misCollectionAdvanceRefund, collAgainSale],
   );
 
   useEffect(() => {
@@ -211,38 +211,37 @@ const IncomeReports = () => {
 
   useEffect(() => {
     if (!state) return;
-
     dispatch(getMisGroup());
     dispatch(getMisGroupMaster());
 
-    [
-      getAdvanceCollectionTssh,
-      getAdvanceRefundTssh,
-      getAdvanceSettledTssh,
-      getcollectionagainSaleTotalTssh,
-      getcollectionagainSaleDeductionTssh,
-      getcomplimentoryTssh,
-      getcreditInsuranceBillCollectionTssh,
-      getIpconsolidatedDiscountTssh,
-      getipPreviousDayDiscountTssh,
-      getunsettledAmountTssh,
-      getipPreviousDayCollectionTssh,
-      getipcreditInsuranceBillTssh,
-      getipcreditInsuranceBillPending,
-      getProincomeTssh1,
-      getProincomeTssh2,
-      getProincomeTssh3,
-      getProincomeTssh4,
-      getPatietTypeDiscountTssh,
-      getPhaSalePartTssh1,
-      getPhaSalePartTssh2,
-      getPhaSalePartTssh3,
-      getPhaReturnPartTssh1,
-      getPhaReturnPartTssh2,
-      getPhaReturnPartTssh3,
-      theaterIncomeTssh,
-    ].forEach((thiunk) => dispatch(thiunk(state)));
-  }, [state]);
+    dispatch(getAdvanceCollectionTssh(state));
+    dispatch(getAdvanceRefundTssh(state));
+    dispatch(getAdvanceSettledTssh(state));
+    dispatch(getcollectionagainSaleTotalTssh(state));
+    dispatch(getcollectionagainSaleDeductionTssh(state));
+    dispatch(getcomplimentoryTssh(state));
+    dispatch(getcreditInsuranceBillCollectionTssh(state));
+    dispatch(getIpconsolidatedDiscountTssh(state));
+    dispatch(getipPreviousDayDiscountTssh(state));
+    dispatch(getunsettledAmountTssh(state));
+    dispatch(getipPreviousDayCollectionTssh(state));
+    dispatch(getipcreditInsuranceBillTssh(state));
+    dispatch(getipcreditInsuranceBillPending(state));
+    dispatch(getProincomeTssh1(state));
+    dispatch(getProincomeTssh2(state));
+    dispatch(getProincomeTssh3(state));
+    dispatch(getProincomeTssh4(state));
+    dispatch(getPatietTypeDiscountTssh(state));
+    dispatch(getPhaSalePartTssh1(state));
+    dispatch(getPhaSalePartTssh2(state));
+    dispatch(getPhaSalePartTssh3(state));
+    dispatch(getPhaReturnPartTssh1(state));
+    dispatch(getPhaReturnPartTssh2(state));
+    dispatch(getPhaReturnPartTssh3(state));
+    dispatch(theaterIncomeTssh(state));
+
+    // loadReports();
+  }, [state, dispatch]);
 
   useEffect(() => {
     if (!Object.keys(collection).length) return;
@@ -320,7 +319,7 @@ const IncomeReports = () => {
       },
     ];
 
-    if (!misColl?.some((val) => val.status === false)) {
+    if (misColl.every((val) => val.status !== undefined)) {
       setMisCollrction(misColl);
     }
   }, [collection]);
@@ -425,7 +424,7 @@ const IncomeReports = () => {
         setModalData(defaultState);
       }
     },
-    [state]
+    [state],
   );
 
   const getPharmacyDetl = useCallback(async () => {
