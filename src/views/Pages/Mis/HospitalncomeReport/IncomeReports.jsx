@@ -140,6 +140,7 @@ const IncomeReports = () => {
     const groupGross = ensureNumber(grand?.groupGross ?? 0) + GrosPharma;
 
     const groupCollection = unsettledAmnt + creditInsurBill + advSettled + collAgainSale;
+    console.log(unsettledAmnt, creditInsurBill, advSettled, collAgainSale);
     const roundOff = groupCollection - groupNet;
     const groupNetddctRoundoff = groupNet + roundOff;
     return {ipConatedDiscount, advSettled, creditInsurBill, unsettledAmnt, groupCollection, groupTax, groupNet, groupDis, groupGross, roundOff, groupNetddctRoundoff};
@@ -227,15 +228,15 @@ const IncomeReports = () => {
         },
         {
           creditInsuranceBill:
-            collections?.creditInsuranceBill?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) ??
-            0 + collections?.creditInsuranceBillPending?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) ??
-            0,
+            collections?.creditInsuranceBill?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) +
+            collections?.creditInsuranceBillRefund?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0),
           tax:
-            collections?.creditInsuranceBill?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) ??
-            0 + collections?.creditInsuranceBillPending?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) ??
-            0,
+            collections?.creditInsuranceBill?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) +
+            collections?.creditInsuranceBillRefund?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0),
         },
       ];
+      console.log(collection);
+      console.log(misColl);
       setMisCollrction(misColl);
     }
   }, [collection]);
