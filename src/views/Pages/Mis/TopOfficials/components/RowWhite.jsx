@@ -14,7 +14,7 @@ const RowWhite = ({data, onClick, serialNum}) => {
         {serialNo}
       </TableCell>
       <TableCell align="left" sx={{width: "25%", fontSize: "12px", textTransform: "capitalize"}}>
-        {incomeGroupName}
+        {incomeGroupName?.toLowerCase()}
       </TableCell>
       <TableCell align="right" sx={{width: "20%", fontSize: "12px"}}>
         {data.collection}

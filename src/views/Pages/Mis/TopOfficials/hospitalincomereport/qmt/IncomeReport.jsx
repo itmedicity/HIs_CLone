@@ -2,8 +2,7 @@
 import React, {Fragment, memo, useCallback, useMemo, useState, useEffect} from "react";
 import {Box, Icon, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
-import {set} from "date-fns";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ReportHeader from "../../../../../Components/ReportHeader";
 import LightBlueRow from "../../components/LightBlueRow";
@@ -12,49 +11,72 @@ import WhiteRowTotal from "../../components/RowWhiteTotal";
 import {axiosinstance} from "../../../../../../controllers/AxiosConfig";
 import MenuButton from "../../components/ButtonMenu";
 import ReportBottomMenu from "../../components/ButtonReportMenu";
-import {hospitalIncomeData} from "../../utils/data";
 import HeaderRowBlue from "../../components/HeaderRowBlue";
 import {formatToDecimal} from "../../utils/utlils.fun";
 import "../../utils/Style.css";
+import {useProcedureIncome} from "../hooks/useProcedureIncome";
+import {useIncomeCalculations} from "../hooks/useIncomeCalculations";
+import {exportStyledExcel} from "../../utils/exportIncomeExcel";
 
 const IncomeReport = () => {
   let serialNo = 1;
   const getSerial = () => serialNo++;
-  const incomeData = hospitalIncomeData[0];
-  const listData = [
-    {name: "Credit/Insurance Bill Discount", amount: 0},
-    {name: "Credit/Insurance WriteOff Amount", amount: 0},
-    {name: "Complimentary", amount: 0},
-    {name: "IP Previous Day's Discount", amount: 0},
-    {name: "Advance Refund (B)", amount: 0},
-    {name: "Advance Collection (C)", amount: 0},
-    {name: "Credit/Insurance Bill Collection(D)", amount: 0},
-    {name: "IP Previous Day's Collection(E)", amount: 0},
-  ];
-  console.log(incomeData);
-  // Calling hooks
-  const dispatch = useDispatch();
-  const state = useLocation().state;
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const state = location.state || {
+    fromDate: null,
+    toDate: null,
+  };
+
+  // ✅ API STATE
+  const [apiData, setApiData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const getQmtMisData = async () => {
+      try {
+        const response = await axiosinstance.post(`/getQmt/getQmtReport`, state);
+        const data = response.data;
+        if (data.success === 0 || data.success === null || !data) {
+          alert("No Data Found");
+        }
+        if (data.success === 1) {
+          setApiData(response.data);
+        }
+        console.log(response.data);
+      } catch (error) {
+        console.log(error);
+        navigate("/Menu/QmtIncomeReportsDateSelection");
+      }
+    };
+
+    getQmtMisData();
+  }, []);
+
+  // ✅ HOOK DATA
+  const PrcedureIncome = useProcedureIncome(apiData);
+  const {pharmacyIncome, IpConsolidatedDiscountSection, CollectionAgainstSalesSection, CreditInsuranceBillSection, CounterCollection, Patient_Type} = useIncomeCalculations(apiData, setIsLoading);
 
   // Ensure the value is valid and a n umber
-  const ensureNumber = (value) => {
-    const num = Number(value);
-    return isNaN(num) ? 0 : num;
-  };
-  const style = {fontWeight: "bold", color: "black", textDecoration: "none"};
 
-  const PrcedureIncome = incomeData.ProcudureIncome;
-  const pharmacyIncome = incomeData.PharmacySales[0].groupData;
-  const IpConsolidatedDiscountSection = incomeData.IpConsolidatedDiscountSection;
-  const CollectionAgainstSalesSection = incomeData.CollectionAgainstSalesSection;
-  const CreditInsuranceBillSection = incomeData.CreditInsuranceBillSection;
-  const CounterCollection = incomeData.CounterCollection[0].collection;
-  const Patient_Type = incomeData.Patient_Type[0].groupData;
+  // Income State
+  // const incomeData = hospitalIncomeData[0];
+  // State Management
+  // const PrcedureIncome = incomeData.ProcudureIncome || [];
+  // const pharmacyIncome = incomeData.PharmacySales[0].groupData || [];
+  // const IpConsolidatedDiscountSection = incomeData.IpConsolidatedDiscountSection || [];
+  // const CollectionAgainstSalesSection = incomeData.CollectionAgainstSalesSection || [];
+  // const CreditInsuranceBillSection = incomeData.CreditInsuranceBillSection || [];
+  // const CounterCollection = incomeData.CounterCollection[0].collection || [];
+  // const Patient_Type = incomeData.Patient_Type[0].groupData || [];
 
   // Procedure Income Data
   const ProcedureIncomeDataJsx = PrcedureIncome?.map((item, index) => (
     <Fragment key={`ProIncome-${item.groupHead}`}>
-      <LightBlueRow data={item.groupHead} />
+      <LightBlueRow data={item.groupHead?.toLowerCase()} />
       {item.groupData?.length > 0 &&
         item.groupData.filter((item) => item.subGroupName !== "SubGroupTotal").map((group, i) => <WhiteRow key={`row-${i}`} data={group} serialNum={getSerial()} onClick={() => {}} />)}
       <WhiteRowTotal data={item.groupData} />
@@ -171,10 +193,29 @@ const IncomeReport = () => {
       <TableCell align="right" sx={{width: "20%", fontSize: "12px", pr: 1, fontWeight: item.style === "B" && "bold"}}></TableCell>
     </TableRow>
   ));
-
+  if (isLoading) {
+    return (
+      <Box flex={1} sx={{display: "flex", backgroundColor: "lightgray", p: "1%", flexDirection: "column"}}>
+        <Paper square sx={{display: "flex", borderColor: "black", border: 1, height: "92%"}}></Paper>
+      </Box>
+    );
+  }
   return (
     <Box flex={1} sx={{backgroundColor: "lightgray", p: "1%"}}>
-      <MenuButton navigateTo={"hospital_income"} />
+      <MenuButton
+        navigateTo={"QmtIncomeReportsDateSelection"}
+        onExportExcel={() =>
+          exportStyledExcel({
+            procedureIncome: PrcedureIncome,
+            pharmacyIncome,
+            ipDiscount: IpConsolidatedDiscountSection,
+            collectionAgainstSales: CollectionAgainstSalesSection,
+            creditInsurance: CreditInsuranceBillSection,
+            counterCollection: CounterCollection,
+            patientType: Patient_Type,
+          })
+        }
+      />
       <Paper square sx={{borderColor: "black", border: 1}}>
         <ReportHeader name="Hospital Income" data={state} hosName="QUILON MEDICAL TRUST" disable={false} />
         <Box
