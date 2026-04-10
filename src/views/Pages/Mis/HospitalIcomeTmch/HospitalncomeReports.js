@@ -81,7 +81,7 @@ const HospitalncomeReports = () => {
         };
         // console.log(postData0);
 
-        const dischargedResponse = await axiosinstance.post("/admission/getIpDischargedPatientInfo", postData0);
+        const dischargedResponse = await axiosinstance.post("/admission/getIpDischargedPatientInfoTMCH", postData0);
         const {success: dischargedSuccess, data: newIpReceiptBased} = dischargedResponse.data;
 
         // console.log(`getIpNumber--->`, newIpReceiptBased);

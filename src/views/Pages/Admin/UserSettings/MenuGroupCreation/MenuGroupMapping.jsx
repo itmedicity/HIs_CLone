@@ -123,7 +123,6 @@ const MenuGroupMapping = () => {
   const ViewMenuData = useCallback(() => {
     const getdata = async () => {
       const result = await axiosinstance.get("/menugroups/select");
-      console.log(result);
       const {success, message, data} = result.data;
       if (success === 2) {
         setView(data);

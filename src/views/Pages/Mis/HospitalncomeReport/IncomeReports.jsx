@@ -140,7 +140,7 @@ const IncomeReports = () => {
     const groupGross = ensureNumber(grand?.groupGross ?? 0) + GrosPharma;
 
     const groupCollection = unsettledAmnt + creditInsurBill + advSettled + collAgainSale;
-    console.log(unsettledAmnt, creditInsurBill, advSettled, collAgainSale);
+    // console.log(unsettledAmnt, creditInsurBill, advSettled, collAgainSale);
     const roundOff = groupCollection - groupNet;
     const groupNetddctRoundoff = groupNet + roundOff;
     return {ipConatedDiscount, advSettled, creditInsurBill, unsettledAmnt, groupCollection, groupTax, groupNet, groupDis, groupGross, roundOff, groupNetddctRoundoff};
@@ -235,8 +235,8 @@ const IncomeReports = () => {
             collections?.creditInsuranceBillRefund?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0),
         },
       ];
-      console.log(collection);
-      console.log(misColl);
+      // console.log(collection);
+      // console.log(misColl);
       setMisCollrction(misColl);
     }
   }, [collection]);

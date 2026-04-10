@@ -131,7 +131,7 @@ const IncomeReports = () => {
   const misGroup = useSelector((state) => state.misReportTsshSlice.misReportTsshState.data);
 
   const misReportTsshRoudOff = useSelector((state) => state.misReportTsshSlice.misReportTsshState.data.pharmacyRoundOffTssh);
-  console.log(misReportTsshRoudOff, "misReportTmch");
+  // console.log(misReportTsshRoudOff, "misReportTmch");
 
   //Memorise Values
   const proIncome = useMemo(() => procedureIncome, [procedureIncome]);
@@ -376,8 +376,8 @@ const IncomeReports = () => {
           tax: collections?.unsettledAmount?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) ?? 0,
         },
         {
-          ippreviousDayCollection: collections?.ippreviousDayCollection?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) ?? 0,
-          tax: collections?.ippreviousDayCollection?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) ?? 0,
+          ippreviousDayCollection: collections?.ipPreviousDayCollection?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) ?? 0,
+          tax: collections?.ipPreviousDayCollection?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) ?? 0,
         },
         {
           creditInsuranceBill:

@@ -14,6 +14,8 @@ const Mis = () => {
   const [menuList, setmenuList] = useState({
     topOff: [],
     topOff_new: [],
+    topOff_old: [],
+    topOff_RMT: [],
     regCons: [],
     gstRep: [],
   });
@@ -29,13 +31,15 @@ const Mis = () => {
         ...prev,
         topOff: topOfficilasMenu.filter((val) => menuSlno.includes(val.slno)).filter((e) => e.module === 1),
         topOff_new: topOfficilasMenu.filter((val) => menuSlno.includes(val.slno)).filter((e) => e.module === 3),
+        topOff_old: topOfficilasMenu.filter((val) => menuSlno.includes(val.slno)).filter((e) => e.module === 4),
+        topOff_RMT: topOfficilasMenu.filter((val) => menuSlno.includes(val.slno)).filter((e) => e.module === 5),
         regCons: [],
         gstRep: topOfficilasMenu.filter((val) => menuSlno.includes(val.slno)).filter((e) => e.module === 2),
       }));
     });
   }, [user]);
 
-  console.log(menuList);
+  // console.log(menuList);
 
   return (
     <ContentMain>
@@ -48,6 +52,16 @@ const Mis = () => {
         <ContentPaper name="Top Officials">
           {menuList?.topOff?.map((val) => (
             <ContentNavLink name={val.name} route={val.path} key={val.slno} />
+          ))}
+        </ContentPaper>
+        <ContentPaper name="Top Officials - Old MIS">
+          {menuList?.topOff_old?.map((val) => (
+            <ContentNavLink name={val.name} route={val.path} key={`topOff_old${val.slno}`} />
+          ))}
+        </ContentPaper>
+        <ContentPaper name="Top Officials - RMT">
+          {menuList?.topOff_RMT?.map((val) => (
+            <ContentNavLink name={val.name} route={val.path} key={`topOff_RMT${val.slno}`} />
           ))}
         </ContentPaper>
         <ContentPaper name="Reg. Cons.">

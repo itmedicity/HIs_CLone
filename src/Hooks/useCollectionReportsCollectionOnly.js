@@ -41,7 +41,6 @@ export const useCollectionReportsCollectionOnly = () => {
     return Object.fromEntries(Object.keys(API_ENDPOINTS).map((key, index) => [key, results[index]?.data?.data ?? []]));
   }, [results]);
 
-  console.log(data);
   /* ---------------- Calculation ---------------- */
 
   const userWiseCollection = useMemo(() => {

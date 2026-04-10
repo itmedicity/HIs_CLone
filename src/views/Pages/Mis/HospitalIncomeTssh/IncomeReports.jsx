@@ -70,7 +70,7 @@ const IncomeReports = () => {
   const dispatch = useDispatch();
   const {state} = useLocation();
 
-  console.log(state);
+  // console.log(state);
 
   // const collection = useSelector((state) => state.collectionTssh);
   // const pharmacyIncome = useSelector((state) => state.pharmacyIncomeTssh);
@@ -83,7 +83,7 @@ const IncomeReports = () => {
   const misGroup = useSelector((state) => state.misReportTsshSlice.misReportTsshState.data);
 
   const misReportTssh = useSelector((state) => state.misReportTsshSlice.misReportTsshState.data);
-  console.log(misReportTssh, "misReportTmch");
+  // console.log(misReportTssh, "misReportTmch");
 
   const [misGroupList, setMisGroupList] = useState([]);
   const [misReortList, setMisReportList] = useState([]);
@@ -344,7 +344,7 @@ const IncomeReports = () => {
   useEffect(() => {
     if (!pharmacyIncome) return;
     const value = getPhamracyIncome(pharmacyIncome);
-    console.log(value);
+    // console.log(value);
     setPharamcyIc((prev) => ({...prev, ...value}));
   }, [pharmacyIncome]);
 

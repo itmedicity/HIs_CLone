@@ -14,14 +14,14 @@ import "../../utils/Style.css";
 
 const IncomeReportsTssh = () => {
   /**
-   * Hospital income Statement - TMCH
+   * Hospital Income Statement - TSSH
    */
   const navigate = useNavigate();
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [checked, setChecked] = useState(false);
 
-  const navigateToReport = (ipNumber, rmIpNumber, ipNoColl, groupedPatient) => {
+  const navigateToReport = (ipNumber, rmIpNumber, ipNoColl) => {
     navigate("/Menu/tsshIncomeReportsDateWise", {
       state: {
         from: moment(startDate).format("DD/MM/YYYY 00:00:00"),
@@ -29,7 +29,8 @@ const IncomeReportsTssh = () => {
         ptno: ipNumber,
         phar: rmIpNumber,
         ipNoColl,
-        grouped: groupedPatient,
+        group: 0,
+        groupIdForPrevious: 0,
       },
     });
   };
@@ -51,60 +52,54 @@ const IncomeReportsTssh = () => {
         to: moment(endDate).format("YYYY-MM-DD 23:59:59"),
       };
 
-      const ipNumberResponse = await axiosinstance.post("/admission/getIpNumber", postData2);
-      const {success, data} = ipNumberResponse.data;
+      const getIpNumberResponse = await axiosinstance.post("/admission/getIpNumberTssh", postData2);
+      const {success, data} = getIpNumberResponse.data;
       const ipNumber = success === 1 ? data?.map((e) => e.ip_no) : [];
       const rmIpNumber = success === 1 ? data?.filter((e) => e.tmch_status === "0").map((e) => e.ip_no) : [];
-      const groupedPatient = success === 1 ? data?.filter((e) => e.tmch_status === "1").map((e) => e.ip_no) : [];
-      // console.log(`getIpNumber--->`, data);
 
       const postDate = {
         from: moment(startDate).format("DD/MM/YYYY 00:00:00"),
         to: moment(endDate).format("DD/MM/YYYY 23:59:59"),
       };
 
-      const ipReceiptResponse = await axiosinstance.post("/admission/getIpReceiptInfo", postDate);
-      const {success: ipReceiptResponseSuccess, data: ipReceiptResponseData} = ipReceiptResponse.data;
-      // console.log(`getIpNumber--->`, ipReceiptResponseData);
+      const getIpReceiptInfoResponse = await axiosinstance.post("/admission/getIpReceiptInfo", postDate);
+      const {success: ipReceiptSuccess, data: ipReceiptData} = getIpReceiptInfoResponse.data;
+
       let ipNoColl = ipNumber;
-      if (ipReceiptResponseSuccess === 1 && ipReceiptResponseData.length > 0) {
-        const minDate = ipReceiptResponseData.reduce((min, obj) => {
+      if (ipReceiptSuccess === 1 && ipReceiptData.length > 0) {
+        let minDate = ipReceiptData.reduce((min, obj) => {
           const currentDate = new Date(obj.ADMISSION);
           return currentDate < min ? currentDate : min;
-        }, new Date(ipReceiptResponseData[0].ADMISSION));
+        }, new Date(ipReceiptData[0].ADMISSION));
 
-        // console.log(minDate);
-
-        const postData0 = {
+        const post_data0 = {
           from: moment(minDate).format("YYYY-MM-DD 00:00:00"),
           to: moment(endDate).format("YYYY-MM-DD 23:59:59"),
         };
-        // console.log(postData0);
 
-        const dischargedResponse = await axiosinstance.post("/admission/getIpDischargedPatientInfo", postData0);
-        const {success: dischargedSuccess, data: newIpReceiptBased} = dischargedResponse.data;
+        const dischargeResponse = await axiosinstance.post("/admission/getIpDischargedPatientInfo", post_data0);
+        const {success: dischargeSuccess, data: dischargeData} = dischargeResponse.data;
 
-        // console.log(`getIpNumber--->`, newIpReceiptBased);
-
-        if (dischargedSuccess === 1 && newIpReceiptBased.length > 0) {
-          const array1 = newIpReceiptBased.map((e) => e.ip_no);
-          const array2 = ipReceiptResponseData.map((e) => e.IP_NO);
+        if (dischargeSuccess === 1 && dischargeData.length > 0) {
+          const array1 = dischargeData.map((e) => e.ip_no);
+          const array2 = ipReceiptData.map((e) => e.IP_NO);
           const filtedArray = array1.filter((item) => array2.includes(item));
-          // console.log(filtedArray);
           ipNoColl = ipNumber.concat(filtedArray);
         }
       }
-      navigateToReport(ipNumber, rmIpNumber, ipNoColl, groupedPatient);
+      // console.log(ipNumber);
+
+      navigateToReport(ipNumber, rmIpNumber, ipNoColl);
     } catch (error) {
       console.error("Error fetching report data:", error);
-      navigateToReport([], [], [], []);
+      alert("Failed to fetch report data. Please try again.");
+      navigateToReport([], [], []);
     }
   }, [startDate, endDate, navigate, checked]);
 
   const handleClose = () => {
     navigate("/Menu/Mis");
   };
-
   return (
     <Paper sx={{display: "flex", flex: 1, justifyContent: "center"}} square variant="outlined">
       <Paper

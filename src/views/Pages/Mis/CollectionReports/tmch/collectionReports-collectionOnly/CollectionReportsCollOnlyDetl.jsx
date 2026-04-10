@@ -51,9 +51,6 @@ const CollectionReportsCollOnlyDetl = () => {
     errorMessage,
   } = useCollectionReportsCollectionOnly();
 
-  console.log(userWiseCollection);
-  console.log(isLoading, isFetching, isSuccess, hasError, errors, errorMessage);
-
   const emptyRow = useMemo(() => Array.from({length: 11}, (_, i) => i + 1), []);
   return (
     <Box flex={1} sx={{backgroundColor: "lightgray", p: "1%"}}>

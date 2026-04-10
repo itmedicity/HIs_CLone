@@ -1,6 +1,6 @@
 import {useMemo} from "react";
 
-export const useIncomeCalculations = (apiData, setLoading) => {
+export const useIncomeCalculations = (apiData, setLoading, grpval) => {
   return useMemo(() => {
     if (!apiData?.data) {
       return {
@@ -16,7 +16,7 @@ export const useIncomeCalculations = (apiData, setLoading) => {
 
     const data = apiData.data;
     const income = data.income || {};
-    console.log(data);
+    // console.log(data);
     // =========================
     // 🟢 GRAND TOTAL FROM API
     // =========================
@@ -48,13 +48,25 @@ export const useIncomeCalculations = (apiData, setLoading) => {
       {
         subGroupName: "Pharmacy Medicine Sale",
         collection: null,
-        netAmount: pharma_netAmount,
-        tax: pharmacy_tax,
-        discount: pharmacy_discount,
-        gross: pharmacy_gross,
+        netAmount: grpval !== 1 && pharma_netAmount,
+        tax: grpval !== 1 && pharmacy_tax,
+        discount: grpval !== 1 && pharmacy_discount,
+        gross: grpval !== 1 && pharmacy_gross,
         style: "N",
       },
     ];
+
+    // =========================
+    // 🟢GROUPED PHARMACY - AMT
+    // =========================
+
+    const groupedPharmacy = data.groupedPharmacyService || {};
+    const groupedPharmacyNetAmount =
+      sum(groupedPharmacy.getGroupedPharmacyService_One || [], "AMT") +
+      sum(groupedPharmacy.getGroupedPharmacyService_Three || [], "AMT") +
+      sum(groupedPharmacy.getGroupedPharmacyService_Two || [], "AMT");
+
+    // console.log(groupedPharmacyNetAmount);
 
     // =========================
     // 🟢 DISCOUNT
@@ -82,7 +94,7 @@ export const useIncomeCalculations = (apiData, setLoading) => {
       },
     ];
 
-    const totalCollectedNetAmount = GrandIncomeTotal?.netAmount + pharma_netAmount + pharmacy_tax - ipConsolidatedDiscount;
+    const totalCollectedNetAmount = grpval === 1 ? GrandIncomeTotal?.netAmount - ipConsolidatedDiscount : GrandIncomeTotal?.netAmount + pharma_netAmount + pharmacy_tax - ipConsolidatedDiscount;
     // console.log(GrandIncomeTotal?.netAmount + pharma_netAmount + pharmacy_tax);
     // =========================
     // 🟢 COLLECTION AGAINST SALES
@@ -109,13 +121,16 @@ export const useIncomeCalculations = (apiData, setLoading) => {
     const UnsettledAmount = sum(data.UnsettledAmount?.getUnsettledAmount || [], "AMT");
     const UnsettledAmount_tax = sum(data.UnsettledAmount?.getUnsettledAmount || [], "TAX");
 
-    const totalCollectionAmount = collectionA + advanceSettled + creditInsuranceBill + UnsettledAmount;
+    const totalCollectionAmount =
+      grpval === 1
+        ? collectionA - pharma_netAmount + advanceSettled + creditInsuranceBill + UnsettledAmount
+        : collectionA + advanceSettled + creditInsuranceBill + UnsettledAmount + groupedPharmacyNetAmount;
     const roundOffAmount = totalCollectionAmount - totalCollectedNetAmount;
 
     const CollectionAgainstSalesSection = [
       {
         subGroupName: "Collection Against Sales (A)",
-        collection: collectionA,
+        collection: grpval === 1 ? collectionA - pharma_netAmount : collectionA + groupedPharmacyNetAmount,
         netAmount: null,
         tax: null,
         discount: null,
@@ -162,9 +177,9 @@ export const useIncomeCalculations = (apiData, setLoading) => {
         subGroupName: "Grand Total",
         collection: totalCollectionAmount,
         netAmount: totalCollectedNetAmount + roundOffAmount,
-        tax: pharmacy_tax,
-        discount: GrandIncomeTotal?.discount + ipConsolidatedDiscount + pharmacy_discount,
-        gross: GrandIncomeTotal.gross + pharmacy_gross,
+        tax: grpval === 1 ? null : pharmacy_tax,
+        discount: grpval === 1 ? GrandIncomeTotal?.discount + ipConsolidatedDiscount : GrandIncomeTotal?.discount + ipConsolidatedDiscount + pharmacy_discount,
+        gross: grpval === 1 ? GrandIncomeTotal.gross : GrandIncomeTotal.gross + pharmacy_gross,
         style: "B",
       },
     ];
@@ -231,7 +246,10 @@ export const useIncomeCalculations = (apiData, setLoading) => {
     // =========================
     // 🟢 COUNTER COLLECTION
     // =========================
-    const CounterCollection = collectionA + advance + settled + ipPreviousDayCollection - advanceRefund;
+    const CounterCollection =
+      grpval === 1
+        ? collectionA + advance + settled + ipPreviousDayCollection - advanceRefund - pharma_netAmount
+        : collectionA + advance + settled + ipPreviousDayCollection - advanceRefund + groupedPharmacyNetAmount;
 
     // =========================
     // 🟢 PATIENT TYPE

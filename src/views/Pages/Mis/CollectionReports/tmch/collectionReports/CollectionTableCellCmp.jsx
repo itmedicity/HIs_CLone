@@ -13,7 +13,6 @@ const CollectionTableCellCmp = ({row, index}) => {
     }));
   }, [row.data]);
 
-  console.log(formattedData);
   return (
     <TableRow className="coll-TableBodyRow" key={index}>
       <TableCell className="coll-TableBodyCell coll-TextAlignRight coll-CenterdCell">{index + 1}</TableCell>

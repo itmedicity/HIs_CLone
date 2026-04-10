@@ -38,7 +38,7 @@ const IncomeReports = () => {
     setIsLoading(true);
     const getQmtMisData = async () => {
       try {
-        const response = await axiosinstance.post(`/getQmt/getQmtReport`, state);
+        const response = await axiosinstance.post(`/getTssh/getTsshReport`, state);
         const data = response.data;
         if (data.success === 0 || data.success === null || !data) {
           alert("No Data Found");
@@ -46,7 +46,7 @@ const IncomeReports = () => {
         if (data.success === 1) {
           setApiData(response.data);
         }
-        console.log(response.data);
+        // console.log(response.data);
       } catch (error) {
         console.log(error);
         navigate("/Menu/QmtIncomeReportsDateSelection");
@@ -58,7 +58,7 @@ const IncomeReports = () => {
 
   // ✅ HOOK DATA
   const PrcedureIncome = useProcedureIncome(apiData);
-  const {pharmacyIncome, IpConsolidatedDiscountSection, CollectionAgainstSalesSection, CreditInsuranceBillSection, CounterCollection, Patient_Type} = useIncomeCalculations(apiData, setIsLoading);
+  const {pharmacyIncome, IpConsolidatedDiscountSection, CollectionAgainstSalesSection, CreditInsuranceBillSection, CounterCollection, Patient_Type} = useIncomeCalculations(apiData, setIsLoading, 0);
 
   // Income State
   // const incomeData = hospitalIncomeData[0];
@@ -131,7 +131,7 @@ const IncomeReports = () => {
       <TableCell align="right" sx={{width: "2%", textAlign: "center", fontSize: "12px"}}>
         {item.subGroupName === "Grand Total" ? null : getSerial()}
       </TableCell>
-      <TableCell align="left" sx={{width: "25%", fontSize: "12px", fontWeight: item.style === "B" && "bold"}}>
+      <TableCell align="left" sx={{width: "25%", fontSize: "12px", fontWeight: (item.style === "B" || item.subGroupName === "Round Off") && "bold", color: item.subGroupName === "Round Off" && "red"}}>
         {item.subGroupName}
       </TableCell>
       <TableCell
@@ -161,7 +161,7 @@ const IncomeReports = () => {
       <TableCell align="right" sx={{width: "2%", textAlign: "center", fontSize: "12px"}}>
         {getSerial()}
       </TableCell>
-      <TableCell align="left" sx={{width: "25%", fontSize: "12px"}}>
+      <TableCell align="left" sx={{width: "25%", fontSize: "12px", color: item.subGroupName.trim() == "Complimentary" && "red", fontWeight: item.subGroupName.trim() === "Complimentary" && "bold"}}>
         {item.subGroupName}
       </TableCell>
       <TableCell align="right" sx={{width: "20%", fontSize: "12px", textDecoration: item.style === "U" && "underline", color: item.style === "U" && "#0000EE"}}>

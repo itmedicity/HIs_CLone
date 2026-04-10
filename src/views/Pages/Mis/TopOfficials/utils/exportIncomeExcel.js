@@ -1,10 +1,8 @@
-// utils/exportStyledExcel.js
-
 import * as XLSX from "xlsx-js-style";
 import {saveAs} from "file-saver";
 
 export const exportStyledExcel = (data) => {
-  const {procedureIncome, pharmacyIncome, ipDiscount, collectionAgainstSales, creditInsurance, counterCollection, patientType} = data;
+  const {procedureIncome = [], pharmacyIncome = [], ipDiscount = [], collectionAgainstSales = [], creditInsurance = [], counterCollection = 0, patientType = []} = data;
 
   let rows = [];
   let merges = [];
@@ -16,14 +14,16 @@ export const exportStyledExcel = (data) => {
     rowIndex++;
   };
 
-  // 🔵 HEADER
+  // ==================================
+  // MAIN HEADER
+  // ==================================
   addRow(["Sl#", "Income Group", "Collection", "Net", "Tax", "Discount", "Gross"]);
 
-  // =====================
+  // ==================================
   // PROCEDURE INCOME
-  // =====================
+  // ==================================
   procedureIncome.forEach((group) => {
-    addRow([null, group.groupHead]);
+    addRow(["", toTitleCase(group.groupHead), "", "", "", "", ""]);
 
     merges.push({
       s: {r: rowIndex - 1, c: 1},
@@ -33,127 +33,341 @@ export const exportStyledExcel = (data) => {
     group.groupData.forEach((item) => {
       if (item.subGroupName === "SubGroupTotal") return;
 
-      addRow([serial++, item.subGroupName, "", item.netAmount, item.tax, item.discount, item.gross]);
+      addRow([serial++, toTitleCase(item.subGroupName), "", underlinedValue(item.netAmount || 0), item.tax || 0, item.discount || 0, item.gross || 0]);
     });
 
     const total = group.groupData.find((x) => x.subGroupName === "SubGroupTotal");
 
-    addRow(["", "Sub Total", "", total?.netAmount, total?.tax, total?.discount, total?.gross]);
+    addRow(["", "", "", total?.netAmount || 0, total?.tax || 0, total?.discount || 0, total?.gross || 0]);
   });
 
-  // =====================
-  // OTHER SECTIONS
-  // =====================
-  addRow([]);
-  addRow(["", "Sale Of Medicine"]);
+  // ==================================
+  // PHARMACY
+  // ==================================
+  // addRow(["", "", "", "", "", "", ""]);
+  addRow([null, "Sale Of Medicine", "", "", "", "", ""]);
 
   pharmacyIncome.forEach((item) => {
-    addRow([serial++, "Pharmacy", "", item.netAmount, item.tax, item.discount, item.gross]);
+    addRow([
+      serial++,
+      "Pharmacy Medicine Sale",
+      "",
+      styledNumber(item.netAmount, {
+        underline: true,
+        color: "1D4ED8",
+        bold: true,
+      }),
+      item.tax || 0,
+      item.discount || 0,
+      item.gross || 0,
+    ]);
   });
 
-  addRow([]);
+  // ==================================
+  // IP DISCOUNT
+  // ==================================
+  addRow(["", "", "", "", "", "", ""]);
+
   ipDiscount.forEach((item) => {
-    addRow([serial++, item.subGroupName, "", item.netAmount, "", item.discount, ""]);
+    addRow([serial++, item.subGroupName, "", item.netAmount || 0, "", item.discount || 0, ""]);
   });
 
-  addRow([]);
+  // ==================================
+  // COLLECTION AGAINST SALES
+  // ==================================
+  addRow(["", "", "", "", "", "", ""]);
+
   collectionAgainstSales.forEach((item) => {
-    addRow([item.subGroupName === "Grand Total" ? "" : serial++, item.subGroupName, item.collection, item.netAmount, item.tax, item.discount, item.gross]);
+    const isHighlight = item.subGroupName === "Round Off";
+    const isUnderLine = item.subGroupName === "Credit/Insurance Bill" || item.subGroupName === "UnSettled Amount";
+    addRow([
+      item.subGroupName === "Grand Total" ? "" : serial++,
+      isHighlight
+        ? styledText(item.subGroupName, {
+            color: "FF0000",
+            bold: true,
+          })
+        : item.subGroupName,
+      isUnderLine ? styledNumber(item.collection || 0, {underline: true, color: "1D4ED8", bold: true}) : item.collection || 0,
+      item.netAmount || 0,
+      item.tax || 0,
+      item.discount || 0,
+      item.gross || 0,
+    ]);
   });
 
-  addRow([]);
+  // ==================================
+  // CREDIT INSURANCE
+  // ==================================
+  addRow(["", "", "", "", "", "", ""]);
+
   creditInsurance.forEach((item) => {
-    addRow([serial++, item.subGroupName, item.collection]);
+    const isHighlight = item.subGroupName === "	Complimentary";
+    const isUnderLine = item.subGroupName === "Advance Collection (C)" || item.subGroupName === "Credit/Insurance Bill Collection(D)";
+    addRow([
+      serial++,
+      isHighlight ? styledText(item.subGroupName, {color: "FF0000", bold: true}) : item.subGroupName,
+      isUnderLine
+        ? styledNumber(item.collection || 0, {
+            underline: true,
+            color: "1D4ED8",
+            bold: true,
+          })
+        : item.collection || 0,
+      "",
+      "",
+      "",
+      "",
+    ]);
   });
 
-  addRow([]);
-  addRow(["", "Total Counter Collection", counterCollection]);
+  // ==================================
+  // COUNTER COLLECTION
+  // ==================================
+  addRow(["", "", "", "", "", "", ""]);
+  addRow(["", "Total Counter Collection", counterCollection, "", "", "", ""]);
 
-  addRow([]);
-  addRow(["", "Patient Type", "Discount"]);
+  // ==================================
+  // PATIENT TYPE
+  // ==================================
+  addRow(["", "", "", "", "", "", ""]);
+  addRow(["", "Patient Type", "Discount", "", "", "", ""]);
 
   patientType.forEach((item, i) => {
-    addRow([i + 1 >= 3 ? "" : i + 1, item.subGroupName, item.collection]);
+    addRow([i + 1 >= 3 ? "" : i + 1, item.subGroupName, item.collection || 0, "", "", "", ""]);
   });
 
-  // =====================
-  // SHEET
-  // =====================
+  // ==================================
+  // CREATE SHEET
+  // ==================================
   const ws = XLSX.utils.aoa_to_sheet(rows);
   ws["!merges"] = merges;
+  // ws["!rows"] = rows.map(() => ({hpx: 28}));
 
-  // =====================
-  // 🎨 STYLING START
-  // =====================
+  ws["!rows"] = rows.map((row, index) => {
+    if (index === 0) return {hpx: 30}; // main header
+    // Blank separator rows
+    if (row.every((cell) => cell === "")) return {hpx: 28};
+    if (row[0] === "" && row[1]) return {hpx: 28}; // section/group rows
+    return {hpx: 16}; // normal rows
+  });
+
   const range = XLSX.utils.decode_range(ws["!ref"]);
 
+  // ==================================
+  // APPLY STYLES
+  // ==================================
   for (let R = range.s.r; R <= range.e.r; ++R) {
     for (let C = range.s.c; C <= range.e.c; ++C) {
       const cellRef = XLSX.utils.encode_cell({r: R, c: C});
+
       if (!ws[cellRef]) continue;
 
-      // Default style
+      const row = rows[R];
+
       ws[cellRef].s = {
-        font: {name: "Calibri", sz: 10},
-        alignment: {vertical: "center", horizontal: "right"},
+        ...getDefaultStyle(C),
+        ...(ws[cellRef].s || {}),
       };
-
-      // 🔵 HEADER
+      // Main Header
       if (R === 0) {
+        ws[cellRef].s = getHeaderStyle();
+      }
+
+      // Blue separator rows
+      if (row.every((cell) => cell === "")) {
+        ws[cellRef].s = getBlueSeparatorStyle();
+      }
+
+      // Group Header
+      // if (row[0] === null && row[1] && !row[2]) {
+      //   ws[cellRef].s = getGroupHeaderStyle();
+      // }
+      if (row[0] === "" && row[1] && row.slice(2).every((cell) => cell === "")) {
+        ws[cellRef].s = getGroupHeaderStyle();
+      }
+
+      // Patient Type Header
+      if (row[1] === "Patient Type") {
+        ws[cellRef].s = getPatientTypeHeaderStyle();
+      }
+
+      // Sub Total
+      if (row[1] === "" && !row.every((cell) => cell === "")) {
+        ws[cellRef].s = getSubTotalStyle(C);
+      }
+
+      if (row[1] === "Grand Total") {
         ws[cellRef].s = {
-          fill: {fgColor: {rgb: "94C5F7"}},
-          font: {bold: true},
-          alignment: {horizontal: "center"},
-          border: borderStyle(),
+          ...getSubTotalStyle(C),
+          font: {
+            bold: true,
+            name: "Calibri",
+            sz: 11,
+          },
         };
       }
 
-      // 🔷 GROUP HEADER
-      if (rows[R][0] === null && rows[R][1] && !rows[R][2]) {
-        ws[cellRef].s = {
-          fill: {fgColor: {rgb: "D9EDF7"}},
-          font: {bold: true},
-          alignment: {horizontal: "left"},
-          border: borderStyle(),
-        };
-      }
-
-      // 🩶 SUB TOTAL
-      if (rows[R][1] === "Sub Total") {
-        ws[cellRef].s = {
-          fill: {fgColor: {rgb: "EAEAEA"}},
-          font: {bold: true},
-          border: borderStyle(),
-        };
-      }
-
-      // 🔲 Borders for all data rows
-      if (R > 0) {
-        ws[cellRef].s.border = borderStyle();
+      // number formatting
+      if (C >= 2 && R > 0) {
+        ws[cellRef].z = "#,##0.00";
       }
     }
   }
 
-  // Column width
-  ws["!cols"] = [{wch: 6}, {wch: 30}, {wch: 18}, {wch: 18}, {wch: 12}, {wch: 15}, {wch: 18}];
+  // ==================================
+  // COLUMN WIDTH
+  // ==================================
+  ws["!cols"] = [{wch: 6}, {wch: 35}, {wch: 18}, {wch: 18}, {wch: 14}, {wch: 16}, {wch: 18}];
 
+  // ==================================
+  // EXPORT
+  // ==================================
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Income Report");
+  XLSX.utils.book_append_sheet(wb, ws, "Hospital Collection View");
 
   const buffer = XLSX.write(wb, {
     bookType: "xlsx",
     type: "array",
   });
 
-  saveAs(new Blob([buffer]), "Hospital_Income_Styled.xlsx");
+  saveAs(new Blob([buffer]), "Hospital Collection View.xlsx");
 };
 
-// =====================
-// BORDER STYLE
-// =====================
+// ==================================
+// STYLES
+// ==================================
 const borderStyle = () => ({
-  top: {style: "thin", color: {rgb: "000000"}},
-  bottom: {style: "thin", color: {rgb: "000000"}},
-  left: {style: "thin", color: {rgb: "000000"}},
-  right: {style: "thin", color: {rgb: "000000"}},
+  top: {style: "thin", color: {rgb: "FFFFFF"}},
+  bottom: {style: "thin", color: {rgb: "FFFFFF"}},
+});
+
+const getDefaultStyle = (column) => ({
+  font: {
+    name: "Calibri",
+    sz: 11,
+  },
+  fill: {
+    fgColor: {rgb: "FFFFFF"},
+  },
+  alignment: {
+    vertical: "center",
+    horizontal: column === 1 ? "left" : "right",
+  },
+  border: borderStyle(),
+});
+
+const getHeaderStyle = () => ({
+  font: {
+    bold: true,
+    name: "Calibri",
+    sz: 11,
+  },
+  fill: {
+    fgColor: {rgb: "94C5F7"},
+  },
+  alignment: {
+    horizontal: "center",
+    vertical: "center",
+  },
+  border: borderStyle(),
+});
+
+const getGroupHeaderStyle = () => ({
+  font: {
+    bold: true,
+    name: "Calibri",
+    sz: 11,
+  },
+  fill: {
+    fgColor: {rgb: "BBD8FF"},
+    bgColor: {rgb: "BBD8FF"},
+  },
+  alignment: {
+    horizontal: "left",
+    vertical: "center",
+  },
+  border: borderStyle(),
+});
+
+const getSubTotalStyle = (column) => ({
+  font: {
+    bold: true,
+    name: "Calibri",
+    sz: 11,
+  },
+  fill: {
+    fgColor: {rgb: "FFFFFF"},
+  },
+  alignment: {
+    horizontal: column === 1 ? "left" : "right",
+    vertical: "center",
+  },
+  border: borderStyle(),
+});
+
+const getBlueSeparatorStyle = () => ({
+  fill: {
+    fgColor: {rgb: "BBD8FF"},
+  },
+  border: borderStyle(),
+});
+
+const getPatientTypeHeaderStyle = () => ({
+  font: {
+    bold: true,
+    name: "Calibri",
+    sz: 11,
+  },
+  fill: {
+    fgColor: {rgb: "94C5F7"},
+  },
+  alignment: {
+    horizontal: "left",
+    vertical: "center",
+  },
+  border: borderStyle(),
+});
+
+const toTitleCase = (text = "") => text.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+
+const underlinedValue = (value) => ({
+  v: value || 0,
+  t: "n",
+  s: {
+    font: {
+      underline: true,
+      color: {rgb: "1D4ED8"},
+      bold: true,
+      name: "Calibri",
+      sz: 11,
+    },
+  },
+});
+
+const styledNumber = (value, {underline = false, color = null, bold = false} = {}) => ({
+  v: value || 0,
+  t: "n",
+  s: {
+    font: {
+      name: "Calibri",
+      sz: 11,
+      underline,
+      bold,
+      ...(color ? {color: {rgb: color}} : {}),
+    },
+  },
+});
+
+const styledText = (value, {color = null, bold = false} = {}) => ({
+  v: value || "",
+  t: "s",
+  s: {
+    font: {
+      name: "Calibri",
+      sz: 11,
+      bold,
+      ...(color ? {color: {rgb: color}} : {}),
+    },
+  },
 });

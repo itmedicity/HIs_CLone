@@ -2,7 +2,8 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import moment from "moment";
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+pdfMake.vfs = pdfFonts?.pdfMake?.vfs || pdfFonts?.vfs;
 
 export const pdfdownload = async (view) => {
   const printdate = moment(new Date()).format("DD/MM/YYYY HH:mm:ss");

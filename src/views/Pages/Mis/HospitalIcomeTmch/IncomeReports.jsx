@@ -71,7 +71,6 @@ import "./Style.css";
 const IncomeReports = () => {
   const dispatch = useDispatch();
   const state = useLocation().state;
-
   // useSelector
   const collection = useSelector((state) => state.misReportTmchSlice.misReportTmchState.data);
   const pharmacyIncome = useSelector((state) => state.misReportTmchSlice.misReportTmchState.data.pharamcyIncome);
@@ -79,8 +78,6 @@ const IncomeReports = () => {
   const misGroup = useSelector((state) => state.misReportTmchSlice.misReportTmchState.data);
 
   const misReportTmch = useSelector((state) => state.misReportTmchSlice.misReportTmchState.data);
-
-  console.log(misReportTmch, "misReportTmch");
 
   const [groupedPharmacyAmount, setGroupedPharmacyAmount] = useState({AMT: 0, GROSSAMT: 0, DISCOUNT: 0, COMP: 0, TAX: 0});
   const {AMT: pharmaAmount, GROSSAMT: pharmaGrossAmount, DISCOUNT: pharmaDiscount, COMP: pharmaComp, TAX: pharmaTax} = groupedPharmacyAmount;
@@ -210,7 +207,6 @@ const IncomeReports = () => {
 
     const groupCollection = unsettledAmnt + creditInsurBill + advSettled + collAgainSale;
     const roundOff = groupCollection - groupNet + rndOff - parseFloat(pharmaAmount);
-    console.log(groupCollection, groupNet, rndOff, parseFloat(pharmaAmount));
     const groupNetddctRoundoff = groupNet + roundOff;
 
     return {ipConatedDiscount, advSettled, creditInsurBill, unsettledAmnt, groupCollection, groupTax, groupNet, groupDis, groupGross, roundOff, groupNetddctRoundoff};
@@ -254,7 +250,7 @@ const IncomeReports = () => {
         {AMT: 0, GROSSAMT: 0, DISCOUNT: 0, COMP: 0, TAX: 0},
       );
 
-    console.log(totals);
+    // console.log(totals);
     setRndOff(totals.AMT);
     setGroupedPharmacyAmount(totals);
     // console.log(totals);
@@ -262,7 +258,7 @@ const IncomeReports = () => {
 
   useEffect(() => {
     if (!state?.from || !state?.to) return;
-    console.log(state);
+    // console.log(state);
     dispatch(getMisReportTMCH(state));
     // dispatch(getMisGroup());
     // dispatch(getMisGroupMaster());

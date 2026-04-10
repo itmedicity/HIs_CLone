@@ -20,7 +20,6 @@ const createApiThunk = (actionName, endPoint, stateKey) =>
       // prevents duplicate calls to the API when a request is already pending
       condition: (_, {getState}) => {
         const state = getState().pharmacyIncomeTmch[stateKey];
-        console.log("Condition check:", state?.status);
         if (state?.status === 1) return false;
       },
     },
