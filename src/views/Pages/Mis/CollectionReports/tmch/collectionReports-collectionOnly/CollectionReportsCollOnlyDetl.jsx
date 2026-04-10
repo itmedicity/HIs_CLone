@@ -7,6 +7,7 @@ import CollectionTableCellCmp from "../collectionReports/CollectionTableCellCmp"
 import MenuButton from "../../../Components/MenuButton";
 import "../../Style.css";
 import {axiosinstance} from "../../../../../../controllers/AxiosConfig";
+import {useCollectionReportsCollectionOnly} from "../../../../../../Hooks/useCollectionReportsCollectionOnly";
 
 const tableHeadRowArray = [
   {name: "#", className: "coll-TableHeaderCell"},
@@ -22,19 +23,33 @@ const tableHeadRowArray = [
 ];
 
 const CollectionReportsCollOnlyDetl = () => {
-  useEffect(() => {
-    // document.title = "Collection Report Collection Only Details";
-    const getData = async () => {
-      //fetch data logic here
-      const data = await axiosinstance.get("/collectionOnlyQmt/getUnsettledAmountUserWise");
-      // console.log("Fetched data:", data);
-    };
-    try {
-      getData();
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }, []);
+  // useEffect(() => {
+  //   // document.title = "Collection Report Collection Only Details";
+  //   const getData = async () => {
+  //     //fetch data logic here
+  //     const data = await axiosinstance.get("/collectionOnlyQmt/getUnsettledAmountUserWise");
+  //     console.log("Fetched data:", data);
+  //   };
+  //   try {
+  //     getData();
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   } finally {
+  //     //any final steps
+  //   }
+  // }, []);
+
+  const {
+    userWiseCollection,
+
+    // States
+    isLoading,
+    isFetching,
+    isSuccess,
+    hasError,
+    errors,
+    errorMessage,
+  } = useCollectionReportsCollectionOnly();
 
   const emptyRow = useMemo(() => Array.from({length: 11}, (_, i) => i + 1), []);
   return (
@@ -76,8 +91,9 @@ const CollectionReportsCollOnlyDetl = () => {
               <TableBody>
                 <SectionHeadName SectionHeadName={"Summary User Wise"} />
                 {/* Summary User Wise Table rows */}
-                <CollectionTableCellCmp />
-                <CollectionTableCellCmp />
+                {isSuccess && userWiseCollection.length > 0 && userWiseCollection.map((row, index) => <CollectionTableCellCmp key={`UserWiseRow-${index}`} row={row} index={index} />)}
+                {/* <CollectionTableCellCmp /> */}
+                {/* <CollectionTableCellCmp /> */}
                 <SectionWiseTotal SectionWiseTotalName="Refund Total" />
                 {/* Net Amount   */}
                 <SectionWiseTotal SectionWiseTotalName="Net Amount" />

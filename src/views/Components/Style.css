@@ -1,29 +1,104 @@
 .divSearchMenu {
-    text-align: right;
-    vertical-align: middle;
-    box-shadow: inset 0px 0px 1px 0px grey, 5px 5px 10px -4px #CCCCCC;
-    padding: 5px;
-    margin-bottom: 9px;
-    padding-right: 18px;
-    height: 30px;
+  text-align: right;
+  vertical-align: middle;
+  box-shadow:
+    inset 0px 0px 1px 0px grey,
+    5px 5px 10px -4px #cccccc;
+  padding: 5px;
+  margin-bottom: 9px;
+  padding-right: 18px;
+  height: 30px;
 }
 
-.MuiAccordion-root{
-    padding: 0;
-    min-height: 30;
+.MuiAccordion-root {
+  padding: 0;
+  min-height: 30;
 }
 
-.MuiAccordionSummary-content{
-    margin: 0px;
-    min-height: 30;
+.MuiAccordionSummary-content {
+  margin: 0px;
+  min-height: 30;
 }
 
-.MuiButtonBase-root .MuiAccordionSummary-root{
-    padding: 0;
-    margin: 0;
-    height: 1em;
-} 
+.MuiButtonBase-root .MuiAccordionSummary-root {
+  padding: 0;
+  margin: 0;
+  height: 1em;
+}
 
-.css-g1h2ui-MuiButtonBase-root-MuiAccordionSummary-root{
-    min-height: 20;
+.css-g1h2ui-MuiButtonBase-root-MuiAccordionSummary-root {
+  min-height: 20;
+}
+
+/* styles.css */
+.customCheckbox {
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  cursor: pointer;
+  vertical-align: bottom;
+  background: white;
+  border: 1px solid #c4c4c4;
+  box-sizing: border-box;
+  position: relative;
+  outline: none;
+  margin-right: 2px;
+}
+
+.customCheckbox:focus {
+  border: 1px solid #e99326;
+  border-radius: 3px;
+}
+
+.customCheckbox:checked::after {
+  content: url(../../assets/checkmark.png);
+  display: block;
+  position: absolute;
+  top: -6px;
+  left: -5px;
+}
+
+.ckhAllMdlue {
+  font-size: 13px;
+  color: #000;
+  margin-left: 5px;
+  font-family: Arial, Tahoma, Verdana, sans-serif;
+}
+
+.divSearchMenu {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  box-shadow:
+    inset 0px 0px 1px 0px grey,
+    5px 5px 10px -4px #cccccc;
+  padding: 5px 8px 5px 5px;
+  margin-bottom: 9px;
+}
+
+.searchInputWrapper {
+  position: relative;
+  margin-left: 3px;
+}
+
+.inputSearchMenu {
+  height: 16px;
+  width: 165px;
+  padding: 5px 30px 5px 5px; /* right padding for icon */
+  color: #888;
+  border: 1px solid #898a8b;
+  border-radius: 3px;
+  font-size: 12px;
+  outline: none;
+  /* box-sizing: border-box; */
+}
+
+.imgDataLoader {
+  position: absolute;
+  right: 8px;
+  top: 40%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 15px;
+  pointer-events: none;
 }

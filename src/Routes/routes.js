@@ -71,6 +71,20 @@ const CollectionReportTmchDetls = React.lazy(() => import("../views/Pages/Mis/Co
 const CollectionReportsCollectionOnly = React.lazy(() => import("../views/Pages/Mis/CollectionReports/tmch/collectionReports-collectionOnly/CollectionReportsCollectionOnly"));
 const CollectionReportCollectionOnlyDetl = React.lazy(() => import("../views/Pages/Mis/CollectionReports/tmch/collectionReports-collectionOnly/CollectionReportsCollOnlyDetl"));
 
+/***************************************NEW MIS PATH************************************************* */
+// QMT
+const QmtIncomeReportDateSelection = React.lazy(() => import("../views/Pages/Mis/TopOfficials/hospitalincomereport/qmt/IncomeReportsQmt"));
+const QmtIncomeReports = React.lazy(() => import("../views/Pages/Mis/TopOfficials/hospitalincomereport/qmt/IncomeReport"));
+// TMCH
+const TmchIncomeReportDateSelection = React.lazy(() => import("../views/Pages/Mis/TopOfficials/hospitalincomereport/tmch/IncomeReportsTmch"));
+const TmchIncomeReports = React.lazy(() => import("../views/Pages/Mis/TopOfficials/hospitalincomereport/tmch/IncomeReports"));
+// TSSH
+const TsshIncomeReportDateSelection = React.lazy(() => import("../views/Pages/Mis/TopOfficials/hospitalincomereport/tssh/IncomeReportsTssh"));
+const TsshIncomeReports = React.lazy(() => import("../views/Pages/Mis/TopOfficials/hospitalincomereport/tssh/IncomeReports"));
+// Grouped
+const GroupedIncomeReportDateSelection = React.lazy(() => import("../views/Pages/Mis/TopOfficials/hospitalincomereport/grouped/IncmoeReportsGrouped"));
+const GroupedIncomeReports = React.lazy(() => import("../views/Pages/Mis/TopOfficials/hospitalincomereport/grouped/IncomeReports"));
+
 const routes = [
   {path: "", element: NameDis},
   {path: "/Admin", element: Admin},
@@ -137,5 +151,18 @@ const routes = [
   {path: "/CollectionReportTmchDetls", name: "Collection Report TMCH Details", element: CollectionReportTmchDetls},
   {path: "/CollectionReportCollectionOnly", name: "Collection Report TSSH", element: CollectionReportsCollectionOnly},
   {path: "/CollectionReportCollectionOnlyDetl", name: "CollectionReportCollectionOnlyDetl", element: CollectionReportCollectionOnlyDetl},
+
+  /************NEw Income Reports */
+  {path: "/QmtIncomeReportsDateSelection", name: "Hospital Income Statement", element: QmtIncomeReportDateSelection},
+  {path: "/QmtIncomeReportsDateWise", name: "Hospital Income Statement", element: QmtIncomeReports},
+
+  {path: "/TmcIncomeReportsDateSelection", name: "Hospital Income Statement", element: TmchIncomeReportDateSelection},
+  {path: "/TmcIncomeReportsDateWise", name: "Hospital Income Statement", element: TmchIncomeReports},
+
+  {path: "/tsshIncomeReportsDateSelection", name: "Hospital Income Statement", element: TsshIncomeReportDateSelection},
+  {path: "/tsshIncomeReportsDateWise", name: "Hospital Income Statement", element: TsshIncomeReports},
+
+  {path: "/groupedIncomeReportsDateSelection", name: "Hospital Income Statement", element: GroupedIncomeReportDateSelection},
+  {path: "/groupedIncomeReportsDateWise", name: "Hospital Income Statement", element: GroupedIncomeReports},
 ];
 export default routes;

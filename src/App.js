@@ -17,7 +17,12 @@ const queryclinet = new QueryClient({
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes
       cacheTime: 10 * 60 * 1000, // 10 minutes
-      retry: 2,
+      gcTime: 10 * 60 * 1000, // 10 minutes
+      retry: (failureCount, error) => {
+        const status = error?.response?.status;
+        if (status === 404) return false;
+        return failureCount < 3;
+      },
       refetchOnWindowFocus: false,
     },
   },

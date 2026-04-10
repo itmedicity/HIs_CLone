@@ -2,36 +2,27 @@
 import React, {Fragment, memo, useCallback, useMemo, useState, useEffect} from "react";
 import {Box, Icon, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
+import {set} from "date-fns";
 import {useLocation} from "react-router-dom";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import {
-  getAdvanceCollection,
-  getAdvanceRefund,
-  getAdvanceSettled,
-  getcollectionagainSaleTotal,
-  getcollectionagainSaleDeduction,
-  getcomplimentory,
-  getcreditInsuranceBillCollection,
-  getIpconsolidatedDiscount,
-  getipPreviousDayDiscount,
-  getunsettledAmount,
-  getipPreviousDayCollection,
-  getipcreditInsuranceBill,
-  getipcreditInsuranceBillPending,
-} from "../../../../Redux-Slice/incomeCollectionSlice/collectionSlice";
-import {getProincome1, getProincome2, getProincome3, getProincome4, getPatietTypeDiscount, theaterIncome} from "../../../../Redux-Slice/incomeCollectionSlice/incomeProcedureSlice";
-import {getPhaSalePart1, getPhaSalePart2, getPhaSalePart3, getPhaReturnPart1, getPhaReturnPart2, getPhaReturnPart3} from "../../../../Redux-Slice/incomeCollectionSlice/incomeSlice";
 import ReportHeader from "../../../Components/ReportHeader";
-import {getMisGroup} from "../../../../Redux-Slice/incomeCollectionSlice/misGroupMastSlice";
-import {getMisGroupMaster} from "../../../../Redux-Slice/incomeCollectionSlice/misGroupMastSlice";
 import LightBlueRow from "./LightBlueRow";
 import WhiteRow from "./WhiteRow";
 import WhiteRowTotal from "./WhiteRowTotal";
-import {getGrandTotal, getIncomeReportList, getMisGroupMasterList, getPhamracyIncome} from "../func/misFunc";
 import ReportModal from "../func/ReportModal";
 import {axiosinstance} from "../../../../controllers/AxiosConfig";
 import PharmacyReoprtModal from "../func/PharmacyReoprtModal";
 import CreditInsuranceBillModal from "../func/CreditInsuranceBillModal";
+import UnsettledAmntModal from "../func/UnsettledAmntModal";
+import AdvanceCollcetionDetl from "../func/AdvanceCollcetionDetl";
+import CreditInsurBillCollModal from "../func/CreditInsurBillCollModal";
+import MenuButton from "../Components/MenuButton";
+import ReportBottomMenu from "../Components/ReportBottomMenu";
+// REDUX SLICE VERSION 5.0.0.
+import {getMisReportQMT, resetMisResetQmt} from "../../../../Redux-Slice/incomeCollectionSlice/misReportQMT";
+
+// FUNCTIONS
+import {getGrandTotal, getIncomeReportList, getMisGroupMasterList, getPhamracyIncome} from "../func/misFunc";
 import {
   advanceCollectionDetail,
   credInsuranceCollectionModalData1,
@@ -44,18 +35,27 @@ import {
   creditInsuranceBillDetlPart6,
   getUnsettledBillDetl,
 } from "./QmtFunc";
-import UnsettledAmntModal from "../func/UnsettledAmntModal";
-import AdvanceCollcetionDetl from "../func/AdvanceCollcetionDetl";
-import CreditInsurBillCollModal from "../func/CreditInsurBillCollModal";
+
 import "./Style.css";
-import {set} from "date-fns";
-import MenuButton from "../Components/MenuButton";
-import ReportBottomMenu from "../Components/ReportBottomMenu";
 
 const IncomeReports = () => {
   // Calling hooks
   const dispatch = useDispatch();
   const state = useLocation().state;
+  const misState = [
+    {advanceCollection: 0, tax: 0, status: false},
+    {advanceRefund: 0, tax: 0, status: false},
+    {advanceSettled: 0, tax: 0, status: false},
+    {collectionAgainstSalesDeduction: 0, tax: 0, status: false},
+    {collectionAgainstSalesTotal: 0, status: false},
+    {complimentory: 0, tax: 0, status: false},
+    {creditInsuranceBillCollection: 0, tax: 0, status: false},
+    {ipConsolidatedDiscount: 0, status: false},
+    {ipPreviousDayDiscount: 0, status: false},
+    {unsettledAmount: 0, tax: 0, status: false},
+    {ippreviousDayCollection: 0, tax: 0, status: false},
+    {creditInsuranceBill: 0, tax: 0, status: false},
+  ];
   // State variables
   const [misGroupList, setMisGroupList] = useState([]);
   const [misReortList, setMisReportList] = useState([]);
@@ -69,20 +69,7 @@ const IncomeReports = () => {
   const [pharma3, setPharma3] = useState([]);
   const [pharma4, setPharma4] = useState([]);
   const [pharmacyDetl, setPharmacyDetl] = useState({pharma1: [], pharma2: [], pharma3: [], pharma4: []});
-  const [misCollection, setMisCollrction] = useState([
-    {advanceCollection: 0, tax: 0, status: false},
-    {advanceRefund: 0, tax: 0, status: false},
-    {advanceSettled: 0, tax: 0, status: false},
-    {collectionAgainstSalesDeduction: 0, tax: 0, status: false},
-    {collectionAgainstSalesTotal: 0, status: false},
-    {complimentory: 0, tax: 0, status: false},
-    {creditInsuranceBillCollection: 0, tax: 0, status: false},
-    {ipConsolidatedDiscount: 0, status: false},
-    {ipPreviousDayDiscount: 0, status: false},
-    {unsettledAmount: 0, tax: 0, status: false},
-    {ippreviousDayCollection: 0, tax: 0, status: false},
-    {creditInsuranceBill: 0, tax: 0, status: false},
-  ]);
+  const [misCollection, setMisCollrction] = useState(misState);
   const [layout, setLayout] = useState(undefined);
   const [layout1, setLayout1] = useState(undefined);
   const [layout2, setLayout2] = useState(undefined);
@@ -109,11 +96,13 @@ const IncomeReports = () => {
     return isNaN(num) ? 0 : num;
   };
 
-  // Redux Selector
-  const collection = useSelector((state) => state.collection);
-  const pharmacyIncome = useSelector((state) => state.pharmacyIncome);
-  const procedureIncome = useSelector((state) => state.procedureIncome);
-  const misGroup = useSelector((state) => state.misGroup);
+  // useSelector
+  const collection = useSelector((state) => state.misReportQmt.misReportQmtState.data);
+  const pharmacyIncome = useSelector((state) => state.misReportQmt.misReportQmtState.data.pharamcyIncome);
+  const procedureIncome = useSelector((state) => state.misReportQmt.misReportQmtState.data);
+  const misGroup = useSelector((state) => state.misReportQmt.misReportQmtState.data);
+
+  const misReportQmt = useSelector((state) => state.misReportQmt);
 
   //Memoride the Values
   const discntTotal = general + otherType;
@@ -151,6 +140,7 @@ const IncomeReports = () => {
     const groupGross = ensureNumber(grand?.groupGross ?? 0) + GrosPharma;
 
     const groupCollection = unsettledAmnt + creditInsurBill + advSettled + collAgainSale;
+    // console.log(unsettledAmnt, creditInsurBill, advSettled, collAgainSale);
     const roundOff = groupCollection - groupNet;
     const groupNetddctRoundoff = groupNet + roundOff;
     return {ipConatedDiscount, advSettled, creditInsurBill, unsettledAmnt, groupCollection, groupTax, groupNet, groupDis, groupGross, roundOff, groupNetddctRoundoff};
@@ -163,7 +153,7 @@ const IncomeReports = () => {
 
   const totalCounterCollection = useMemo(
     () => collAgainSale + misCollection_advanceCollection + misCollection_creditInsuranceBillCollection + misCollection_ippreviousDayCollection - misCollection_advanceRefund,
-    [misCollection_advanceCollection, misCollection_creditInsuranceBillCollection, misCollection_ippreviousDayCollection, misCollection_advanceRefund, collAgainSale]
+    [misCollection_advanceCollection, misCollection_creditInsuranceBillCollection, misCollection_ippreviousDayCollection, misCollection_advanceRefund, collAgainSale],
   );
 
   // Side Effect
@@ -176,158 +166,118 @@ const IncomeReports = () => {
     });
   }, [pharma1, pharma2, pharma3, pharma4]);
 
-  // Side Effect ( Dispatch Action )
   useEffect(() => {
-    if (!state) return;
+    if (!state?.from || !state?.to) return;
 
-    dispatch(getMisGroup());
-    dispatch(getMisGroupMaster());
-
-    [
-      getAdvanceCollection,
-      getAdvanceRefund,
-      getAdvanceSettled,
-      getcollectionagainSaleTotal,
-      getcollectionagainSaleDeduction,
-      getcomplimentory,
-      getcreditInsuranceBillCollection,
-      getIpconsolidatedDiscount,
-      getipPreviousDayDiscount,
-      getunsettledAmount,
-      getipPreviousDayCollection,
-      getipcreditInsuranceBill,
-      getipcreditInsuranceBillPending,
-      getProincome1,
-      getProincome2,
-      getProincome3,
-      getProincome4,
-      getPatietTypeDiscount,
-      getPhaSalePart1,
-      getPhaSalePart2,
-      getPhaSalePart3,
-      getPhaReturnPart1,
-      getPhaReturnPart2,
-      getPhaReturnPart3,
-      theaterIncome,
-    ].forEach((thunk) => dispatch(thunk(state)));
-  }, [state]);
+    dispatch(getMisReportQMT(state));
+  }, [state?.from, state?.to]);
 
   useEffect(() => {
-    if (Object.keys(collection).length > 0) {
+    return () => {
+      dispatch(resetMisResetQmt());
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!collection?.collection) return;
+
+    if (collection && Object.keys(collection).length > 0) {
+      const collections = collection.collection;
+
       const misColl = [
         {
-          advanceCollection: collection?.advanceCollection?.status === 1 ? collection?.advanceCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          tax: collection?.advanceCollection?.status === 1 ? collection?.advanceCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-          status: collection?.advanceCollection?.status === 1 || collection?.advanceCollection?.status === 2 ? true : false,
+          advanceCollection: collections?.advanceCollection?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) ?? 0,
+          tax: collections?.advanceCollection?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) ?? 0,
         },
         {
-          advanceRefund: collection?.advanceRefund?.status === 1 ? collection?.advanceRefund?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          tax: collection?.advanceRefund?.status === 1 ? collection?.advanceRefund?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-          status: collection?.advanceRefund?.status === 1 || collection?.advanceRefund?.status === 2 ? true : false,
+          advanceRefund: collections?.advanceRefund?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) ?? 0,
+          tax: collections?.advanceRefund?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) ?? 0,
         },
         {
-          advanceSettled: collection?.advanceSettled?.status === 1 ? collection?.advanceSettled?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          tax: collection?.advanceSettled?.status === 1 ? collection?.advanceSettled?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-          status: collection?.advanceSettled?.status === 1 || collection?.advanceSettled?.status === 2 ? true : false,
+          advanceSettled: collections?.advanceSettled?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) ?? 0,
+          tax: collections?.advanceSettled?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) ?? 0,
         },
         {
-          collectionAgainstSalesDeduction:
-            collection?.collectionAgainstSalesDeduction?.status === 1 ? collection?.collectionAgainstSalesDeduction?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          tax:
-            collection?.collectionAgainstSalesDeduction?.status === 1 ? collection?.collectionAgainstSalesDeduction?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-          status: collection?.collectionAgainstSalesDeduction?.status === 1 || collection?.collectionAgainstSalesDeduction?.status === 2 ? true : false,
+          collectionAgainstSalesDeduction: collections?.collectionAgainstSalesDeduction?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) ?? 0,
+          tax: collections?.collectionAgainstSalesDeduction?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) ?? 0,
         },
         {
-          collectionAgainstSalesTotal:
-            collection?.collectionAgainstSalesTotal?.status === 1 ? collection?.collectionAgainstSalesTotal?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          status: collection?.collectionAgainstSalesTotal?.status === 1 || collection?.collectionAgainstSalesTotal?.status === 2 ? true : false,
+          collectionAgainstSalesTotal: collections?.collectionAgainstSalesTotal?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) ?? 0,
         },
         {
-          complimentory: collection?.complimentory?.status === 1 ? collection?.complimentory?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          tax: collection?.complimentory?.status === 1 ? collection?.complimentory?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-          status: collection?.complimentory?.status === 1 || collection?.complimentory?.status === 2 ? true : false,
+          complimentory: collections?.complimentory?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) ?? 0,
+          tax: collections?.complimentory?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) ?? 0,
         },
         {
-          creditInsuranceBillCollection:
-            collection?.creditInsuranceBillCollection?.status === 1 ? collection?.creditInsuranceBillCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          tax: collection?.creditInsuranceBillCollection?.status === 1 ? collection?.creditInsuranceBillCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-          status: collection?.creditInsuranceBillCollection?.status === 1 || collection?.creditInsuranceBillCollection?.status === 2 ? true : false,
+          creditInsuranceBillCollection: collections?.creditInsuranceBillCollection?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) ?? 0,
+          tax: collections?.creditInsuranceBillCollection?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) ?? 0,
         },
         {
-          ipConsolidatedDiscount:
-            collection?.ipConsolidatedDiscount?.status === 1 ? collection?.ipConsolidatedDiscount?.data.reduce((accumulator, currentValue) => accumulator + currentValue.DISCOUNT, 0) : 0,
-          status: collection?.ipConsolidatedDiscount?.status === 1 || collection?.ipConsolidatedDiscount?.status === 2 ? true : false,
+          ipConsolidatedDiscount: collections?.ipConsolidatedDiscount?.reduce((accumulator, currentValue) => accumulator + currentValue.DISCOUNT, 0) ?? 0,
         },
         {
-          ipPreviousDayDiscount:
-            collection?.ipPreviousDayDiscount?.status === 1 ? collection?.ipPreviousDayDiscount?.data.reduce((accumulator, currentValue) => accumulator + currentValue.DISCOUNT, 0) : 0,
-          status: collection?.ipPreviousDayDiscount?.status === 1 || collection?.ipPreviousDayDiscount?.status === 2 ? true : false,
+          ipPreviousDayDiscount: collections?.ipPreviousDayDiscount?.reduce((accumulator, currentValue) => accumulator + currentValue.DISCOUNT, 0) ?? 0,
         },
         {
-          unsettledAmount: collection?.unsettledAmount?.status === 1 ? collection?.unsettledAmount?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          tax: collection?.unsettledAmount?.status === 1 ? collection?.unsettledAmount?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-          status: collection?.unsettledAmount?.status === 1 || collection?.unsettledAmount?.status === 2 ? true : false,
+          unsettledAmount: collections?.unsettledAmount?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) ?? 0,
+          tax: collections?.unsettledAmount?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) ?? 0,
         },
         {
-          ippreviousDayCollection:
-            collection?.ippreviousDayCollection?.status === 1 ? collection?.ippreviousDayCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) : 0,
-          tax: collection?.ippreviousDayCollection?.status === 1 ? collection?.ippreviousDayCollection?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) : 0,
-          status: collection?.ippreviousDayCollection?.status === 1 || collection?.ippreviousDayCollection?.status === 2 ? true : false,
+          ippreviousDayCollection: collections?.ipPreviousDayCollection?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) ?? 0,
+          tax: collections?.ipPreviousDayCollection?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) ?? 0,
         },
         {
           creditInsuranceBill:
-            collection?.creditInsuranceBill?.status === 1
-              ? collection?.creditInsuranceBill?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) +
-                collection?.creditInsuranceBillPending?.data.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0)
-              : 0,
+            collections?.creditInsuranceBill?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0) +
+            collections?.creditInsuranceBillRefund?.reduce((accumulator, currentValue) => accumulator + currentValue.AMT, 0),
           tax:
-            collection?.creditInsuranceBill?.status === 1
-              ? collection?.creditInsuranceBill?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) +
-                collection?.creditInsuranceBillPending?.data.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0)
-              : 0,
-          status: collection?.creditInsuranceBill?.status === 1 || collection?.creditInsuranceBill?.status === 2 ? true : false,
+            collections?.creditInsuranceBill?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0) +
+            collections?.creditInsuranceBillRefund?.reduce((accumulator, currentValue) => accumulator + currentValue.TAX, 0),
         },
       ];
-
-      if (!misColl.some((val) => val.status === false)) {
-        setMisCollrction(misColl);
-      }
+      // console.log(collection);
+      // console.log(misColl);
+      setMisCollrction(misColl);
     }
   }, [collection]);
 
   useEffect(() => {
-    const {misGroupState, misGroupMaster} = misGroup;
-    getMisGroupMasterList(misGroupState, misGroupMaster).then((misGrpList) => {
-      setMisGroupList(misGrpList);
-    });
+    if (!misGroup?.mis) return;
+    const misList = misGroup.mis;
+
+    const list = getMisGroupMasterList(misList);
+
+    setMisGroupList(list);
   }, [misGroup]);
 
   useEffect(() => {
-    if (proIncome?.patientTypeDiscount?.status === 1) {
-      setGeneral(proIncome.patientTypeDiscount.data[0]?.DISCOUNT || 0);
-      setOtherType(proIncome.patientTypeDiscount.data[1]?.DISCOUNT || 0);
+    const {patienttypeDisc, income} = proIncome;
+    if (!income) return;
+    const patientDiscount = patienttypeDisc?.patientTypeDiscount;
+    if (patientDiscount.length > 0) {
+      setGeneral(patientDiscount[0]?.DISCOUNT || 0);
+      setOtherType(patientDiscount[1]?.DISCOUNT || 0);
     }
-    const incomeArrayData = Object.values(proIncome)
-      .filter((val) => val.income === true)
-      .map((val) => (val.status === 1 ? val.data : null))
-      .flat();
-    getIncomeReportList(incomeArrayData, misGroupList).then(setMisReportList);
+    const incomeArrayData = Object.values(income).flat();
+    const list = getIncomeReportList(incomeArrayData, misGroupList);
+    setMisReportList(list);
   }, [proIncome, misGroupList]);
 
   useEffect(() => {
-    getPhamracyIncome(pharmacyIncome).then((value) => setPharamcyIc((prev) => ({...prev, ...value}))); //
+    if (!pharmacyIncome) return;
+    const value = getPhamracyIncome(pharmacyIncome);
+    setPharamcyIc((prev) => ({...prev, ...value}));
   }, [pharmacyIncome]);
 
   useEffect(() => {
-    getGrandTotal(misReortList).then((ele) => {
-      const grantTotal = {
-        groupNet: ele?.reduce((accumulator, currentValue) => accumulator + currentValue.groupNet, 0) || 0,
-        groupDis: ele?.reduce((accumulator, currentValue) => accumulator + currentValue.groupDiscnt, 0) || 0,
-        groupTax: ele?.reduce((accumulator, currentValue) => accumulator + currentValue.groupTax, 0) || 0,
-        groupGross: ele?.reduce((accumulator, currentValue) => accumulator + currentValue.groupGross, 0) || 0,
-      };
-      setGrand(grantTotal);
-    });
+    const ele = getGrandTotal(misReortList);
+    const grantTotal = {
+      groupNet: ele?.reduce((accumulator, currentValue) => accumulator + currentValue.groupNet, 0) || 0,
+      groupDis: ele?.reduce((accumulator, currentValue) => accumulator + currentValue.groupDiscnt, 0) || 0,
+      groupTax: ele?.reduce((accumulator, currentValue) => accumulator + currentValue.groupTax, 0) || 0,
+      groupGross: ele?.reduce((accumulator, currentValue) => accumulator + currentValue.groupGross, 0) || 0,
+    };
+    setGrand(grantTotal);
   }, [misReortList]);
 
   /*
@@ -381,7 +331,7 @@ const IncomeReports = () => {
         setModalData(defaultState);
       }
     },
-    [state]
+    [state],
   );
 
   const getPharmacyDetl = useCallback(async () => {
@@ -477,7 +427,7 @@ const IncomeReports = () => {
     setCredInsuColl0(res1 || []);
     setCredInsuColl1(res2 || []);
   }, [state]);
-
+  // console.log("income report - qmt");
   return (
     <Box flex={1} sx={{backgroundColor: "lightgray", p: "1%"}}>
       <MenuButton navigateTo={"hospital_income"} />
