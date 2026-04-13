@@ -17,6 +17,7 @@ import "../../utils/Style.css";
 import {useProcedureIncome} from "../hooks/useProcedureIncome";
 import {useIncomeCalculations} from "../hooks/useIncomeCalculations";
 import {exportStyledExcel} from "../../utils/exportIncomeExcel";
+import CreditInsuranceBillModal from "../../components/CreditInsuranceBillModal";
 
 const IncomeReport = () => {
   let serialNo = 1;
@@ -216,6 +217,7 @@ const IncomeReport = () => {
           })
         }
       />
+      <CreditInsuranceBillModal />
       <Paper square sx={{borderColor: "black", border: 1}}>
         <ReportHeader name="Hospital Income" data={state} hosName="QUILON MEDICAL TRUST" disable={false} />
         <Box
