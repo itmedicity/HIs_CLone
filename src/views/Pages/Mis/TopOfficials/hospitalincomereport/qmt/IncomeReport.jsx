@@ -34,6 +34,12 @@ const IncomeReport = () => {
   // ✅ API STATE
   const [apiData, setApiData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [detailModal, setDetailModal] = useState({
+    open: false,
+    loading: false,
+    title: "",
+    rows: [],
+  });
 
   useEffect(() => {
     setIsLoading(true);
@@ -61,18 +67,38 @@ const IncomeReport = () => {
   const PrcedureIncome = useProcedureIncome(apiData);
   const {pharmacyIncome, IpConsolidatedDiscountSection, CollectionAgainstSalesSection, CreditInsuranceBillSection, CounterCollection, Patient_Type} = useIncomeCalculations(apiData, setIsLoading, 0);
 
-  // Ensure the value is valid and a n umber
+  // DETAIL MODAL FUNCTION
 
-  // Income State
-  // const incomeData = hospitalIncomeData[0];
-  // State Management
-  // const PrcedureIncome = incomeData.ProcudureIncome || [];
-  // const pharmacyIncome = incomeData.PharmacySales[0].groupData || [];
-  // const IpConsolidatedDiscountSection = incomeData.IpConsolidatedDiscountSection || [];
-  // const CollectionAgainstSalesSection = incomeData.CollectionAgainstSalesSection || [];
-  // const CreditInsuranceBillSection = incomeData.CreditInsuranceBillSection || [];
-  // const CounterCollection = incomeData.CounterCollection[0].collection || [];
-  // const Patient_Type = incomeData.Patient_Type[0].groupData || [];
+  const openCollectionDetail = async (item) => {
+    try {
+      setDetailModal({
+        open: true,
+        loading: true,
+        title: item.subGroupName,
+        rows: [],
+      });
+
+      const response = await axiosinstance.post("/getQmt/getCollectionDetailReport", {
+        fromDate: state.fromDate,
+        toDate: state.toDate,
+        subGroupName: item.subGroupName,
+      });
+
+      setDetailModal((prev) => ({
+        ...prev,
+        loading: false,
+        rows: response.data?.data || [],
+      }));
+    } catch (error) {
+      console.error(error);
+
+      setDetailModal((prev) => ({
+        ...prev,
+        loading: false,
+        rows: [],
+      }));
+    }
+  };
 
   // Procedure Income Data
   const ProcedureIncomeDataJsx = PrcedureIncome?.map((item, index) => (
