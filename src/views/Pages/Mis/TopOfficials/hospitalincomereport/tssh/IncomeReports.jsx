@@ -43,10 +43,26 @@ const IncomeReports = () => {
         if (data.success === 0 || data.success === null || !data) {
           alert("No Data Found");
         }
+        /****For Test code start  */
+        const dataa = response.data.result; // replace with your file path
+        const batchSize = 500;
+        let batchCount = 0;
+        for (let i = 0; i < dataa.length; i += batchSize) {
+          const chunk = dataa.slice(i, i + batchSize);
+
+          let sql = "INSERT ALL\n";
+          chunk.forEach((row) => {
+            sql += `  INTO MEDIWARE.GTT_EXCLUDE_IP (IP_NO, STATUS) VALUES ('${row.ip}', ${row.status})\n`;
+          });
+          sql += "SELECT 1 FROM DUAL;\n\n";
+          console.log(sql);
+        }
+        /****For Test code start  */
+
         if (data.success === 1) {
           setApiData(response.data);
         }
-        // console.log(response.data);
+        console.log(response.data);
       } catch (error) {
         console.log(error);
         navigate("/Menu/QmtIncomeReportsDateSelection");
@@ -59,17 +75,6 @@ const IncomeReports = () => {
   // ✅ HOOK DATA
   const PrcedureIncome = useProcedureIncome(apiData);
   const {pharmacyIncome, IpConsolidatedDiscountSection, CollectionAgainstSalesSection, CreditInsuranceBillSection, CounterCollection, Patient_Type} = useIncomeCalculations(apiData, setIsLoading, 0);
-
-  // Income State
-  // const incomeData = hospitalIncomeData[0];
-  // State Management
-  // const PrcedureIncome = incomeData.ProcudureIncome || [];
-  // const pharmacyIncome = incomeData.PharmacySales[0].groupData || [];
-  // const IpConsolidatedDiscountSection = incomeData.IpConsolidatedDiscountSection || [];
-  // const CollectionAgainstSalesSection = incomeData.CollectionAgainstSalesSection || [];
-  // const CreditInsuranceBillSection = incomeData.CreditInsuranceBillSection || [];
-  // const CounterCollection = incomeData.CounterCollection[0].collection || [];
-  // const Patient_Type = incomeData.Patient_Type[0].groupData || [];
 
   // Procedure Income Data
   const ProcedureIncomeDataJsx = PrcedureIncome?.map((item, index) => (
@@ -136,8 +141,23 @@ const IncomeReports = () => {
       </TableCell>
       <TableCell
         align="right"
-        sx={{width: "20%", fontSize: "12px", cursor: "pointer", textDecoration: item.style === "U" && "underline", color: item.style === "U" && "#0000EE", fontWeight: item.style === "B" && "bold"}}
-        onClick={() => {}}
+        sx={{
+          width: "20%",
+          fontSize: "12px",
+          cursor: "pointer",
+          textDecoration: item.style === "U" && "underline",
+          color: item.style === "U" && "#0000EE",
+          fontWeight: item.style === "B" && "bold",
+        }}
+        onClick={() => {
+          if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill") {
+            window.open(
+              `/Mis/TsshCreditInsuranceBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+              "_blank",
+              "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+            );
+          }
+        }}
       >
         {item.collection === null ? null : formatToDecimal(item.collection)}
       </TableCell>
@@ -161,10 +181,36 @@ const IncomeReports = () => {
       <TableCell align="right" sx={{width: "2%", textAlign: "center", fontSize: "12px"}}>
         {getSerial()}
       </TableCell>
-      <TableCell align="left" sx={{width: "25%", fontSize: "12px", color: item.subGroupName.trim() == "Complimentary" && "red", fontWeight: item.subGroupName.trim() === "Complimentary" && "bold"}}>
+      <TableCell
+        align="left"
+        sx={{
+          width: "25%",
+          fontSize: "12px",
+          color: item.subGroupName.trim() === "Complimentary" ? "red" : "inherit",
+          fontWeight: item.subGroupName.trim() === "Complimentary" ? "bold" : "normal",
+        }}
+      >
         {item.subGroupName}
       </TableCell>
-      <TableCell align="right" sx={{width: "20%", fontSize: "12px", textDecoration: item.style === "U" && "underline", color: item.style === "U" && "#0000EE"}}>
+      <TableCell
+        align="right"
+        sx={{
+          width: "20%",
+          fontSize: "12px",
+          textDecoration: item.style === "U" ? "underline" : "none",
+          color: item.style === "U" ? "#0000EE" : "inherit",
+          cursor: item.style === "U" ? "pointer" : "inherit",
+        }}
+        onClick={() => {
+          if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill Collection(D)") {
+            window.open(
+              `/Mis/TsshCreditInsuranseBillCollectionModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+              "_blank",
+              "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+            );
+          }
+        }}
+      >
         {formatToDecimal(item.collection)}
       </TableCell>
       <TableCell align="right" sx={{width: "20%", fontSize: "12px"}}></TableCell>

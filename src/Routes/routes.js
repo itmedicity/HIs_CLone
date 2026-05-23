@@ -85,6 +85,9 @@ const TsshIncomeReports = React.lazy(() => import("../views/Pages/Mis/TopOfficia
 const GroupedIncomeReportDateSelection = React.lazy(() => import("../views/Pages/Mis/TopOfficials/hospitalincomereport/grouped/IncmoeReportsGrouped"));
 const GroupedIncomeReports = React.lazy(() => import("../views/Pages/Mis/TopOfficials/hospitalincomereport/grouped/IncomeReports"));
 
+// Modal detailed report pages
+const CreditInsuranseBillModal = React.lazy(() => import("../views/Pages/Mis/TopOfficials/Modals/tmch/CreditInsuranseBillDetl"));
+
 const routes = [
   {path: "", element: NameDis},
   {path: "/Admin", element: Admin},
@@ -164,5 +167,9 @@ const routes = [
 
   {path: "/groupedIncomeReportsDateSelection", name: "Hospital Income Statement", element: GroupedIncomeReportDateSelection},
   {path: "/groupedIncomeReportsDateWise", name: "Hospital Income Statement", element: GroupedIncomeReports},
+
+  /****Modal detailed reports pages  */
+
+  {path: "/CreditInsuranseBillModal", name: "Hospital Income Statement", element: CreditInsuranseBillModal},
 ];
 export default routes;
