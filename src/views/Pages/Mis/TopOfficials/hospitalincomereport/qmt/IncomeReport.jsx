@@ -25,6 +25,7 @@ const IncomeReport = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
+  console.log(location);
 
   const state = location.state || {
     fromDate: null,
@@ -160,13 +161,36 @@ const IncomeReport = () => {
       <TableCell align="right" sx={{width: "2%", textAlign: "center", fontSize: "12px"}}>
         {item.subGroupName === "Grand Total" ? null : getSerial()}
       </TableCell>
-      <TableCell align="left" sx={{width: "25%", fontSize: "12px", fontWeight: (item.style === "B" || item.subGroupName === "Round Off") && "bold", color: item.subGroupName === "Round Off" && "red"}}>
+      <TableCell
+        align="left"
+        sx={{
+          width: "25%",
+          fontSize: "12px",
+          fontWeight: (item.style === "B" || item.subGroupName === "Round Off") && "bold",
+          color: item.subGroupName === "Round Off" && "red",
+        }}
+      >
         {item.subGroupName}
       </TableCell>
       <TableCell
         align="right"
-        sx={{width: "20%", fontSize: "12px", cursor: "pointer", textDecoration: item.style === "U" && "underline", color: item.style === "U" && "#0000EE", fontWeight: item.style === "B" && "bold"}}
-        onClick={() => {}}
+        sx={{
+          width: "20%",
+          fontSize: "12px",
+          cursor: "pointer",
+          textDecoration: item.style === "U" && "underline",
+          color: item.style === "U" && "#0000EE",
+          fontWeight: item.style === "B" && "bold",
+        }}
+        onClick={() => {
+          if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill") {
+            window.open(
+              `/Mis/QmtCreditInsuranceBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+              "_blank",
+              "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+            );
+          }
+        }}
       >
         {item.collection === null ? null : formatToDecimal(item.collection)}
       </TableCell>
@@ -190,10 +214,36 @@ const IncomeReport = () => {
       <TableCell align="right" sx={{width: "2%", textAlign: "center", fontSize: "12px"}}>
         {getSerial()}
       </TableCell>
-      <TableCell align="left" sx={{width: "25%", fontSize: "12px", color: item.subGroupName.trim() == "Complimentary" && "red", fontWeight: item.subGroupName.trim() === "Complimentary" && "bold"}}>
+      <TableCell
+        align="left"
+        sx={{
+          width: "25%",
+          fontSize: "12px",
+          color: item.subGroupName.trim() === "Complimentary" ? "red" : "inherit",
+          fontWeight: item.subGroupName.trim() === "Complimentary" ? "bold" : "normal",
+        }}
+      >
         {item.subGroupName}
       </TableCell>
-      <TableCell align="right" sx={{width: "20%", fontSize: "12px", textDecoration: item.style === "U" && "underline", color: item.style === "U" && "#0000EE"}}>
+      <TableCell
+        align="right"
+        sx={{
+          width: "20%",
+          fontSize: "12px",
+          textDecoration: item.style === "U" ? "underline" : "none",
+          color: item.style === "U" ? "#0000EE" : "inherit",
+          cursor: item.style === "U" ? "pointer" : "inherit",
+        }}
+        onClick={() => {
+          if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill Collection(D)") {
+            window.open(
+              `/Mis/QmtCreditInsuranseBillCollectionModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+              "_blank",
+              "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+            );
+          }
+        }}
+      >
         {formatToDecimal(item.collection)}
       </TableCell>
       <TableCell align="right" sx={{width: "20%", fontSize: "12px"}}></TableCell>

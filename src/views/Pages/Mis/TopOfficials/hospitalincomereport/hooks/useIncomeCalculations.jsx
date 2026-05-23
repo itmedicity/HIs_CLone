@@ -192,6 +192,7 @@ export const useIncomeCalculations = (apiData, setLoading, grpval) => {
     const ipPreviousDayCollection = sum(data.IpPreviousDayCollection?.getIpPreviousDayCollection || [], "AMT");
     const ipPreviousDayDiscount = sum(data.discount?.IpPreviousDayDicount || [], "DISCOUNT");
     const advanceRefund = 0;
+    const creditInsuranceBillDiscount = sum(data.ungrouped?.getDiscount || [], "DISCOUNT");
 
     // =========================
     // 🟢 CREDIT INSURANCE
@@ -203,7 +204,7 @@ export const useIncomeCalculations = (apiData, setLoading, grpval) => {
     const CreditInsuranceBillSection = [
       {
         subGroupName: "Credit/Insurance Bill Discount",
-        collection: 0,
+        collection: creditInsuranceBillDiscount,
         style: "N",
       },
       {

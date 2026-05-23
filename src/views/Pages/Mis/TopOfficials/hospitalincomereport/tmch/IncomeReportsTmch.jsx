@@ -64,7 +64,7 @@ const IncomeReportsTmch = () => {
       };
 
       const ipReceiptResponse = await axiosinstance.post("/admission/getIpReceiptInfo", postDate);
-      console.log(ipReceiptResponse);
+      // console.log(ipReceiptResponse);
       const {success: ipReceiptResponseSuccess, data: ipReceiptResponseData} = ipReceiptResponse.data;
       // console.log(`getIpNumber--->`, ipReceiptResponseData);
       let ipNoColl = ipNumber;
