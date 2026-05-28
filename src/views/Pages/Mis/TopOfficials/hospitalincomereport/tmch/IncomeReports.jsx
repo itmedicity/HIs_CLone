@@ -25,7 +25,7 @@ const IncomeReports = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(location);
+  // console.log(location);
 
   const payload = {
     patientNo: location.state?.ptno || [],
@@ -51,21 +51,21 @@ const IncomeReports = () => {
           alert("No Data Found");
         }
 
-        /****For Test code start  */
-        const dataa = response.data.result; // replace with your file path
-        const batchSize = 500;
-        let batchCount = 0;
-        for (let i = 0; i < dataa.length; i += batchSize) {
-          const chunk = dataa.slice(i, i + batchSize);
+        // /****For Test code start  */
+        // const dataa = response.data.result; // replace with your file path
+        // const batchSize = 500;
+        // let batchCount = 0;
+        // for (let i = 0; i < dataa.length; i += batchSize) {
+        //   const chunk = dataa.slice(i, i + batchSize);
 
-          let sql = "INSERT ALL\n";
-          chunk.forEach((row) => {
-            sql += `INTO MEDIWARE.GTT_EXCLUDE_IP (IP_NO, STATUS) VALUES ('${row.ip}', ${row.status})\n`;
-          });
-          sql += "SELECT 1 FROM DUAL;\n\n";
-          console.log(sql);
-        }
-        /****For Test code start  */
+        //   let sql = "INSERT ALL\n";
+        //   chunk.forEach((row) => {
+        //     sql += `INTO MEDIWARE.GTT_EXCLUDE_IP (IP_NO, STATUS) VALUES ('${row.ip}', ${row.status})\n`;
+        //   });
+        //   sql += "SELECT 1 FROM DUAL;\n\n";
+        //   console.log(sql);
+        // }
+        // /****For Test code start  */
 
         if (data.success === 1) {
           setApiData(response.data);
@@ -86,6 +86,17 @@ const IncomeReports = () => {
       sessionStorage.setItem("CreditInsuranceBill", JSON.stringify(payload));
       window.open(
         `/Mis/TmchCreditInsuranceBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+        "_blank",
+        "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+      );
+    }
+  };
+
+  const onClickCreditInsurnaceBillCollection = (item) => {
+    if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill Collection(D)") {
+      sessionStorage.setItem("CreditInsurnaceBillCollection", JSON.stringify(payload));
+      window.open(
+        `/Mis/CreditInsuranseBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
         "_blank",
         "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
       );
@@ -170,18 +181,7 @@ const IncomeReports = () => {
           color: item.style === "U" && "#0000EE",
           fontWeight: item.style === "B" && "bold",
         }}
-        onClick={
-          () => onClickCreditInsuranceBill(item)
-          //   {
-          //   if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill") {
-          //     window.open(
-          //       `/Mis/TmchCreditInsuranceBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
-          //       "_blank",
-          //       "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
-          //     );
-          //   }
-          // }
-        }
+        onClick={() => onClickCreditInsuranceBill(item)}
       >
         {item.collection === null ? null : formatToDecimal(item.collection)}
       </TableCell>
@@ -225,15 +225,15 @@ const IncomeReports = () => {
           color: item.style === "U" ? "#0000EE" : "inherit",
           cursor: item.style === "U" ? "pointer" : "inherit",
         }}
-        onClick={() => {
-          if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill Collection(D)") {
-            window.open(
-              `/Mis/CreditInsuranseBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
-              "_blank",
-              "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
-            );
-          }
-        }}
+        onClick={() => onClickCreditInsurnaceBillCollection(item)}
+        //   if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill Collection(D)") {
+        //     window.open(
+        //       `/Mis/CreditInsuranseBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+        //       "_blank",
+        //       "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+        //     );
+        //   }
+        // }
       >
         {formatToDecimal(item.collection)}
       </TableCell>

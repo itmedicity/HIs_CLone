@@ -25,6 +25,10 @@ const IncomeReports = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const payload = {
+    patientNo: location.state?.ptno || [],
+  };
+
   const state = location.state || {
     fromDate: null,
     toDate: null,
@@ -55,6 +59,38 @@ const IncomeReports = () => {
 
     getQmtMisData();
   }, []);
+
+  const onClickCreditInsuranceBill = (item) => {
+    if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill") {
+      sessionStorage.setItem("CreditInsuranceBillGrouped", JSON.stringify(payload));
+      // window.open(
+      //   `/Mis/TmchCreditInsuranceBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+      //   "_blank",
+      //   "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+      // );
+      window.open(
+        `/Mis/GroupedCreditInsuranceBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+        "_blank",
+        "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+      );
+    }
+  };
+
+  const onClickCreditInsurnaceBillCollection = (item) => {
+    if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill Collection(D)") {
+      sessionStorage.setItem("CreditInsurnaceBillCollectionGrouped", JSON.stringify(payload));
+      // window.open(
+      //   `/Mis/CreditInsuranseBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+      //   "_blank",
+      //   "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+      // );
+      window.open(
+        `/Mis/GroupedCreditInsuranseBillCollectionModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+        "_blank",
+        "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+      );
+    }
+  };
 
   // ✅ HOOK DATA
   const PrcedureIncome = useProcedureIncome(apiData);
@@ -153,15 +189,18 @@ const IncomeReports = () => {
           color: item.style === "U" && "#0000EE",
           fontWeight: item.style === "B" && "bold",
         }}
-        onClick={() => {
-          if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill") {
-            window.open(
-              `/Mis/GroupedCreditInsuranceBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
-              "_blank",
-              "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
-            );
-          }
-        }}
+        onClick={
+          () => onClickCreditInsuranceBill(item)
+          //   {
+          //   if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill") {
+          //     window.open(
+          //       `/Mis/GroupedCreditInsuranceBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+          //       "_blank",
+          //       "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+          //     );
+          //   }
+          // }
+        }
       >
         {item.collection === null ? null : formatToDecimal(item.collection)}
       </TableCell>
@@ -205,15 +244,18 @@ const IncomeReports = () => {
           color: item.style === "U" ? "#0000EE" : "inherit",
           cursor: item.style === "U" ? "pointer" : "inherit",
         }}
-        onClick={() => {
-          if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill Collection(D)") {
-            window.open(
-              `/Mis/GroupedCreditInsuranseBillCollectionModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
-              "_blank",
-              "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
-            );
-          }
-        }}
+        onClick={
+          () => onClickCreditInsurnaceBillCollection(item)
+          //   {
+          //   if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill Collection(D)") {
+          //     window.open(
+          //       `/Mis/GroupedCreditInsuranseBillCollectionModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+          //       "_blank",
+          //       "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+          //     );
+          //   }
+          // }
+        }
       >
         {formatToDecimal(item.collection)}
       </TableCell>
