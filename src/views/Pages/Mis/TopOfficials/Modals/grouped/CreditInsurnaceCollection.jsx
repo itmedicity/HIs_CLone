@@ -1,4 +1,4 @@
-import React, {memo, useMemo} from "react";
+import React, {memo, useEffect, useMemo, useState} from "react";
 import Modal from "@mui/joy/Modal";
 import ModalClose from "@mui/joy/ModalClose";
 import ModalDialog from "@mui/joy/ModalDialog";
@@ -14,11 +14,21 @@ const CreditInsurnaceCollection = () => {
   const [searchParmas] = useSearchParams();
   const from = searchParmas.get("from");
   const to = searchParmas.get("to");
+  const [ipList, setIpList] = useState([]);
+
+  useEffect(() => {
+    const data = sessionStorage.getItem("CreditInsurnaceBillCollectionGrouped");
+    if (data) {
+      const parsed = JSON.parse(data);
+      setIpList(parsed);
+      // console.log(parsed);
+    }
+  }, []);
 
   const {data, isLoading, isError, error} = useQuery({
-    queryKey: ["GroupedCreditInsurBillCollModal", from, to],
-    queryFn: async () => GET_tssh_CreditInsuranceBillCollection({from, to}),
-    enabled: !!from && !!to,
+    queryKey: ["GroupedCreditInsurBillCollModal", from, to, ipList],
+    queryFn: async () => GET_tssh_CreditInsuranceBillCollection({from, to, ipList}),
+    enabled: !!from && !!to && !!ipList,
   });
 
   const rows = data?.data || [];

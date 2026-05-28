@@ -17,7 +17,7 @@ const CreditInsuranseBillDetl = () => {
   const [ipList, setIpList] = useState([]);
 
   useEffect(() => {
-    const data = sessionStorage.getItem("CreditInsuranceBill");
+    const data = sessionStorage.getItem("CreditInsurnaceBillCollection");
     if (data) {
       const parsed = JSON.parse(data);
       setIpList(parsed);

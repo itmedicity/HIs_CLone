@@ -10,13 +10,13 @@ export const GET_CreditInsuranceBills = async ({from, to, ipList}) => {
   return res.data;
 };
 
-export const GET_tssh_CreditInsuranceBillCollection = async ({from, to}) => {
-  const res = await axiosinstance.post("/getTssh/getTsshCreditInsuranceBillCollection", {from, to});
+export const GET_tssh_CreditInsuranceBillCollection = async ({from, to, ipList}) => {
+  const res = await axiosinstance.post("/getTssh/getTsshCreditInsuranceBillCollection", {from, to, ipList});
   return res.data;
 };
 
-export const GET_tssh_CreditInsuranceBills = async ({from, to}) => {
-  const res = await axiosinstance.post("/getTssh/getTsshCreditInsuranceBills", {from, to});
+export const GET_tssh_CreditInsuranceBills = async ({from, to, ipList}) => {
+  const res = await axiosinstance.post("/getTssh/getTsshCreditInsuranceBills", {from, to, ipList});
   return res.data;
 };
 

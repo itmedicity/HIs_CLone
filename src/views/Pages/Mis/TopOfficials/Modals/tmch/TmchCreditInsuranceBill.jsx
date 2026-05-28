@@ -26,7 +26,7 @@ const TmchCreditInsuranceBill = () => {
   }, []);
 
   const {data, isLoading, isError, error} = useQuery({
-    queryKey: ["CreditInsurBillsModal", from, to],
+    queryKey: ["CreditInsurBillsModal", from, to, ipList],
     queryFn: async () => GET_CreditInsuranceBills({from, to, ipList}),
     enabled: !!from && !!to && !!ipList,
   });
