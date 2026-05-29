@@ -70,34 +70,70 @@ const IncomeReport = () => {
 
   // DETAIL MODAL FUNCTION
 
-  const openCollectionDetail = async (item) => {
-    try {
-      setDetailModal({
-        open: true,
-        loading: true,
-        title: item.subGroupName,
-        rows: [],
-      });
+  // const openCollectionDetail = async (item) => {
+  //   try {
+  //     setDetailModal({
+  //       open: true,
+  //       loading: true,
+  //       title: item.subGroupName,
+  //       rows: [],
+  //     });
 
-      const response = await axiosinstance.post("/getQmt/getCollectionDetailReport", {
-        fromDate: state.fromDate,
-        toDate: state.toDate,
-        subGroupName: item.subGroupName,
-      });
+  //     const response = await axiosinstance.post("/getQmt/getCollectionDetailReport", {
+  //       fromDate: state.fromDate,
+  //       toDate: state.toDate,
+  //       subGroupName: item.subGroupName,
+  //     });
 
-      setDetailModal((prev) => ({
-        ...prev,
-        loading: false,
-        rows: response.data?.data || [],
-      }));
-    } catch (error) {
-      console.error(error);
+  //     setDetailModal((prev) => ({
+  //       ...prev,
+  //       loading: false,
+  //       rows: response.data?.data || [],
+  //     }));
+  //   } catch (error) {
+  //     console.error(error);
 
-      setDetailModal((prev) => ({
-        ...prev,
-        loading: false,
-        rows: [],
-      }));
+  //     setDetailModal((prev) => ({
+  //       ...prev,
+  //       loading: false,
+  //       rows: [],
+  //     }));
+  //   }
+  // };
+
+  const CollectionAgainstSalesModalSection = (item) => {
+    if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill") {
+      window.open(
+        `/Mis/QmtCreditInsuranceBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+        "_blank",
+        "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+      );
+    }
+
+    if (item.style === "U" && item.subGroupName === "UnSettled Amount") {
+      window.open(
+        `/Mis/QmtUnsettledAmountlModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+        "_blank",
+        "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+      );
+    }
+  };
+
+  const onClickCreditInsuranceBillModalSection = (item) => {
+    if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill Collection(D)") {
+      window.open(
+        `/Mis/QmtCreditInsuranseBillCollectionModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+        "_blank",
+        "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+      );
+    }
+
+    if (item.style === "U" && item.subGroupName === "Advance Collection (C)") {
+      window.open(
+        `/Mis/QmtAdvanceCollectionModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+        "_blank",
+        "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+      );
     }
   };
 
@@ -182,15 +218,7 @@ const IncomeReport = () => {
           color: item.style === "U" && "#0000EE",
           fontWeight: item.style === "B" && "bold",
         }}
-        onClick={() => {
-          if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill") {
-            window.open(
-              `/Mis/QmtCreditInsuranceBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
-              "_blank",
-              "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
-            );
-          }
-        }}
+        onClick={() => CollectionAgainstSalesModalSection(item)}
       >
         {item.collection === null ? null : formatToDecimal(item.collection)}
       </TableCell>
@@ -234,15 +262,7 @@ const IncomeReport = () => {
           color: item.style === "U" ? "#0000EE" : "inherit",
           cursor: item.style === "U" ? "pointer" : "inherit",
         }}
-        onClick={() => {
-          if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill Collection(D)") {
-            window.open(
-              `/Mis/QmtCreditInsuranseBillCollectionModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
-              "_blank",
-              "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
-            );
-          }
-        }}
+        onClick={() => onClickCreditInsuranceBillModalSection(item)}
       >
         {formatToDecimal(item.collection)}
       </TableCell>

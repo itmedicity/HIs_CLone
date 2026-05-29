@@ -189,18 +189,7 @@ const IncomeReports = () => {
           color: item.style === "U" && "#0000EE",
           fontWeight: item.style === "B" && "bold",
         }}
-        onClick={
-          () => onClickCreditInsuranceBill(item)
-          //   {
-          //   if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill") {
-          //     window.open(
-          //       `/Mis/GroupedCreditInsuranceBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
-          //       "_blank",
-          //       "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
-          //     );
-          //   }
-          // }
-        }
+        onClick={() => onClickCreditInsuranceBill(item)}
       >
         {item.collection === null ? null : formatToDecimal(item.collection)}
       </TableCell>
@@ -244,18 +233,7 @@ const IncomeReports = () => {
           color: item.style === "U" ? "#0000EE" : "inherit",
           cursor: item.style === "U" ? "pointer" : "inherit",
         }}
-        onClick={
-          () => onClickCreditInsurnaceBillCollection(item)
-          //   {
-          //   if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill Collection(D)") {
-          //     window.open(
-          //       `/Mis/GroupedCreditInsuranseBillCollectionModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
-          //       "_blank",
-          //       "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
-          //     );
-          //   }
-          // }
-        }
+        onClick={() => onClickCreditInsurnaceBillCollection(item)}
       >
         {formatToDecimal(item.collection)}
       </TableCell>

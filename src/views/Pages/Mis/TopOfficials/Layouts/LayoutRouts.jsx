@@ -8,6 +8,10 @@ import CreditInsuranceBillGrouped from "../Modals/grouped/CreditInsuranceBill";
 import CreditInsurnaceCollectionGrouped from "../Modals/grouped/CreditInsurnaceCollection";
 import QmtCreditInsuranceBill from "../Modals/qmt/CreditInsuranceBill";
 import QmtCreditInsuranceBillCollection from "../Modals/qmt/CreditInsuranceBillCollection";
+import UnsettledAmount from "../Modals/qmt/UnsettledAmount";
+import AdvanceCollection from "../Modals/qmt/AdvanceCollection";
+import UnsettledGrouped from "../Modals/grouped/UnsettledGrouped";
+import AdvanceCollectionGrouped from "../Modals/grouped/AdvanceCollectionGrouped";
 
 const LayoutRouts = () => {
   return (
@@ -21,9 +25,13 @@ const LayoutRouts = () => {
       {/* grouped */}
       <Route path="/GroupedCreditInsuranseBillCollectionModal" element={<CreditInsurnaceCollectionGrouped />} />
       <Route path="/GroupedCreditInsuranceBillModal" element={<CreditInsuranceBillGrouped />} />
+      <Route path="/GroupedUnsettledAmountlModal" element={<UnsettledGrouped />} />
+      <Route path="/GroupedAdvanceCollectionModal" element={<AdvanceCollectionGrouped />} />
       {/* qmt */}
       <Route path="/QmtCreditInsuranseBillCollectionModal" element={<QmtCreditInsuranceBillCollection />} />
       <Route path="/QmtCreditInsuranceBillModal" element={<QmtCreditInsuranceBill />} />
+      <Route path="/QmtUnsettledAmountlModal" element={<UnsettledAmount />} />
+      <Route path="/QmtAdvanceCollectionModal" element={<AdvanceCollection />} />
     </Routes>
   );
 };
