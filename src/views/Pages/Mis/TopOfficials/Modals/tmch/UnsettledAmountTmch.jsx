@@ -7,17 +7,17 @@ import {Box, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, Ta
 import MenuButton from "../../../Components/MenuButton";
 import ReportHeader from "../../../../../Components/ReportHeader";
 import {useSearchParams} from "react-router-dom";
-import {GET_tssh_AdvanceCollection} from "../../api/tmch.api";
+import {GET_TMCH_UnsettledAmountBills} from "../../api/tmch.api";
 import {useQuery} from "@tanstack/react-query";
 
-const AdvanceCollectionGrouped = () => {
+const UnsettledAmountTmch = () => {
   const [searchParmas] = useSearchParams();
   const from = searchParmas.get("from");
   const to = searchParmas.get("to");
   const [ipList, setIpList] = useState([]);
 
   useEffect(() => {
-    const data = sessionStorage.getItem("GetGroupedAdvanceCollectionIpList");
+    const data = sessionStorage.getItem("GetTmchUnsettledAmountIpList");
     if (data) {
       const parsed = JSON.parse(data);
       setIpList(parsed);
@@ -26,8 +26,8 @@ const AdvanceCollectionGrouped = () => {
   }, []);
 
   const {data, isLoading, isError, error} = useQuery({
-    queryKey: ["Get_TSSH_AdvanceCollection", from, to, ipList],
-    queryFn: async () => GET_tssh_AdvanceCollection({from, to, ipList}),
+    queryKey: ["GetQmtUnsettledAmount", from, to, ipList],
+    queryFn: async () => GET_TMCH_UnsettledAmountBills({from, to, ipList}),
     enabled: !!from && !!to && !!ipList,
   });
 
@@ -36,10 +36,12 @@ const AdvanceCollectionGrouped = () => {
   const totals = useMemo(() => {
     return rows.reduce(
       (acc, row) => {
+        acc.TAX += row.TAX || 0;
         acc.AMT += row.AMT || 0;
         return acc;
       },
       {
+        TAX: 0,
         AMT: 0,
       },
     );
@@ -60,13 +62,25 @@ const AdvanceCollectionGrouped = () => {
         {e.PT_NO}
       </TableCell>
       <TableCell padding="none" align="left" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
-        {e.AR_NO}
+        {e.DM_NO}
+      </TableCell>
+      <TableCell padding="none" align="right" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
+        {e.TAX?.toLocaleString("en-US", {minimumFractionDigits: 2})}
       </TableCell>
       <TableCell padding="none" align="right" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
         {e.AMT?.toLocaleString("en-US", {minimumFractionDigits: 2})}
       </TableCell>
       <TableCell padding="none" align="left" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
+        {e.CUC_NAME?.toLowerCase()}
+      </TableCell>
+      <TableCell padding="none" align="left" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
+        {e.DOC_NAME?.toLowerCase()}
+      </TableCell>
+      <TableCell padding="none" align="left" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
         {e.USC_NAME?.toLowerCase()}
+      </TableCell>
+      <TableCell padding="none" align="left" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
+        {/* {e.USERNAME} */}
       </TableCell>
     </TableRow>
   ));
@@ -87,7 +101,7 @@ const AdvanceCollectionGrouped = () => {
           boxShadow: 5,
         }}
       >
-        <ReportHeader data={{from, to}} name="Advance Collection" hosName={"TRAVANCORE MEDICAL COLLEGE & HOSPITAL"} disable={true} />
+        <ReportHeader data={{from, to}} name="Unsettled Amount" hosName={"TRAVANCORE MEDICAL COLLEGE & HOSPITAL"} disable={true} />
         <Box
           sx={{
             overflow: "auto",
@@ -121,10 +135,22 @@ const AdvanceCollectionGrouped = () => {
                     Pt No
                   </TableCell>
                   <TableCell padding="none" size="small" align="left" sx={{fontWeight: "bolder", fontSize: "12px", borderRight: 1, borderColor: "#bbd8ff"}}>
-                    Receipt No
+                    Bill No
+                  </TableCell>
+                  <TableCell padding="none" size="small" align="right" sx={{fontWeight: "bolder", fontSize: "12px", borderRight: 1, borderColor: "#bbd8ff"}}>
+                    Tax
                   </TableCell>
                   <TableCell padding="none" size="small" align="right" sx={{fontWeight: "bolder", fontSize: "12px", borderRight: 1, borderColor: "#bbd8ff"}}>
                     Amount
+                  </TableCell>
+                  <TableCell padding="none" size="small" align="left" sx={{fontWeight: "bolder", fontSize: "12px", borderRight: 1, borderColor: "#bbd8ff"}}>
+                    Customer
+                  </TableCell>
+                  <TableCell padding="none" size="small" align="left" sx={{fontWeight: "bolder", fontSize: "12px", borderRight: 1, borderColor: "#bbd8ff"}}>
+                    Doctor
+                  </TableCell>
+                  <TableCell padding="none" size="small" align="left" sx={{fontWeight: "bolder", fontSize: "12px", borderRight: 1, borderColor: "#bbd8ff"}}>
+                    Module
                   </TableCell>
                   <TableCell padding="none" size="small" align="left" sx={{fontWeight: "bolder", fontSize: "12px", borderRight: 1, borderColor: "#bbd8ff"}}>
                     User
@@ -153,13 +179,27 @@ const AdvanceCollectionGrouped = () => {
                     align="right"
                     sx={{fontSize: "12px", fontWeight: 700, border: 1, borderColor: "#2d2626", color: "black", fontFamily: "Tahoma,Verdana, Geneva, sans-serif", lineHeight: "16px"}}
                   >
-                    {/* {totals.TAXAMT.toLocaleString("en-US", {minimumFractionDigits: 2})} */}
-                    {totals.AMT.toLocaleString("en-US", {minimumFractionDigits: 2})}
+                    {totals.TAX.toLocaleString("en-US", {minimumFractionDigits: 2})}
                   </TableCell>
                   <TableCell
                     align="right"
                     sx={{fontSize: "12px", fontWeight: 700, border: 1, borderColor: "#2d2626", color: "black", fontFamily: "Tahoma,Verdana, Geneva, sans-serif", lineHeight: "16px"}}
+                  >
+                    {totals.AMT.toLocaleString("en-US", {minimumFractionDigits: 2})}
+                  </TableCell>
+                  <TableCell
+                    align="right"
+                    sx={{fontSize: "12px", fontWeight: 500, border: 1, borderColor: "#2d2626", color: "black", fontFamily: "Tahoma,Verdana, Geneva, sans-serif", lineHeight: "16px"}}
                   ></TableCell>
+                  <TableCell
+                    align="right"
+                    sx={{fontSize: "12px", fontWeight: 500, border: 1, borderColor: "#2d2626", color: "black", fontFamily: "Tahoma,Verdana, Geneva, sans-serif", lineHeight: "16px"}}
+                  ></TableCell>
+                  <TableCell
+                    align="right"
+                    sx={{fontSize: "12px", fontWeight: 500, border: 1, borderColor: "#2d2626", color: "black", fontFamily: "Tahoma,Verdana, Geneva, sans-serif", lineHeight: "16px"}}
+                  ></TableCell>
+                  <TableCell sx={{border: 1, borderColor: "#2d2626"}} />
                 </TableRow>
               </TableFooter>
             </Table>
@@ -170,4 +210,4 @@ const AdvanceCollectionGrouped = () => {
   );
 };
 
-export default AdvanceCollectionGrouped;
+export default UnsettledAmountTmch;

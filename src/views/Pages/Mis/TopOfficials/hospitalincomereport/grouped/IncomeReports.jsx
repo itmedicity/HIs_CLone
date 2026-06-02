@@ -60,32 +60,40 @@ const IncomeReports = () => {
     getQmtMisData();
   }, []);
 
-  const onClickCreditInsuranceBill = (item) => {
+  const onClickCollectionAgainstSalesSection = (item) => {
     if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill") {
       sessionStorage.setItem("CreditInsuranceBillGrouped", JSON.stringify(payload));
-      // window.open(
-      //   `/Mis/TmchCreditInsuranceBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
-      //   "_blank",
-      //   "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
-      // );
       window.open(
         `/Mis/GroupedCreditInsuranceBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
         "_blank",
         "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
       );
     }
+
+    if (item.style === "U" && item.subGroupName === "UnSettled Amount") {
+      sessionStorage.setItem("GetGroupedUnsettledAmountIpList", JSON.stringify(payload));
+      window.open(
+        `/Mis/GroupedUnsettledAmountlModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+        "_blank",
+        "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+      );
+    }
   };
 
-  const onClickCreditInsurnaceBillCollection = (item) => {
+  const onClickCreditInsurnaceBillSectionModal = (item) => {
     if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill Collection(D)") {
       sessionStorage.setItem("CreditInsurnaceBillCollectionGrouped", JSON.stringify(payload));
-      // window.open(
-      //   `/Mis/CreditInsuranseBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
-      //   "_blank",
-      //   "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
-      // );
       window.open(
         `/Mis/GroupedCreditInsuranseBillCollectionModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+        "_blank",
+        "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+      );
+    }
+
+    if (item.style === "U" && item.subGroupName === "Advance Collection (C)") {
+      sessionStorage.setItem("GetGroupedAdvanceCollectionIpList", JSON.stringify(payload));
+      window.open(
+        `/Mis/GroupedAdvanceCollectionModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
         "_blank",
         "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
       );
@@ -95,18 +103,6 @@ const IncomeReports = () => {
   // ✅ HOOK DATA
   const PrcedureIncome = useProcedureIncome(apiData);
   const {pharmacyIncome, IpConsolidatedDiscountSection, CollectionAgainstSalesSection, CreditInsuranceBillSection, CounterCollection, Patient_Type} = useIncomeCalculations(apiData, setIsLoading, 1);
-
-  // Ensure the value is valid and a n umber
-  // Income State
-  // const incomeData = hospitalIncomeData[0];
-  // State Management
-  // const PrcedureIncome = incomeData.ProcudureIncome || [];
-  // const pharmacyIncome = incomeData.PharmacySales[0].groupData || [];
-  // const IpConsolidatedDiscountSection = incomeData.IpConsolidatedDiscountSection || [];
-  // const CollectionAgainstSalesSection = incomeData.CollectionAgainstSalesSection || [];
-  // const CreditInsuranceBillSection = incomeData.CreditInsuranceBillSection || [];
-  // const CounterCollection = incomeData.CounterCollection[0].collection || [];
-  // const Patient_Type = incomeData.Patient_Type[0].groupData || [];
 
   // Procedure Income Data
   const ProcedureIncomeDataJsx = PrcedureIncome?.map((item, index) => (
@@ -189,7 +185,7 @@ const IncomeReports = () => {
           color: item.style === "U" && "#0000EE",
           fontWeight: item.style === "B" && "bold",
         }}
-        onClick={() => onClickCreditInsuranceBill(item)}
+        onClick={() => onClickCollectionAgainstSalesSection(item)}
       >
         {item.collection === null ? null : formatToDecimal(item.collection)}
       </TableCell>
@@ -233,7 +229,7 @@ const IncomeReports = () => {
           color: item.style === "U" ? "#0000EE" : "inherit",
           cursor: item.style === "U" ? "pointer" : "inherit",
         }}
-        onClick={() => onClickCreditInsurnaceBillCollection(item)}
+        onClick={() => onClickCreditInsurnaceBillSectionModal(item)}
       >
         {formatToDecimal(item.collection)}
       </TableCell>

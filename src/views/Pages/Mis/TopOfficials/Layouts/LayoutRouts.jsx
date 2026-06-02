@@ -12,6 +12,10 @@ import UnsettledAmount from "../Modals/qmt/UnsettledAmount";
 import AdvanceCollection from "../Modals/qmt/AdvanceCollection";
 import UnsettledGrouped from "../Modals/grouped/UnsettledGrouped";
 import AdvanceCollectionGrouped from "../Modals/grouped/AdvanceCollectionGrouped";
+import AdvanceCollectionTmch from "../Modals/tmch/AdvanceCollectionTmch";
+import UnsettledAmountTmch from "../Modals/tmch/UnsettledAmountTmch";
+import AdvanceCollectionTssh from "../Modals/tssh/AdvanceCollectionTssh";
+import UnsettledAmountTssh from "../Modals/tssh/UnsettledAmountTssh";
 
 const LayoutRouts = () => {
   return (
@@ -19,9 +23,13 @@ const LayoutRouts = () => {
       {/* tmch */}
       <Route path="/CreditInsuranseBillModal" element={<CreditInsuranseBillDetl />} />
       <Route path="/TmchCreditInsuranceBillModal" element={<TmchCreditInsuranceBill />} />
+      <Route path="/TmchAdvanceCollectionModal" element={<AdvanceCollectionTmch />} />
+      <Route path="/TmchUnsettledAmountModal" element={<UnsettledAmountTmch />} />
       {/* tssh */}
       <Route path="/TsshCreditInsuranseBillCollectionModal" element={<CreditInsuranceBillCollection />} />
       <Route path="/TsshCreditInsuranceBillModal" element={<CreditInsuranceBill />} />
+      <Route path="/TsshAdvanceCollectionModal" element={<AdvanceCollectionTssh />} />
+      <Route path="/TsshUnsettledAmountModal" element={<UnsettledAmountTssh />} />
       {/* grouped */}
       <Route path="/GroupedCreditInsuranseBillCollectionModal" element={<CreditInsurnaceCollectionGrouped />} />
       <Route path="/GroupedCreditInsuranceBillModal" element={<CreditInsuranceBillGrouped />} />

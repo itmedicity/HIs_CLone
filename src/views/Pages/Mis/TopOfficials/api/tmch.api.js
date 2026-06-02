@@ -12,6 +12,16 @@ export const GET_CreditInsuranceBills = async ({from, to, ipList}) => {
   return res.data;
 };
 
+export const GET_TMCH_UnsettledAmountBills = async ({from, to, ipList}) => {
+  const res = await axiosinstance.post("/getTmch/getUnsettledAmountBills", {from, to, ipList});
+  return res.data;
+};
+
+export const GET_TMCH_AdvanceCollection = async ({from, to, ipList}) => {
+  const res = await axiosinstance.post("/getTmch/getAdvanceCollection", {from, to, ipList});
+  return res.data;
+};
+
 // TSSH & GROUPED
 
 export const GET_tssh_CreditInsuranceBillCollection = async ({from, to, ipList}) => {
@@ -21,6 +31,16 @@ export const GET_tssh_CreditInsuranceBillCollection = async ({from, to, ipList})
 
 export const GET_tssh_CreditInsuranceBills = async ({from, to, ipList}) => {
   const res = await axiosinstance.post("/getTssh/getTsshCreditInsuranceBills", {from, to, ipList});
+  return res.data;
+};
+
+export const GET_tssh_AdvanceCollection = async ({from, to, ipList}) => {
+  const res = await axiosinstance.post("/getTssh/getTssh_AdvanceCollection", {from, to, ipList});
+  return res.data;
+};
+
+export const GET_tssh_UnsettledAmountBills = async ({from, to, ipList}) => {
+  const res = await axiosinstance.post("/getTssh/getTssh_UnsettledAmount", {from, to, ipList});
   return res.data;
 };
 

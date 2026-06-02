@@ -7,15 +7,48 @@ import {Box, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, Ta
 import MenuButton from "../../../Components/MenuButton";
 import ReportHeader from "../../../../../Components/ReportHeader";
 import {useSearchParams} from "react-router-dom";
-import {GET_tssh_CreditInsuranceBills} from "../../api/tmch.api";
+import {GET_tssh_UnsettledAmountBills} from "../../api/tmch.api";
 import {useQuery} from "@tanstack/react-query";
 
 const UnsettledGrouped = () => {
   const [searchParmas] = useSearchParams();
   const from = searchParmas.get("from");
   const to = searchParmas.get("to");
+  const [ipList, setIpList] = useState([]);
 
-  const rows = [1, 2, 3, 4, 5];
+  useEffect(() => {
+    const data = sessionStorage.getItem("GetGroupedUnsettledAmountIpList");
+    if (data) {
+      const parsed = JSON.parse(data);
+      setIpList(parsed);
+      // console.log(parsed);
+    }
+  }, []);
+
+  const {data, isLoading, isError, error} = useQuery({
+    queryKey: ["GetTsshUnsettledAmount", from, to, ipList],
+    queryFn: async () => GET_tssh_UnsettledAmountBills({from, to, ipList}),
+    enabled: !!from && !!to && !!ipList,
+  });
+
+  const rows = data?.data || [];
+
+  const totals = useMemo(() => {
+    return rows.reduce(
+      (acc, row) => {
+        acc.TAX += row.TAX || 0;
+        acc.AMT += row.AMT || 0;
+        return acc;
+      },
+      {
+        TAX: 0,
+        AMT: 0,
+      },
+    );
+  }, [rows]);
+
+  if (isLoading) return <div style={{display: "flex", flex: 1, height: "100vh", background: "white"}}>.</div>;
+  if (isError) return <h1>{error?.message}</h1>;
 
   const newArray = rows?.map((e, idx) => (
     <TableRow key={idx}>
@@ -23,31 +56,31 @@ const UnsettledGrouped = () => {
         {idx + 1}
       </TableCell>
       <TableCell padding="none" align="left" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
-        {/* {e.PTNAME} */}
+        {e.PTC_PTNAME?.toLowerCase()}
       </TableCell>
       <TableCell padding="none" align="left" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
-        {/* {e.PTNO} */}
+        {e.PT_NO}
       </TableCell>
       <TableCell padding="none" align="left" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
-        {/* {e.BILLNO} */}
+        {e.DM_NO}
       </TableCell>
       <TableCell padding="none" align="right" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
-        {/* {e.TAXAMT?.toLocaleString("en-US", {minimumFractionDigits: 2})} */}
+        {e.TAXAMT?.toLocaleString("en-US", {minimumFractionDigits: 2}) || "0.00"}
       </TableCell>
       <TableCell padding="none" align="right" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
-        {/* {e.AMT?.toLocaleString("en-US", {minimumFractionDigits: 2})} */}
+        {e.AMT?.toLocaleString("en-US", {minimumFractionDigits: 2})}
       </TableCell>
       <TableCell padding="none" align="left" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
-        {/* {e.CUSTOMER} */}
+        {e.CUC_NAME?.toLowerCase()}
       </TableCell>
       <TableCell padding="none" align="left" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
-        {/* {e.USERNAME} */}
+        {e.DOC_NAME?.toLowerCase()}
       </TableCell>
       <TableCell padding="none" align="left" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
-        {/* {e.USERNAME} */}
+        {e.USC_NAME?.toLowerCase()}
       </TableCell>
       <TableCell padding="none" align="left" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
-        {/* {e.USERNAME} */}
+        {/* {e.USC_NAME} */}
       </TableCell>
     </TableRow>
   ));
@@ -146,13 +179,13 @@ const UnsettledGrouped = () => {
                     align="right"
                     sx={{fontSize: "12px", fontWeight: 700, border: 1, borderColor: "#2d2626", color: "black", fontFamily: "Tahoma,Verdana, Geneva, sans-serif", lineHeight: "16px"}}
                   >
-                    {/* {totals.TAXAMT.toLocaleString("en-US", {minimumFractionDigits: 2})} */}
+                    {totals.TAX.toLocaleString("en-US", {minimumFractionDigits: 2})}
                   </TableCell>
                   <TableCell
                     align="right"
                     sx={{fontSize: "12px", fontWeight: 700, border: 1, borderColor: "#2d2626", color: "black", fontFamily: "Tahoma,Verdana, Geneva, sans-serif", lineHeight: "16px"}}
                   >
-                    {/* {totals.AMT.toLocaleString("en-US", {minimumFractionDigits: 2})} */}
+                    {totals.AMT.toLocaleString("en-US", {minimumFractionDigits: 2})}
                   </TableCell>
                   <TableCell
                     align="right"
