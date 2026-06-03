@@ -48,19 +48,19 @@ const IncomeReports = () => {
           alert("No Data Found");
         }
         // /****For Test code start  */
-        // const dataa = response.data.result; // replace with your file path
-        // const batchSize = 500;
-        // let batchCount = 0;
-        // for (let i = 0; i < dataa.length; i += batchSize) {
-        //   const chunk = dataa.slice(i, i + batchSize);
+        const dataa = response.data.result; // replace with your file path
+        const batchSize = 500;
+        let batchCount = 0;
+        for (let i = 0; i < dataa.length; i += batchSize) {
+          const chunk = dataa.slice(i, i + batchSize);
 
-        //   let sql = "INSERT ALL\n";
-        //   chunk.forEach((row) => {
-        //     sql += `  INTO MEDIWARE.GTT_EXCLUDE_IP (IP_NO, STATUS) VALUES ('${row.ip}', ${row.status})\n`;
-        //   });
-        //   sql += "SELECT 1 FROM DUAL;\n\n";
-        //   console.log(sql);
-        // }
+          let sql = "INSERT ALL\n";
+          chunk.forEach((row) => {
+            sql += `  INTO MEDIWARE.GTT_EXCLUDE_IP (IP_NO, STATUS) VALUES ('${row.ip}', ${row.status})\n`;
+          });
+          sql += "SELECT 1 FROM DUAL;\n\n";
+          console.log(sql);
+        }
         // /****For Test code start  */
 
         if (data.success === 1) {
@@ -72,37 +72,44 @@ const IncomeReports = () => {
         navigate("/Menu/QmtIncomeReportsDateSelection");
       }
     };
-
     getQmtMisData();
   }, []);
 
   // ONCLICK FUNCTIONS
-  const onClickCreditInsuranceBill = (item) => {
+  const onClickCollectionAgainstSalesModalSection = (item) => {
     if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill") {
       sessionStorage.setItem("CreditInsuranceBillTssh", JSON.stringify(payload));
-      // window.open(
-      //   `/Mis/TmchCreditInsuranceBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
-      //   "_blank",
-      //   "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
-      // );
       window.open(
         `/Mis/TsshCreditInsuranceBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
         "_blank",
         "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
       );
     }
+
+    if (item.style === "U" && item.subGroupName === "UnSettled Amount") {
+      sessionStorage.setItem("GetTsshUnsettledAmountIpList", JSON.stringify(payload));
+      window.open(
+        `/Mis/TsshUnsettledAmountModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+        "_blank",
+        "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+      );
+    }
   };
 
-  const onClickCreditInsurnaceBillCollection = (item) => {
+  const onClickCreditInsurnaceBillModalSection = (item) => {
     if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill Collection(D)") {
       sessionStorage.setItem("CreditInsurnaceBillCollectionTssh", JSON.stringify(payload));
-      // window.open(
-      //   `/Mis/CreditInsuranseBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
-      //   "_blank",
-      //   "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
-      // );
       window.open(
         `/Mis/TsshCreditInsuranseBillCollectionModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
+        "_blank",
+        "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+      );
+    }
+
+    if (item.style === "U" && item.subGroupName === "Advance Collection (C)") {
+      sessionStorage.setItem("GetTsshAdvanceCollectionIpList", JSON.stringify(payload));
+      window.open(
+        `/Mis/TsshAdvanceCollectionModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
         "_blank",
         "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
       );
@@ -186,17 +193,7 @@ const IncomeReports = () => {
           color: item.style === "U" && "#0000EE",
           fontWeight: item.style === "B" && "bold",
         }}
-        onClick={() => onClickCreditInsuranceBill(item)}
-        //   {
-        //   if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill") {
-        //     window.open(
-        //       `/Mis/TsshCreditInsuranceBillModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
-        //       "_blank",
-        //       "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
-        //     );
-        //   }
-        // }
-        // }
+        onClick={() => onClickCollectionAgainstSalesModalSection(item)}
       >
         {item.collection === null ? null : formatToDecimal(item.collection)}
       </TableCell>
@@ -240,16 +237,7 @@ const IncomeReports = () => {
           color: item.style === "U" ? "#0000EE" : "inherit",
           cursor: item.style === "U" ? "pointer" : "inherit",
         }}
-        onClick={() => onClickCreditInsurnaceBillCollection(item)}
-        //   {
-        //   if (item.style === "U" && item.subGroupName === "Credit/Insurance Bill Collection(D)") {
-        //     window.open(
-        //       `/Mis/TsshCreditInsuranseBillCollectionModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}`,
-        //       "_blank",
-        //       "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
-        //     );
-        //   }
-        // }}
+        onClick={() => onClickCreditInsurnaceBillModalSection(item)}
       >
         {formatToDecimal(item.collection)}
       </TableCell>

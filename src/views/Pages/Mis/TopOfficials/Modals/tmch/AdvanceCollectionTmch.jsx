@@ -7,17 +7,17 @@ import {Box, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, Ta
 import MenuButton from "../../../Components/MenuButton";
 import ReportHeader from "../../../../../Components/ReportHeader";
 import {useSearchParams} from "react-router-dom";
-import {GET_tssh_AdvanceCollection} from "../../api/tmch.api";
+import {GET_TMCH_AdvanceCollection} from "../../api/tmch.api";
 import {useQuery} from "@tanstack/react-query";
 
-const AdvanceCollectionGrouped = () => {
+const AdvanceCollectionTmch = () => {
   const [searchParmas] = useSearchParams();
   const from = searchParmas.get("from");
   const to = searchParmas.get("to");
   const [ipList, setIpList] = useState([]);
 
   useEffect(() => {
-    const data = sessionStorage.getItem("GetGroupedAdvanceCollectionIpList");
+    const data = sessionStorage.getItem("GetTmchAdvanceCollectionIpList");
     if (data) {
       const parsed = JSON.parse(data);
       setIpList(parsed);
@@ -26,8 +26,8 @@ const AdvanceCollectionGrouped = () => {
   }, []);
 
   const {data, isLoading, isError, error} = useQuery({
-    queryKey: ["Get_TSSH_AdvanceCollection", from, to, ipList],
-    queryFn: async () => GET_tssh_AdvanceCollection({from, to, ipList}),
+    queryKey: ["Get_TMCH_AdvanceCollection", from, to, ipList],
+    queryFn: async () => GET_TMCH_AdvanceCollection({from, to, ipList}),
     enabled: !!from && !!to && !!ipList,
   });
 
@@ -153,13 +153,14 @@ const AdvanceCollectionGrouped = () => {
                     align="right"
                     sx={{fontSize: "12px", fontWeight: 700, border: 1, borderColor: "#2d2626", color: "black", fontFamily: "Tahoma,Verdana, Geneva, sans-serif", lineHeight: "16px"}}
                   >
-                    {/* {totals.TAXAMT.toLocaleString("en-US", {minimumFractionDigits: 2})} */}
                     {totals.AMT.toLocaleString("en-US", {minimumFractionDigits: 2})}
                   </TableCell>
                   <TableCell
                     align="right"
                     sx={{fontSize: "12px", fontWeight: 700, border: 1, borderColor: "#2d2626", color: "black", fontFamily: "Tahoma,Verdana, Geneva, sans-serif", lineHeight: "16px"}}
-                  ></TableCell>
+                  >
+                    {/* {totals.TAXAMT.toLocaleString("en-US", {minimumFractionDigits: 2})} */}
+                  </TableCell>
                 </TableRow>
               </TableFooter>
             </Table>
@@ -170,4 +171,4 @@ const AdvanceCollectionGrouped = () => {
   );
 };
 
-export default AdvanceCollectionGrouped;
+export default AdvanceCollectionTmch;
