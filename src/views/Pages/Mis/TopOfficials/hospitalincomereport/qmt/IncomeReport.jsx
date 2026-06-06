@@ -25,7 +25,6 @@ const IncomeReport = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(location);
 
   const state = location.state || {
     fromDate: null,
