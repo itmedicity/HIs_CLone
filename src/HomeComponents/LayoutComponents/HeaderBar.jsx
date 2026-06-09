@@ -3,6 +3,8 @@ import React, {useCallback, useEffect, useState} from "react";
 import imageLogo from "../../assets/Ellider.png";
 import moment from "moment";
 import {useNavigate} from "react-router-dom";
+import {axiosinstance} from "../../controllers/AxiosConfig";
+import {toast} from "react-toastify";
 
 const HeaderBar = () => {
   const navigate = useNavigate();
@@ -21,6 +23,40 @@ const HeaderBar = () => {
     localStorage.removeItem("usrCred");
     navigate("/");
   }, []);
+
+  const restartPool = async () => {
+    const poolRestart = await axiosinstance.post("/restartPools");
+    if (poolRestart.status === 200) {
+      setShowMenu(false);
+      alert("Pool Restarted Successfully");
+    } else {
+      setShowMenu(false);
+      alert("Pool Restart Failed");
+    }
+  };
+
+  const [clickCount, setClickCount] = useState(0);
+  const [showMenu, setShowMenu] = useState(false);
+  const handleLogoClick = () => {
+    setClickCount((prev) => {
+      const newCount = prev + 1;
+
+      if (newCount === 4) {
+        setShowMenu(true);
+
+        // alert("Admin Menu Enabled");
+
+        setTimeout(() => {
+          setShowMenu(false);
+        }, 10000);
+        toast.success("🔧 Admin Menu Enabled");
+
+        return 0;
+      }
+
+      return newCount;
+    });
+  };
 
   return (
     <Paper sx={{height: "60px", display: "flex", backgroundColor: "#E4E4E4"}}>
@@ -89,6 +125,7 @@ const HeaderBar = () => {
             fontFamily: "Arial, Helvetica, sans-serif",
             textTransform: "capitalize",
           }}
+          onClick={handleLogoClick}
         >
           {user.toLocaleUpperCase()}
         </Box>
@@ -113,6 +150,22 @@ const HeaderBar = () => {
         </Box>
         <Box sx={{display: "flex", justifyContent: "right", flexDirection: "row"}}>
           {/* <Box>Change Password</Box> */}
+          <Button
+            sx={{
+              display: showMenu ? "block" : "none",
+              // display: "block",
+              padding: 0,
+              paddingRight: "10px",
+              fontFamily: "Arial,Tahoma,Verdana,sans-serif",
+              textTransform: "capitalize",
+              fontSize: "12px",
+              color: "#6D6962",
+            }}
+            onClick={restartPool}
+            size="small"
+          >
+            Restart Session
+          </Button>
           <Button
             sx={{
               padding: 0,
