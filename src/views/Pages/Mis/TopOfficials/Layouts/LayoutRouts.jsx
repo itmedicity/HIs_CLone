@@ -16,6 +16,10 @@ import AdvanceCollectionTmch from "../Modals/tmch/AdvanceCollectionTmch";
 import UnsettledAmountTmch from "../Modals/tmch/UnsettledAmountTmch";
 import AdvanceCollectionTssh from "../Modals/tssh/AdvanceCollectionTssh";
 import UnsettledAmountTssh from "../Modals/tssh/UnsettledAmountTssh";
+import ProcedureReports from "../Modals/qmt/ProcedureReports";
+import ProcedureReportsTmch from "../Modals/tmch/ProcedureReportsTmch";
+import ProcedureReportsTssh from "../Modals/tssh/ProcedureReportsTssh";
+import ProcedureReportsGrouped from "../Modals/grouped/ProcedureReportsGrouped";
 
 const LayoutRouts = () => {
   return (
@@ -25,21 +29,25 @@ const LayoutRouts = () => {
       <Route path="/TmchCreditInsuranceBillModal" element={<TmchCreditInsuranceBill />} />
       <Route path="/TmchAdvanceCollectionModal" element={<AdvanceCollectionTmch />} />
       <Route path="/TmchUnsettledAmountModal" element={<UnsettledAmountTmch />} />
+      <Route path="/TmchProcedureReportsModal" element={<ProcedureReportsTmch />} />
       {/* tssh */}
       <Route path="/TsshCreditInsuranseBillCollectionModal" element={<CreditInsuranceBillCollection />} />
       <Route path="/TsshCreditInsuranceBillModal" element={<CreditInsuranceBill />} />
       <Route path="/TsshAdvanceCollectionModal" element={<AdvanceCollectionTssh />} />
       <Route path="/TsshUnsettledAmountModal" element={<UnsettledAmountTssh />} />
+      <Route path="/TsshProcedureReportsModal" element={<ProcedureReportsTssh />} />
       {/* grouped */}
       <Route path="/GroupedCreditInsuranseBillCollectionModal" element={<CreditInsurnaceCollectionGrouped />} />
       <Route path="/GroupedCreditInsuranceBillModal" element={<CreditInsuranceBillGrouped />} />
       <Route path="/GroupedUnsettledAmountlModal" element={<UnsettledGrouped />} />
       <Route path="/GroupedAdvanceCollectionModal" element={<AdvanceCollectionGrouped />} />
+      <Route path="/GroupedProcedureReportsModal" element={<ProcedureReportsGrouped />} />
       {/* qmt */}
       <Route path="/QmtCreditInsuranseBillCollectionModal" element={<QmtCreditInsuranceBillCollection />} />
       <Route path="/QmtCreditInsuranceBillModal" element={<QmtCreditInsuranceBill />} />
       <Route path="/QmtUnsettledAmountlModal" element={<UnsettledAmount />} />
       <Route path="/QmtAdvanceCollectionModal" element={<AdvanceCollection />} />
+      <Route path="/QmtProcedureReportsModal" element={<ProcedureReports />} />
     </Routes>
   );
 };

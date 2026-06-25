@@ -136,12 +136,23 @@ const IncomeReport = () => {
     }
   };
 
+  const onClickProcedureIncomeModalSection = (item) => {
+    console.log(item);
+    window.open(
+      `/Mis/QmtProcedureReportsModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}&subGroupName=${item.subGroupName}`,
+      "_blank",
+      "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+    );
+  };
+
   // Procedure Income Data
   const ProcedureIncomeDataJsx = PrcedureIncome?.map((item, index) => (
     <Fragment key={`ProIncome-${item.groupHead}`}>
       <LightBlueRow data={item.groupHead?.toLowerCase()} />
       {item.groupData?.length > 0 &&
-        item.groupData.filter((item) => item.subGroupName !== "SubGroupTotal").map((group, i) => <WhiteRow key={`row-${i}`} data={group} serialNum={getSerial()} onClick={() => {}} />)}
+        item.groupData
+          .filter((item) => item.subGroupName !== "SubGroupTotal")
+          .map((group, i) => <WhiteRow key={`row-${i}`} data={group} serialNum={getSerial()} onClick={onClickProcedureIncomeModalSection} />)}
       <WhiteRowTotal data={item.groupData} />
     </Fragment>
   ));

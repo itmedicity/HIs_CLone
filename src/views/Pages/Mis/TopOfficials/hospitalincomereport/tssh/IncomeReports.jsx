@@ -116,6 +116,15 @@ const IncomeReports = () => {
     }
   };
 
+  const onClickProcedureIncomeModalSection = (item) => {
+    sessionStorage.setItem("ProcedureIpNumberListForTssh", JSON.stringify(payload));
+    window.open(
+      `/Mis/TsshProcedureReportsModal/?from=${encodeURIComponent(state.from)}&to=${encodeURIComponent(state.to)}&subGroupName=${item.subGroupName}`,
+      "_blank",
+      "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0",
+    );
+  };
+
   // ✅ HOOK DATA
   const PrcedureIncome = useProcedureIncome(apiData);
   const {pharmacyIncome, IpConsolidatedDiscountSection, CollectionAgainstSalesSection, CreditInsuranceBillSection, CounterCollection, Patient_Type} = useIncomeCalculations(apiData, setIsLoading, 0);
@@ -125,7 +134,9 @@ const IncomeReports = () => {
     <Fragment key={`ProIncome-${item.groupHead}`}>
       <LightBlueRow data={item.groupHead?.toLowerCase()} />
       {item.groupData?.length > 0 &&
-        item.groupData.filter((item) => item.subGroupName !== "SubGroupTotal").map((group, i) => <WhiteRow key={`row-${i}`} data={group} serialNum={getSerial()} onClick={() => {}} />)}
+        item.groupData
+          .filter((item) => item.subGroupName !== "SubGroupTotal")
+          .map((group, i) => <WhiteRow key={`row-${i}`} data={group} serialNum={getSerial()} onClick={onClickProcedureIncomeModalSection} />)}
       <WhiteRowTotal data={item.groupData} />
     </Fragment>
   ));
