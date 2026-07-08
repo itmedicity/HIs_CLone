@@ -25,13 +25,24 @@ const HeaderBar = () => {
   }, []);
 
   const restartPool = async () => {
-    const poolRestart = await axiosinstance.post("/restartPools");
-    if (poolRestart.status === 200) {
+    try {
+      const poolRestart = await axiosinstance.get("/restart");
+      console.log(poolRestart);
+      if (poolRestart.status === 404) {
+        setShowMenu(false);
+        alert("Api Not Found");
+      }
+
+      if (poolRestart.status === 500) {
+        setShowMenu(false);
+        alert("Pool Restart Failed");
+      }
+      alert("Pool Restart Successful");
       setShowMenu(false);
-      alert("Pool Restarted Successfully");
-    } else {
+    } catch (error) {
+      console.error("Error occurred while restarting pool:", error);
       setShowMenu(false);
-      alert("Pool Restart Failed");
+      alert("An error occurred while restarting the pool.");
     }
   };
 
