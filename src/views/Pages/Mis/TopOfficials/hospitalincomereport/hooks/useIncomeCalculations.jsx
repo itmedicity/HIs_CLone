@@ -1,7 +1,7 @@
-import {useMemo} from "react";
+import {useEffect, useMemo} from "react";
 
 export const useIncomeCalculations = (apiData, setLoading, grpval) => {
-  return useMemo(() => {
+  const result = useMemo(() => {
     if (!apiData?.data) {
       return {
         pharmacyIncome: [],
@@ -48,10 +48,10 @@ export const useIncomeCalculations = (apiData, setLoading, grpval) => {
       {
         subGroupName: "Pharmacy Medicine Sale",
         collection: null,
-        netAmount: grpval !== 1 && pharma_netAmount,
-        tax: grpval !== 1 && pharmacy_tax,
-        discount: grpval !== 1 && pharmacy_discount,
-        gross: grpval !== 1 && pharmacy_gross,
+        netAmount: grpval !== 1 ? pharma_netAmount : 0,
+        tax: grpval !== 1 ? pharmacy_tax : 0,
+        discount: grpval !== 1 ? pharmacy_discount : 0,
+        gross: grpval !== 1 ? pharmacy_gross : 0,
         style: "N",
       },
     ];
@@ -270,7 +270,6 @@ export const useIncomeCalculations = (apiData, setLoading, grpval) => {
       collection: totalDiscount,
       style: "B",
     });
-    setLoading(false);
     return {
       pharmacyIncome,
       IpConsolidatedDiscountSection,
@@ -279,5 +278,11 @@ export const useIncomeCalculations = (apiData, setLoading, grpval) => {
       CounterCollection,
       Patient_Type,
     };
-  }, [apiData]);
+  }, [apiData, grpval]);
+
+  useEffect(() => {
+    setLoading(false);
+  }, [apiData, grpval, setLoading]);
+
+  return result;
 };

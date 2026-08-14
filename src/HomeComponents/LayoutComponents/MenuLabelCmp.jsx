@@ -1,36 +1,38 @@
-import { Box, IconButton } from '@mui/material'
+import { Box } from '@mui/material'
 import React from 'react'
-import { NavLink } from 'react-router-dom'
-import './Style.css'
+import { NavLink, useLocation } from 'react-router-dom'
+import { isSharedPlaceholderRoute } from '../../Menu/Menu'
+import { isSectionActive } from '../../Menu/menuSectionRoutes'
 
-const MenuLabelCmp = ({ name, route }) => {
+const MenuLabelCmp = ({ name, route, slno, hoveredSlno, setHoveredSlno }) => {
+    const location = useLocation()
+
+    const isActive = isSharedPlaceholderRoute(route)
+        ? location.state?.menuSlno === slno
+        : isSectionActive(route, location.pathname)
+    const isHovered = hoveredSlno === slno
+
     return (
         <NavLink
             to={route}
-            style={({ isActive, isPending }) => {
-                return {
-                    fontWeight: isActive ? '600' : "",
-                    textDecoration: 'none',
-                };
-            }}
+            state={{ menuSlno: slno }}
+            style={{ textDecoration: 'none' }}
+            onMouseEnter={() => setHoveredSlno?.(slno)}
+            onMouseLeave={() => setHoveredSlno?.(null)}
         >
             <Box
                 sx={{
                     height: '34px',
-                    backgroundColor: '#6d6962',
+                    backgroundColor: isActive || isHovered ? '#525252' : '#6d6962',
                     borderBottom: '1px solid #90898994',
                     display: 'flex',
                     alignItems: 'center',
                     fontSize: '13px',
+                    fontWeight: isActive ? '600' : '',
                     color: 'white',
-                    paddingLeft: 0,
-                    ':hover': {
-                        backgroundColor: '#525252',
-                        marginLeft: -0.8,
-                        opacity: 0.5,
-                        paddingLeft: 0.8
-                    }
-
+                    marginLeft: isHovered ? -0.8 : 0,
+                    opacity: isHovered ? 0.5 : 1,
+                    paddingLeft: isHovered ? 0.8 : 0,
                 }}>
                 {name}
             </Box>

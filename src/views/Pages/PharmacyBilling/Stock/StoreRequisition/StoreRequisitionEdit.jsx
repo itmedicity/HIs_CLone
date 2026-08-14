@@ -88,6 +88,11 @@ const StoreRequisitionEdit = () => {
             if (success === 2) {
                 const itemid = view.map((val, index) => {
                     const itemlist = data.find((value) => val.IT_CODE === value.it_code)
+                    if (!itemlist?.itn_strip) {
+                        return {
+                            ...val, ROL_QTY: val.SRN_QTY,
+                        }
+                    }
                     if ((val.SRN_QTY % itemlist.itn_strip) === 0) {
                         return {
                             ...val, ROL_QTY: val.SRN_QTY,

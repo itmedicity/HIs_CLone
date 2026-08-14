@@ -21,5 +21,14 @@ export const menuIconName = [
     { slno: 18, route: "/Menu/Test", iconName: imageIcon.icon9, name: 'Casualty' },
     { slno: 19, route: "/Menu/Test", iconName: imageIcon.icon29, name: 'Theatre' },
     { slno: 20, route: "/Menu/Test", iconName: imageIcon.icon49, name: 'General Master' },
-    { slno: 21, route: "/Menu/DashBoard", iconName: imageIcon.icon49, name: 'DashBoard' },
 ]
+
+// Several stub modules ("Care Desk", "Web EMR", ...) all point at the same placeholder
+// route, so a plain path match would highlight all of them at once. For those, active
+// status is instead decided by which slno was actually clicked (see MenuLabelCmp/MenuIconCmp).
+const routeCounts = menuIconName.reduce((acc, m) => {
+    acc[m.route] = (acc[m.route] || 0) + 1;
+    return acc;
+}, {});
+
+export const isSharedPlaceholderRoute = (route) => routeCounts[route] > 1;

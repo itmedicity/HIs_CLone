@@ -131,18 +131,18 @@ const RolBasedAnalysis = () => {
             const result1 = await dispatch(getMonthlyIpVisitCount(postdata))
             const ipdata = result1.payload.data
 
-            const totalOpCount = opdata.map(val => val.COUNT).reduce((prev, next) => Number(prev) + Number(next))
-            const totalIpCount = ipdata.map(val => val.COUNT).reduce((prev, next) => Number(prev) + Number(next))
+            const totalOpCount = opdata.map(val => val.COUNT).reduce((prev, next) => Number(prev) + Number(next), 0)
+            const totalIpCount = ipdata.map(val => val.COUNT).reduce((prev, next) => Number(prev) + Number(next), 0)
             const opavrg = Math.floor(totalOpCount / 6)
             const ipavrg = Math.floor(totalIpCount / 6)
             const sumdata = opdata.map((val, index) => {
                 const ip = ipdata.find((value) => val.MONTHS === value.MONTHS)
                 return {
-                    Total: val.COUNT + ip.COUNT
+                    Total: val.COUNT + (ip?.COUNT || 0)
                 }
 
             })
-            const totval = sumdata.map(val => val.Total).reduce((prev, next) => Number(prev) + Number(next))
+            const totval = sumdata.map(val => val.Total).reduce((prev, next) => Number(prev) + Number(next), 0)
             const totavg = Math.floor(totval / 6)
 
             const newdata = opdata.map((val, index) => {
@@ -150,11 +150,11 @@ const RolBasedAnalysis = () => {
                 return {
                     month: moment(new Date(val.MONTHS)).format('MMM-YYYY'),
                     OPCount: val.COUNT,
-                    IPCount: ip.COUNT,
-                    Total: val.COUNT + ip.COUNT,
+                    IPCount: (ip?.COUNT || 0),
+                    Total: val.COUNT + (ip?.COUNT || 0),
                     InDcOp: val.COUNT >= opavrg ? 1 : 0,
-                    InDcIp: ip.COUNT >= ipavrg ? 1 : 0,
-                    InDcTotal: (val.COUNT + ip.COUNT) >= totavg ? 1 : 0
+                    InDcIp: (ip?.COUNT || 0) >= ipavrg ? 1 : 0,
+                    InDcTotal: (val.COUNT + (ip?.COUNT || 0)) >= totavg ? 1 : 0
                 }
             })
             setMonth(newdata);
@@ -174,8 +174,8 @@ const RolBasedAnalysis = () => {
             const result1 = await dispatch(getMonthlyIpVisitCount(postdata1))
             const ipdata = result1.payload.data
 
-            const totalOpCount1 = opdata.map(val => val.COUNT).reduce((prev, next) => Number(prev) + Number(next))
-            const totalIpCount1 = ipdata.map(val => val.COUNT).reduce((prev, next) => Number(prev) + Number(next))
+            const totalOpCount1 = opdata.map(val => val.COUNT).reduce((prev, next) => Number(prev) + Number(next), 0)
+            const totalIpCount1 = ipdata.map(val => val.COUNT).reduce((prev, next) => Number(prev) + Number(next), 0)
             const opavrg1 = Math.floor(totalOpCount1 / 6)
             const ipavrg1 = Math.floor(totalIpCount1 / 6)
 
@@ -183,11 +183,11 @@ const RolBasedAnalysis = () => {
             const sumdata = opdata.map((val, index) => {
                 const ip = ipdata.find((value) => val.MONTHS === value.MONTHS)
                 return {
-                    Total: val.COUNT + ip.COUNT
+                    Total: val.COUNT + (ip?.COUNT || 0)
                 }
 
             })
-            const totval1 = sumdata.map(val => val.Total).reduce((prev, next) => Number(prev) + Number(next))
+            const totval1 = sumdata.map(val => val.Total).reduce((prev, next) => Number(prev) + Number(next), 0)
             const totavg1 = Math.floor(totval1 / 6)
 
             const newdata1 = opdata.map((val, index) => {
@@ -195,11 +195,11 @@ const RolBasedAnalysis = () => {
                 return {
                     month: moment(new Date(val.MONTHS)).format('MMM-YYYY'),
                     OPCount: val.COUNT,
-                    IPCount: ip.COUNT,
-                    Total: val.COUNT + ip.COUNT,
+                    IPCount: (ip?.COUNT || 0),
+                    Total: val.COUNT + (ip?.COUNT || 0),
                     InDcOp: val.COUNT >= opavrg1 ? 1 : 0,
-                    InDcIp: ip.COUNT >= ipavrg1 ? 1 : 0,
-                    InDcTotal: (val.COUNT + ip.COUNT) >= totavg1 ? 1 : 0
+                    InDcIp: (ip?.COUNT || 0) >= ipavrg1 ? 1 : 0,
+                    InDcTotal: (val.COUNT + (ip?.COUNT || 0)) >= totavg1 ? 1 : 0
                 }
             })
 
@@ -219,19 +219,19 @@ const RolBasedAnalysis = () => {
             const result1 = await dispatch(getMonthlyIpVisitCount(postdata2))
             const ipdata = result1.payload.data
 
-            const totalOpCount2 = opdata.map(val => val.COUNT).reduce((prev, next) => Number(prev) + Number(next))
-            const totalIpCount2 = ipdata.map(val => val.COUNT).reduce((prev, next) => Number(prev) + Number(next))
+            const totalOpCount2 = opdata.map(val => val.COUNT).reduce((prev, next) => Number(prev) + Number(next), 0)
+            const totalIpCount2 = ipdata.map(val => val.COUNT).reduce((prev, next) => Number(prev) + Number(next), 0)
             const opavrg2 = Math.floor(totalOpCount2 / 6)
             const ipavrg2 = Math.floor(totalIpCount2 / 6)
 
             const sumdata = opdata.map((val, index) => {
                 const ip = ipdata.find((value) => val.MONTHS === value.MONTHS)
                 return {
-                    Total: val.COUNT + ip.COUNT
+                    Total: val.COUNT + (ip?.COUNT || 0)
                 }
 
             })
-            const totval2 = sumdata.map(val => val.Total).reduce((prev, next) => Number(prev) + Number(next))
+            const totval2 = sumdata.map(val => val.Total).reduce((prev, next) => Number(prev) + Number(next), 0)
             const totavg2 = Math.floor(totval2 / 6)
 
             const newdata2 = opdata.map((val, index) => {
@@ -240,11 +240,11 @@ const RolBasedAnalysis = () => {
                 return {
                     month: moment(new Date(val.MONTHS)).format('MMM-YYYY'),
                     OPCount: val.COUNT,
-                    IPCount: ip.COUNT,
-                    Total: val.COUNT + ip.COUNT,
+                    IPCount: (ip?.COUNT || 0),
+                    Total: val.COUNT + (ip?.COUNT || 0),
                     InDcOp: val.COUNT >= opavrg2 ? 1 : 0,
-                    InDcIp: ip.COUNT >= ipavrg2 ? 1 : 0,
-                    InDcTotal: (val.COUNT + ip.COUNT) >= totavg2 ? 1 : 0
+                    InDcIp: (ip?.COUNT || 0) >= ipavrg2 ? 1 : 0,
+                    InDcTotal: (val.COUNT + (ip?.COUNT || 0)) >= totavg2 ? 1 : 0
                 }
             })
             setMonth2(newdata2);

@@ -1,5 +1,5 @@
 import React, {useMemo} from "react";
-import {Box, Paper, Table, TableContainer, TableHead, TableRow, TableCell, TableBody} from "@mui/material";
+import {Box, Paper, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, TableFooter} from "@mui/material";
 import MenuButton from "../../../Components/MenuButton";
 import ReportHeaderDesignTwo from "../../../../../Components/ReportHeaderDesignTwo";
 import "../../Style.css";
@@ -106,43 +106,44 @@ const CollectionTmchDetlReports = () => {
                 </TableRow>
               </TableBody>
               {/* Message Row Starts Here */}
-              <TableRow className="coll-TableBodyRow">
-                <TableCell colSpan={12} className="coll-SectionTotalRow coll-TextAlignLeft coll-LargeFont">
-                  Net Amount (Total Amount + Credit Bill Collection Total - Refund Total ) .Collection Refund Also Included In Refund Portion
-                </TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-              </TableRow>
-              <TableRow className="coll-TableBodyRow">
-                <TableCell colSpan={12} className="coll-SectionTotalRow coll-TextAlignLeft coll-LargeFont">
-                  Receipt Discount is included in the Adv. Settled
-                </TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-              </TableRow>
-              <TableRow className="coll-TableBodyRow">
-                <TableCell colSpan={12} className="coll-SectionTotalRow coll-TextAlignLeft coll-LargeFont">
-                  Refund Included in Partial pay bills
-                </TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-                <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
-              </TableRow>
-              {/* Message Row Starts Here */}
+              <TableFooter>
+                <TableRow className="coll-TableBodyRow">
+                  <TableCell colSpan={12} className="coll-SectionTotalRow coll-TextAlignLeft coll-LargeFont">
+                    Net Amount (Total Amount + Credit Bill Collection Total - Refund Total ) .Collection Refund Also Included In Refund Portion
+                  </TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                </TableRow>
+                <TableRow className="coll-TableBodyRow">
+                  <TableCell colSpan={12} className="coll-SectionTotalRow coll-TextAlignLeft coll-LargeFont">
+                    Receipt Discount is included in the Adv. Settled
+                  </TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                </TableRow>
+                <TableRow className="coll-TableBodyRow">
+                  <TableCell colSpan={12} className="coll-SectionTotalRow coll-TextAlignLeft coll-LargeFont">
+                    Refund Included in Partial pay bills
+                  </TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                </TableRow>
+              </TableFooter>
             </Table>
           </TableContainer>
         </Box>

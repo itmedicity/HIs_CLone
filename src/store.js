@@ -12,8 +12,8 @@ import incomeTmchSlice from "./Redux-Slice/incomeCollectionTmchSlice/incomeTmchS
 import collectionTsshSlice from "./Redux-Slice/incomeCollectionTsshSlice/collectionTsshSlice";
 import incomeProcedureTsshSlice from "./Redux-Slice/incomeCollectionTsshSlice/incomeProcedureTsshSlice";
 import incomeTsshSlice from "./Redux-Slice/incomeCollectionTsshSlice/incomeTsshSlice";
-import sliceDashBoard from "./Redux-Slice/dashboard/sliceDashBoard";
 import pharmacyTaxSlice from "./Redux-Slice/pharmacyBilling/pharmacyTaxSlice";
+import rolProcessSlice from "./Redux-Slice/pharmacyBilling/rolProcessSlice";
 
 import collectionQmtTypeSlice from "./Redux-Slice/incomeCollectionTypeSlice/collectionQmtTypeSlice";
 import incomeTypeSlice from "./Redux-Slice/incomeCollectionTypeSlice/incomeTypeSlice";
@@ -48,8 +48,8 @@ export const store = configureStore({
     procedureIncomeTssh: incomeProcedureTsshSlice,
     pharmacyIncomeTssh: incomeTsshSlice,
 
-    dashBoardSlice: sliceDashBoard,
     gstReportPharmacy: pharmacyTaxSlice,
+    rolAnalysis: rolProcessSlice,
 
     // MIS REPORT VERTSION V.5.0.0
     misReportQmt: misReportQmtSlice,

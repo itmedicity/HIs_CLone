@@ -46,7 +46,7 @@ const ImportMedicines = () => {
             lastupdate: moment(new Date(currentdate)).format('YYYY-MM-DD HH:mm:ss')
         }
     }, [currentdate])
-    const ImportMedicines = useCallback(() => {
+    const ImportMedicines = useCallback(async () => {
 
 
         const MedicineDetails = async (postdata) => {
@@ -55,10 +55,12 @@ const ImportMedicines = () => {
             if (success === 2) {
                 setView(data)
                 succesNofity(message);
+                return true;
             }
             else {
 
                 warningNofity(message);
+                return false;
             }
         }
 
@@ -74,8 +76,10 @@ const ImportMedicines = () => {
             }
         }
 
-        MedicineDetails(postdata)
-        UpdateImportedDate(patchdata)
+        const imported = await MedicineDetails(postdata)
+        if (imported) {
+            await UpdateImportedDate(patchdata)
+        }
     }, [patchdata, postdata])
 
     const ViewMedicineDetails = useCallback(() => {

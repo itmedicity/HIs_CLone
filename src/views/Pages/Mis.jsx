@@ -1,5 +1,7 @@
 // @ts-nocheck
 import React, {memo, useEffect, useState} from "react";
+import {ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import ContentMain from "../Components/ContentMain";
 import ContentSecondary from "../Components/ContentSecondary";
 import ContentPaper from "../Components/ContentPaper";
@@ -43,6 +45,7 @@ const Mis = () => {
 
   return (
     <ContentMain>
+      <ToastContainer />
       <ContentSecondary name="MIS">
         <ContentPaper name="Top Officials -New MIS">
           {menuList?.topOff_new?.map((val) => (

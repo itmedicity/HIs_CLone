@@ -28,7 +28,7 @@ const TmchCreditInsuranceBill = () => {
   const {data, isLoading, isError, error} = useQuery({
     queryKey: ["CreditInsurBillsModal", from, to, ipList],
     queryFn: async () => GET_CreditInsuranceBills({from, to, ipList}),
-    enabled: !!from && !!to && !!ipList,
+    enabled: !!from && !!to && ipList.length > 0,
   });
 
   const rows = data?.data || [];
@@ -73,10 +73,10 @@ const TmchCreditInsuranceBill = () => {
         {e.AMT?.toLocaleString("en-US", {minimumFractionDigits: 2})}
       </TableCell>
       <TableCell padding="none" align="left" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
-        {e.CUC_NAME.toLowerCase()}
+        {e.CUC_NAME?.toLowerCase()}
       </TableCell>
       <TableCell padding="none" align="left" sx={{border: 1, fontSize: "12px", borderColor: "#4f4949", lineHeight: "16px"}}>
-        {e.USC_NAME.toLowerCase()}
+        {e.USC_NAME?.toLowerCase()}
       </TableCell>
     </TableRow>
   ));

@@ -315,7 +315,7 @@ const SalesReportsMain = () => {
                                 }}
                                 onClick={(e) => ExportToExcel(e)}
                             >
-                                Export To Excel
+                                Export To CSV
                             </Button>
                         </Box>
                     </Box>

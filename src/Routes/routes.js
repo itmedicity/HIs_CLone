@@ -8,7 +8,6 @@ const LabGeneralBill = React.lazy(() => import("../views/Pages/LabGeneralBill"))
 const Mis = React.lazy(() => import("../views/Pages/Mis"));
 const Outpatient = React.lazy(() => import("../views/Pages/Outpatient"));
 const PharmacyBilling = React.lazy(() => import("../views/Pages/PharmacyBilling"));
-const DashBoard = React.lazy(() => import("../views/Pages/Dashboard"));
 
 //Qmt
 const HospitalIncomeReports = React.lazy(() => import("../views/Pages/Mis/HospitalncomeReport/HospitalncomeReports"));
@@ -52,9 +51,6 @@ const StoreReq = React.lazy(() => import("../views/Pages/PharmacyBilling/Stock/S
 const RolAnalysis = React.lazy(() => import("../views/Pages/PharmacyBilling/Analysis Statement/RolBasedAnalysis/RolBasedAnalysis"));
 const GstReport = React.lazy(() => import("../views/Pages/PharmacyBilling/Analysis Statement/GstReportPharmacyWise/GstReportPharmacyWise"));
 
-// dashboard
-const OpIpAnalysis = React.lazy(() => import("../views/Pages/DashBoard/DashboardOP_IP"));
-
 //Pharmacy Reports
 const pharmacyGstReports = React.lazy(() => import("../views/Pages/PharmacyBilling/Analysis Statement/SalesReportTssh/SalesReportsMain"));
 const pharmacyGstReptTMCH = React.lazy(() => import("../views/Pages/PharmacyBilling/Analysis Statement/SalesGstReportTmch/SalesGstReportMain"));
@@ -96,7 +92,6 @@ const routes = [
   {path: "/Mis", element: Mis},
   {path: "/Outpatient", element: Outpatient},
   {path: "/PharmacyBilling", element: PharmacyBilling},
-  {path: "/DashBoard", element: DashBoard},
   {path: "/Test", element: Test},
 
   //qmt
@@ -140,8 +135,6 @@ const routes = [
   {path: "/RolAnalysis", name: "ROL Based Analysis", element: RolAnalysis},
   {path: "/GstReport", name: "GST Report Tax % And Pharmacy Wise", element: GstReport},
 
-  // dashbord
-  {path: "/DashBoardData", name: "OP-IP Statistics", element: OpIpAnalysis},
   //Pharmacy Reports
   {path: "/pharmacyGstSalseReports", name: "PHARMACY GST Sales Reports", element: pharmacyGstReports},
   {path: "/pharmacyGstReportTmch", name: "PHARMACY GST Sales Reports", element: pharmacyGstReptTMCH},

@@ -28,7 +28,7 @@ const AdvanceCollectionGrouped = () => {
   const {data, isLoading, isError, error} = useQuery({
     queryKey: ["Get_TSSH_AdvanceCollection", from, to, ipList],
     queryFn: async () => GET_tssh_AdvanceCollection({from, to, ipList}),
-    enabled: !!from && !!to && !!ipList,
+    enabled: !!from && !!to && ipList.length > 0,
   });
 
   const rows = data?.data || [];

@@ -98,25 +98,26 @@ const CollectionReportTssh = () => {
             to: tDate
         }
 
-        setTimeout(() => {
-            axiosinstance.post('/pharmacytax/collectionTmch', postData).then((result) => {
-                const { success, data } = result.data;
-                if (success === 1) {
-                    const newData = data?.map((e) => {
-                        return {
-                            from: frmDate,
-                            to: tDate,
-                            name: e.name,
-                            amount: e.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })
-                        }
-                    })
-                    setRowData(newData)
-                    setCollection(data.reduce((accumulator, currentValue) => accumulator + currentValue.amount, 0))
-                }
-            })
+        try {
+            const result = await axiosinstance.post('/pharmacytax/collectionTmch', postData);
+            const { success, data } = result.data;
+            if (success === 1) {
+                const newData = data?.map((e) => {
+                    return {
+                        from: frmDate,
+                        to: tDate,
+                        name: e.name,
+                        amount: e.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })
+                    }
+                })
+                setRowData(newData)
+                setCollection(data.reduce((accumulator, currentValue) => accumulator + currentValue.amount, 0))
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
             setLoading(0)
-        }, "3000")
-
+        }
     }, [frmDate, tDate])
 
     const handleClose = () => {
@@ -246,7 +247,7 @@ const CollectionReportTssh = () => {
                                     borderRadius: '3px',
                                     color: 'black'
                                 }}
-                            // onClick={Closepage}
+                                onClick={handleClose}
                             >
                                 Close
                             </Button>

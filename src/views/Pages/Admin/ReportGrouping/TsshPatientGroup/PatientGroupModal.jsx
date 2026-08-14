@@ -48,19 +48,19 @@ const PatientGroupModal = ({ open, setOpen, addData, removeData, setIplist, setA
         //REMOVE DATA FROM THE TSSH TABLE
         if (Object.keys(removePostData).length > 0) {
             const removeIpNumner = await axiosinstance.post('/admission/removePatiet', removePostData);
-            const { succ, msage } = await removeIpNumner.data;
-            if (succ === 1) {
-                succesNofity(msage)
+            const { success, message } = await removeIpNumner.data;
+            if (success === 1) {
+                succesNofity(message)
                 setIplist([])
                 setOpen(false)
                 setAdd([])
                 setRemove([])
-            } else if (succ === 2) {
-                warningNofity(msage)
+            } else if (success === 2) {
+                warningNofity(message)
                 setIplist([])
                 setOpen(false)
             } else {
-                errorNofity(msage)
+                errorNofity(message)
                 setIplist([])
                 setOpen(false)
             }

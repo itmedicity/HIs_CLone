@@ -5,19 +5,11 @@ export const GstExcelExport = async (reportData, fileName) => {
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
 
+    // Headers are derived from reportData's own field names below (via
+    // json_to_sheet) rather than a hardcoded list, so they always match
+    // the actual exported columns.
     const ws = XLSX.utils.json_to_sheet(reportData);
 
-    XLSX.utils.sheet_add_aoa(ws, [[
-        "Item",
-        "Mrp",
-        "Actual Mrp",
-        "Original Mrp",
-        "Rate",
-        "Tax",
-        "Amount",
-        "Loose Qty",
-        "Qty"
-    ]], { origin: "A1" });
     const wb = {
         Sheets: { data: ws },
         SheetNames: ["data"]

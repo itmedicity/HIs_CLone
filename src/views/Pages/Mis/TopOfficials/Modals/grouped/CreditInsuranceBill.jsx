@@ -28,7 +28,7 @@ const CreditInsuranceBill = () => {
   const {data, isLoading, isError, error} = useQuery({
     queryKey: ["GroupedCreditInsurBillsModal", from, to, ipList],
     queryFn: async () => GET_tssh_CreditInsuranceBills({from, to, ipList}),
-    enabled: !!from && !!to && !!ipList,
+    enabled: !!from && !!to && ipList.length > 0,
   });
 
   const rows = data?.data || [];

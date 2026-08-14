@@ -88,7 +88,7 @@ const IncomeReportsTssh = () => {
         }
       }
       // console.log(ipNumber);
-
+      console.log(ipNumber, rmIpNumber, ipNoColl);
       navigateToReport(ipNumber, rmIpNumber, ipNoColl);
     } catch (error) {
       console.error("Error fetching report data:", error);

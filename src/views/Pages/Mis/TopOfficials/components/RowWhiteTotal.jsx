@@ -6,6 +6,7 @@ const RowWhiteTotal = ({data = []}) => {
   // Filter and remove the SubGroupTotal from the array
   const rows = data.filter((item) => item.subGroupName !== "SubGroupTotal");
   //  Calculate totals
+  const collection = rows.reduce((sum, item) => sum + (item.collection || 0), 0);
   const netAmount = rows.reduce((sum, item) => sum + (item.netAmount || 0), 0);
   const taxAmount = rows.reduce((sum, item) => sum + (item.tax || 0), 0);
   const discountAmt = rows.reduce((sum, item) => sum + (item.discount || 0), 0);
@@ -17,7 +18,7 @@ const RowWhiteTotal = ({data = []}) => {
       <TableCell align="left" sx={{width: "25%", fontSize: "12px"}}></TableCell>
       {/* Collection */}
       <TableCell align="right" sx={{width: "20%", fontSize: "12px", fontWeight: "bolder"}}>
-        {formatToDecimal(0)}
+        {formatToDecimal(collection)}
       </TableCell>
       {/* Net  */}
       <TableCell align="right" sx={{width: "20%", fontSize: "12px", fontWeight: "bolder"}}>

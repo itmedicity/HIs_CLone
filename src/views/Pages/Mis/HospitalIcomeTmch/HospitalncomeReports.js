@@ -94,6 +94,7 @@ const HospitalncomeReports = () => {
           ipNoColl = ipNumber.concat(filtedArray);
         }
       }
+      console.log(ipNumber, rmIpNumber, ipNoColl, groupedPatient);
       navigateToReport(ipNumber, rmIpNumber, ipNoColl, groupedPatient);
     } catch (error) {
       console.error("Error fetching report data:", error);

@@ -468,9 +468,9 @@ const IncomeReports = () => {
       ]);
 
       setPharma1(res1.data.success === 1 ? res1.data.data : []);
-      setPharma2(res2.data.success === 1 ? res1.data.data : []);
-      setPharma3(res3.data.success === 1 ? res1.data.data : []);
-      setPharma4(res4.data.success === 1 ? res1.data.data : []);
+      setPharma2(res2.data.success === 1 ? res2.data.data : []);
+      setPharma3(res3.data.success === 1 ? res3.data.data : []);
+      setPharma4(res4.data.success === 1 ? res4.data.data : []);
     } catch (error) {
       console.log("Error fetching pharmacy details:", error);
     }

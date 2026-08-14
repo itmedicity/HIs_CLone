@@ -27,7 +27,7 @@ const UnsettledAmountTssh = () => {
   const {data, isLoading, isError, error} = useQuery({
     queryKey: ["GetTsshUnsettledAmount", from, to, ipList],
     queryFn: async () => GET_tssh_UnsettledAmountBills({from, to, ipList}),
-    enabled: !!from && !!to && !!ipList,
+    enabled: !!from && !!to && ipList.length > 0,
   });
 
   const rows = data?.data || [];
@@ -35,12 +35,12 @@ const UnsettledAmountTssh = () => {
   const totals = useMemo(() => {
     return rows.reduce(
       (acc, row) => {
-        acc.TAX += row.TAX || 0;
+        acc.TAXAMT += row.TAXAMT || 0;
         acc.AMT += row.AMT || 0;
         return acc;
       },
       {
-        TAX: 0,
+        TAXAMT: 0,
         AMT: 0,
       },
     );
@@ -178,7 +178,7 @@ const UnsettledAmountTssh = () => {
                     align="right"
                     sx={{fontSize: "12px", fontWeight: 700, border: 1, borderColor: "#2d2626", color: "black", fontFamily: "Tahoma,Verdana, Geneva, sans-serif", lineHeight: "16px"}}
                   >
-                    {totals.TAX.toLocaleString("en-US", {minimumFractionDigits: 2})}
+                    {totals.TAXAMT.toLocaleString("en-US", {minimumFractionDigits: 2})}
                   </TableCell>
                   <TableCell
                     align="right"

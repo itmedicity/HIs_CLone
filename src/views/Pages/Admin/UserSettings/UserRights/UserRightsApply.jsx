@@ -232,13 +232,14 @@ const UserRightsApply = () => {
     [postdata, usergroup, menugroup],
   );
 
-  const SaveUserRights = useCallback(() => {
+  const SaveUserRights = useCallback(async () => {
     const UserrightsInsert = async (menuidnot) => {
       const result = await axiosinstance.post("/userrights/insert", menuidnot);
       const {success, message} = result.data;
       if (success === 1) {
-        ClearDetails();
+        succesNofity(message);
       } else {
+        warningNofity(message);
       }
     };
     const UserrightsUpdate = async (disarray) => {
@@ -256,10 +257,10 @@ const UserRightsApply = () => {
     });
 
     if (menuidnot.length !== 0) {
-      UserrightsInsert(menuidnot);
-      UserrightsUpdate(disarray);
+      await UserrightsInsert(menuidnot);
+      await UserrightsUpdate(disarray);
     } else {
-      UserrightsUpdate(disarray);
+      await UserrightsUpdate(disarray);
     }
   }, [insertarray, disarray, viewrights]);
 

@@ -5,6 +5,7 @@ import DrawerLabelMenu from "./DrawerLabelMenu";
 
 const DrawerLarge = () => {
   const [display, setDisplay] = useState("inline");
+  const [hoveredSlno, setHoveredSlno] = useState(null);
 
   const setDisplayFun = useCallback(
     (data) => {
@@ -21,10 +22,10 @@ const DrawerLarge = () => {
       }}
     >
       <Box sx={{backgroundColor: "#6d6962", width: "40px"}}>
-        <DrawerIconMenu display={display} setfun={setDisplayFun} />
+        <DrawerIconMenu display={display} setfun={setDisplayFun} hoveredSlno={hoveredSlno} setHoveredSlno={setHoveredSlno} />
       </Box>
       <Box sx={{backgroundColor: "#6d6962", width: "165px", display: display}}>
-        <DrawerLabelMenu setfun={setDisplayFun} />
+        <DrawerLabelMenu setfun={setDisplayFun} hoveredSlno={hoveredSlno} setHoveredSlno={setHoveredSlno} />
       </Box>
     </Paper>
   );
