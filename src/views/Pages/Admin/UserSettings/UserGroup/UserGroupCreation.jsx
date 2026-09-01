@@ -58,6 +58,9 @@ const UserGroupCreation = () => {
             if (group === '') {
                 warningNofity("Enter User Group")
             }
+            else if (expiry !== '' && (isNaN(Number(expiry)) || Number(expiry) < 0)) {
+                warningNofity("Enter a valid Password Expiry Days (0 or greater)")
+            }
             else {
                 const results = await axiosinstance.post('/usergroup/insertgroup', postdata)
                 const { success, message } = results.data
@@ -77,6 +80,9 @@ const UserGroupCreation = () => {
         const UserGroupUpdate = async () => {
             if (group === '') {
                 warningNofity("Enter User Group")
+            }
+            else if (expiry !== '' && (isNaN(Number(expiry)) || Number(expiry) < 0)) {
+                warningNofity("Enter a valid Password Expiry Days (0 or greater)")
             }
             else {
                 const results = await axiosinstance.patch('/usergroup/update', patchdata)

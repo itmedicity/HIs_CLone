@@ -29,7 +29,7 @@ const ProcedureReportsGrouped = () => {
   const {data, isLoading, isError, error} = useQuery({
     queryKey: ["GET_tssh_ProcedureDetails", from, to, ipList],
     queryFn: async () => GET_tssh_ProcedureDetails({from, to, ipList}),
-    enabled: !!from && !!to && !!ipList,
+    enabled: !!from && !!to && ipList.length > 0,
   });
 
   const rows = data?.data?.filter((x) => x.DG_DESC === subGroupName) || [];

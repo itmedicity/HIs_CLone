@@ -164,8 +164,14 @@ const UserCreation = () => {
             else if (mobile === '') {
                 warningNofity("Enter Mobile")
             }
+            else if (!/^\d{10}$/.test(mobile)) {
+                warningNofity("Enter a valid 10 digit Mobile Number")
+            }
             else if (email === '') {
                 warningNofity("Enter Email")
+            }
+            else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                warningNofity("Enter a valid Email Address")
             }
             else if (usergroup === 0) {
                 warningNofity("Select User Group")
@@ -203,8 +209,14 @@ const UserCreation = () => {
                 else if (mobile === '') {
                     warningNofity("Enter Mobile")
                 }
+                else if (!/^\d{10}$/.test(mobile)) {
+                    warningNofity("Enter a valid 10 digit Mobile Number")
+                }
                 else if (email === '') {
                     warningNofity("Enter Email")
+                }
+                else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    warningNofity("Enter a valid Email Address")
                 }
                 else if (usergroup === 0) {
                     warningNofity("Select User Group")
@@ -234,8 +246,14 @@ const UserCreation = () => {
                 else if (mobile === '') {
                     warningNofity("Enter Mobile")
                 }
+                else if (!/^\d{10}$/.test(mobile)) {
+                    warningNofity("Enter a valid 10 digit Mobile Number")
+                }
                 else if (email === '') {
                     warningNofity("Enter Email")
+                }
+                else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    warningNofity("Enter a valid Email Address")
                 }
                 else if (usergroup === 0) {
                     warningNofity("Select User Group")

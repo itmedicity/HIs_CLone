@@ -21,6 +21,7 @@ const Login = () => {
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [clinic, setClinic] = useState("00");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleClickLogin = useCallback(async () => {
         if (userName === "") {
@@ -33,26 +34,32 @@ const Login = () => {
                 usc_pass: password
             }
 
-            const loginFun = await axiosinstance.post("/employee/login", postData);
-            const { success } = await loginFun.data;
-            if (success === 1) {
-                const { expireDate, message, token, data } = await loginFun.data;
-                const loginCred = {
-                    user: data.us_code,
-                    name: data.usc_first_name,
-                    usergroup: data.user_group_id,
-                    token: token,
-                    expire: expireDate
-                }
-                localStorage.setItem('usrCred', JSON.stringify(loginCred));
-                dispatch(logedIformation(loginCred))
+            setIsSubmitting(true);
+            try {
+                const loginFun = await axiosinstance.post("/employee/login", postData);
+                const { success } = loginFun.data;
+                if (success === 1) {
+                    const { expireDate, token, data } = loginFun.data;
+                    const loginCred = {
+                        user: data.us_code,
+                        name: data.usc_first_name,
+                        usergroup: data.user_group_id,
+                        token: token,
+                        expire: expireDate
+                    }
+                    localStorage.setItem('usrCred', JSON.stringify(loginCred));
+                    dispatch(logedIformation(loginCred))
 
-                if (moment(expireDate) > moment(new Date())) {
-                    navigate('/Menu')
-                    navigate('/Menu/DashBoardData')
+                    if (moment(expireDate) > moment(new Date())) {
+                        navigate('/Menu')
+                    }
+                } else {
+                    errorNofity("Invalid Login")
                 }
-            } else {
-                errorNofity("Invalid Login")
+            } catch (error) {
+                // Axios response interceptor already shows a toast for the failure.
+            } finally {
+                setIsSubmitting(false);
             }
         }
     }, [userName, password, clinic])
@@ -205,6 +212,7 @@ const Login = () => {
                                         }
                                     }}
                                     onClick={handleClickLogin}
+                                    disabled={isSubmitting}
                                 >Login</Button>
                             </Box>
                         </Box>

@@ -1,12 +1,13 @@
 import axios from "axios";
-import {DEV_API_URL, PRODUCTION_API_URL} from "../Constant/Static";
 import {toast} from "react-toastify";
 
-// axios.defaults.baseURL = DEV_API_URL;
-const BASE_URL = DEV_API_URL;
+// Configurable via REACT_APP_API_URL — see .env.development / .env.production
+// (CRA loads the right one automatically for `npm start` vs `npm run build`).
+// The fallback below only applies if that variable is somehow unset.
+const BASE_URL = process.env.REACT_APP_API_URL || "http://192.168.22.170:6001/api";
 
 export const axiosinstance = axios.create({
-  baseURL: DEV_API_URL,
+  baseURL: BASE_URL,
   timeout: 30000, // 30 seconds
   headers: {
     "Content-Type": "application/json",
@@ -16,6 +17,23 @@ export const axiosinstance = axios.create({
 });
 
 let isUnauthorizedToastShown = false;
+
+// The API sometimes reports an expired/invalid token as a body-level
+// `{status: 102, message: "Invalid Token"}` payload (HTTP 200) instead of a
+// real 401, so it has to be detected by shape rather than by status code.
+const isInvalidTokenPayload = (data) => Boolean(data && typeof data === "object" && (data.status === 102 || /invalid token/i.test(data.message || "")));
+
+const logoutOnInvalidToken = (message) => {
+  if (isUnauthorizedToastShown) return;
+  isUnauthorizedToastShown = true;
+
+  toast.error(message || "Your session has expired. Please login again.");
+  localStorage.removeItem("usrCred");
+
+  setTimeout(() => {
+    window.location.href = "/";
+  }, 1200);
+};
 
 /**
  * REQUEST INTERCEPTOR
@@ -41,7 +59,16 @@ axiosinstance.interceptors.request.use(
  * RESPONSE INTERCEPTOR
  */
 axiosinstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (isInvalidTokenPayload(response.data)) {
+      logoutOnInvalidToken(response.data.message);
+      // Swallow the payload so calling code never sees it and can't crash
+      // on missing fields (e.g. `.map()` on undefined) while we log out.
+      return new Promise(() => {});
+    }
+
+    return response;
+  },
 
   (error) => {
     if (!error.response) {
@@ -55,6 +82,11 @@ axiosinstance.interceptors.response.use(
     }
 
     const {status, data} = error.response;
+
+    if (isInvalidTokenPayload(data)) {
+      logoutOnInvalidToken(data.message);
+      return new Promise(() => {});
+    }
 
     switch (status) {
       case 400:

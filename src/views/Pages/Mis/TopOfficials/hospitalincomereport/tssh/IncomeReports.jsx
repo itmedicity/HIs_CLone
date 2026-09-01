@@ -47,26 +47,9 @@ const IncomeReports = () => {
         if (data.success === 0 || data.success === null || !data) {
           alert("No Data Found");
         }
-        // /****For Test code start  */
-        const dataa = response.data.result; // replace with your file path
-        const batchSize = 500;
-        let batchCount = 0;
-        for (let i = 0; i < dataa.length; i += batchSize) {
-          const chunk = dataa.slice(i, i + batchSize);
-
-          let sql = "INSERT ALL\n";
-          chunk.forEach((row) => {
-            sql += `  INTO MEDIWARE.GTT_EXCLUDE_IP (IP_NO, STATUS) VALUES ('${row.ip}', ${row.status})\n`;
-          });
-          sql += "SELECT 1 FROM DUAL;\n\n";
-          console.log(sql);
-        }
-        // /****For Test code start  */
-
         if (data.success === 1) {
           setApiData(response.data);
         }
-        console.log(response.data);
       } catch (error) {
         console.log(error);
         navigate("/Menu/QmtIncomeReportsDateSelection");

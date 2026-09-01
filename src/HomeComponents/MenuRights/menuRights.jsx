@@ -15,5 +15,6 @@ export const getMenuSlno = async (user) => {
         return data;
     }
 
+    return [];
 }
 

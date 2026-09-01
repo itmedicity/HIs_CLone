@@ -25,7 +25,7 @@ const dischargedPatientTsshSlice = createSlice({
             state.status = false
         },
         [getDischargedPatientList.rejected]: (state) => {
-            state.message = "pending"
+            state.message = "Error"
             state.status = false
         },
         [getDischargedPatientList.fulfilled]: (state, { payload }) => {

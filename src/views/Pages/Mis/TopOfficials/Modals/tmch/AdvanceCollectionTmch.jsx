@@ -28,7 +28,7 @@ const AdvanceCollectionTmch = () => {
   const {data, isLoading, isError, error} = useQuery({
     queryKey: ["Get_TMCH_AdvanceCollection", from, to, ipList],
     queryFn: async () => GET_TMCH_AdvanceCollection({from, to, ipList}),
-    enabled: !!from && !!to && !!ipList,
+    enabled: !!from && !!to && ipList.length > 0,
   });
 
   const rows = data?.data || [];

@@ -91,32 +91,33 @@ const PharmacySaleGst = () => {
             from: frmDate,
             to: tDate
         }
-        setTimeout(() => {
-            axiosinstance.post('/pharmacytax/pharmacySaleGst', postData).then((result) => {
-                const { success, data } = result.data;
-                if (success === 1) {
-                    const newData = data?.map((e) => {
-                        return {
-                            from: frmDate,
-                            to: tDate,
-                            ip: e.ip.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                            op0: e.op0.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                            op5: e.op5.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                            op12: e.op12.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                            op18: e.op18.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                            op28: e.op28.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                            tax5: e.tax5.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                            tax12: e.tax12.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                            tax18: e.tax18.toLocaleString('en-US', { minimumFractionDigits: 2 }),
-                            tax28: e.tax28.toLocaleString('en-US', { minimumFractionDigits: 2 })
-                        }
-                    })
-                    setRowData(newData)
-                }
-            })
-
+        try {
+            const result = await axiosinstance.post('/pharmacytax/pharmacySaleGst', postData);
+            const { success, data } = result.data;
+            if (success === 1) {
+                const newData = data?.map((e) => {
+                    return {
+                        from: frmDate,
+                        to: tDate,
+                        ip: e.ip?.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                        op0: e.op0?.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                        op5: e.op5?.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                        op12: e.op12?.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                        op18: e.op18?.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                        op28: e.op28?.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                        tax5: e.tax5?.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                        tax12: e.tax12?.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                        tax18: e.tax18?.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+                        tax28: e.tax28?.toLocaleString('en-US', { minimumFractionDigits: 2 })
+                    }
+                })
+                setRowData(newData)
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
             setLoading(0)
-        }, "3000")
+        }
     }, [frmDate, tDate])
 
 

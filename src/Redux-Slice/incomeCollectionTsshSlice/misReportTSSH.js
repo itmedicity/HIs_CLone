@@ -48,5 +48,5 @@ const misReportTSSH = createSlice({
   },
 });
 
-export const {resetMisResetTmch} = misReportTSSH.actions;
+export const {resetMisResetTssh} = misReportTSSH.actions;
 export default misReportTSSH.reducer;

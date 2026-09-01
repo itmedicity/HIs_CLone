@@ -55,9 +55,9 @@ export const pdfgroup = async (view) => {
           ].concat(
             view &&
               view.map((val) => [
-                {text: val.group_id, fontSize: 8, alignment: "center"},
-                {text: val.group_name, fontSize: 8, alignment: "left"},
-                {text: val.group_active === 1 ? "Yes" : "No", fontSize: 8, alignment: "center"},
+                {text: val.user_group_id, fontSize: 8, alignment: "center"},
+                {text: val.user_group_name, fontSize: 8, alignment: "left"},
+                {text: val.user_group_active === 1 ? "Yes" : "No", fontSize: 8, alignment: "center"},
                 {text: val.pass_expiry_days, fontSize: 8, alignment: "left"},
               ]),
           ),

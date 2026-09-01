@@ -144,19 +144,19 @@ const CreditInsurBillCollModal = ({layout, setLayout, state, data, name}) => {
                       Total
                     </TableCell>
                     <TableCell align="left" sx={{width: "10%", fontSize: "12px", fontWeight: 700, color: "black"}}>
-                      {totals.CASH?.toLocaleString("en-US", {minimumFractionDigits: 2})}
+                      {totals.cash?.toLocaleString("en-US", {minimumFractionDigits: 2})}
                     </TableCell>
                     <TableCell align="left" sx={{width: "10%", fontSize: "12px", pr: 2, fontWeight: 700, color: "black"}}>
-                      {totals.CHEQUE?.toLocaleString("en-US", {minimumFractionDigits: 2})}
+                      {totals.cheque?.toLocaleString("en-US", {minimumFractionDigits: 2})}
                     </TableCell>
                     <TableCell align="right" sx={{width: "10%", fontSize: "12px", pr: 2, fontWeight: 700, color: "black"}}>
-                      {totals.DD?.toLocaleString("en-US", {minimumFractionDigits: 2})}
+                      {totals.dd?.toLocaleString("en-US", {minimumFractionDigits: 2})}
                     </TableCell>
                     <TableCell align="right" sx={{width: "10%", fontSize: "12px", pr: 2, fontWeight: 700, color: "black"}}>
-                      {totals.CARD?.toLocaleString("en-US", {minimumFractionDigits: 2})}
+                      {totals.card?.toLocaleString("en-US", {minimumFractionDigits: 2})}
                     </TableCell>
                     <TableCell align="right" sx={{width: "10%", fontSize: "12px", pr: 2, fontWeight: 700, color: "black"}}>
-                      {totals.BANKAMT?.toLocaleString("en-US", {minimumFractionDigits: 2})}
+                      {totals.bankAmt?.toLocaleString("en-US", {minimumFractionDigits: 2})}
                     </TableCell>
                     <TableCell align="right" sx={{width: "15%", fontSize: "12px", pr: 2, fontWeight: 700, color: "black"}}></TableCell>
                     <TableCell align="right" sx={{width: "15%", fontSize: "12px", pr: 2, fontWeight: 700, color: "black"}}></TableCell>

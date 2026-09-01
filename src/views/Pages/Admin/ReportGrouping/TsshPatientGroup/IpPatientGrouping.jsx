@@ -1,9 +1,8 @@
 // @ts-nocheck
 import {Box, Button, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
-import React, {memo, useCallback, useMemo, useState} from "react";
+import React, {memo, useCallback, useState} from "react";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
-import {useSelector} from "react-redux";
 import {format} from "date-fns";
 import TableRows from "./TableRows";
 import {axiosinstance} from "../../../../../controllers/AxiosConfig";
@@ -18,13 +17,8 @@ const IpPatientGrouping = () => {
   const [value, setValue] = useState(new Date());
   const [ipList, setIplist] = useState([]);
   const [apiStatus, setApiStatus] = useState(false);
-  const [minDate, setMinDate] = useState(new Date());
 
-  const [cont, setCount] = useState(0);
   const [lastDisUpdateDate, setLastDisUpdateDate] = useState("");
-
-  const state = useSelector((state) => state.admissionList);
-  const admissionList = useMemo(() => state, [state]);
 
   const getAdmissionListFun = useCallback(async () => {
     setApiStatus(true);
@@ -42,45 +36,43 @@ const IpPatientGrouping = () => {
       to: toDate,
     };
 
-    // dispatch(getAdmissionList(postData))
-
     const dateForMysql = format(value, "yyyy-MM-dd");
     const getPostData = {
       date: dateForMysql,
     };
 
-    const oraIp = await axiosinstance.post("/admission/getIpadmissionList", postData);
-    const {success, data} = await oraIp?.data;
-    const oraIpData = data;
+    try {
+      const oraIp = await axiosinstance.post("/admission/getIpadmissionList", postData);
+      const {success, data: oraIpData} = oraIp?.data;
 
-    if (success === 1) {
+      if (success !== 1) {
+        errorNofity("There is No Patient Admitted in the Ellider Software");
+        return;
+      }
+
       const mysqlIp = await axiosinstance.post("/admission/getTsshPatientList", getPostData);
-      const {success, data} = mysqlIp?.data;
-      const mysqlIpData = data;
-      if (success === 1) {
+      const {success: mysqlSuccess, data: mysqlIpData} = mysqlIp?.data;
+
+      if (mysqlSuccess === 1) {
         const filterData = oraIpData?.map((e) => {
           const ipNoIsExcist = mysqlIpData?.find((vl) => vl.ip_no === e.IP_NO);
-          if (ipNoIsExcist !== undefined) {
-            return {...e, isTssh: true, tmch: ipNoIsExcist?.tmch_status === undefined ? "0" : ipNoIsExcist?.tmch_status, slno: ipNoIsExcist?.ip_slno};
-          } else {
-            return {...e, isTssh: false, tmch: ipNoIsExcist?.tmch_status === undefined ? "0" : ipNoIsExcist?.tmch_status, slno: 0};
-          }
+          const tmch = ipNoIsExcist?.tmch_status === undefined ? "0" : ipNoIsExcist?.tmch_status;
+          return ipNoIsExcist !== undefined ? {...e, isTssh: true, tmch, slno: ipNoIsExcist?.ip_slno} : {...e, isTssh: false, tmch, slno: 0};
         });
         setIplist(filterData);
       } else {
-        const filterData = oraIpData?.map((e) => {
-          return {...e, isTssh: false, tmch: "0", slno: 0};
-        });
-        setIplist(filterData);
+        warningNofity("Error Getting TSSH Patient Grouping Status, Showing All Patients As Ungrouped");
+        setIplist(oraIpData?.map((e) => ({...e, isTssh: false, tmch: "0", slno: 0})));
       }
-    } else {
-      errorNofity("There is No Patient Admitted in the Ellider Software");
+    } catch (e) {
+      errorNofity("Error Getting Admission List From Ellider Software");
+    } finally {
+      setApiStatus(false);
     }
-  }, [value, admissionList]);
+  }, [value]);
 
   const dischargeProcess = useCallback(async () => {
     const selectedDate = format(value, "dd/MM/yyyy");
-    const fromDate = `${selectedDate} 00:00:00`;
     const toDate = `${selectedDate} 23:59:59`;
     /*****
      * GET THE LAST DICHARGE DATE
@@ -90,105 +82,88 @@ const IpPatientGrouping = () => {
      * UPDATE THE DISCHARGED PATIENT LIST IN THE tssh_ipadmiss
      * UPDATE THE LAST UPDATED DATE
      */
-    await axiosinstance
-      .get("/admission/getLastDischargeUpdatedDate")
-      .then((result) => {
-        const {success, data} = result.data;
-        if (success === 1) {
-          // console.log(data)
-          // setIpListMysql(data)
-          const lastDisUpdateDate = data[0]?.Last_dis_updateDate;
-          const date = moment(lastDisUpdateDate).format("DD/MM/YYYY");
-          const oracleFromDate = `${date} 00:00:00`;
+    setApiStatus(true);
+    try {
+      const lastDischargeResult = await axiosinstance.get("/admission/getLastDischargeUpdatedDate");
+      const {success: lastDischargeSuccess, data: lastDischargeData} = lastDischargeResult.data;
 
-          const postDateForGetDisPatient = {
-            from: oracleFromDate,
-            to: toDate,
-          };
-          // GET THE DISCHARGED PATIENT FROM THE ORACLE
-          axiosinstance
-            .post("/admission/getDischargePtFromOracle", postDateForGetDisPatient)
-            .then((result) => {
-              const {success, data} = result.data;
-              if (success === 0) errorNofity("Error Getting Discharged Patient Information From Ellider Software");
-              if (success === 2) {
-                infoNofity("No Discharged Patient Found For The Selected Date");
-              }
-              if (success === 1) {
-                const dischargedPatientFromOra = data;
-                // GET THE NOT DISCHARGED PATIENT LIST FROM THE MYSQL
-                axiosinstance
-                  .get("/admission/getAdmittedTsshPatient")
-                  .then((result) => {
-                    const {success, data} = result.data;
-                    if (success === 1) {
-                      const notDischargedPatient = data;
-                      //  FILTER THE DATE FROM ORALCE AND MYSQL DATA AND GE TSSH NOT DISCHARGED PATIENT ONLY
-                      const filterdPatientList = notDischargedPatient?.map((val) => dischargedPatientFromOra?.find((el) => el.IP_NO === val.ip_no)).filter((val) => val !== undefined);
+      if (lastDischargeSuccess !== 1) {
+        warningNofity("Error Getting Discharge Updated Date");
+        return;
+      }
 
-                      if (filterdPatientList?.length === 0) {
-                        infoNofity("There Is No Patient For update Discharge");
-                      } else {
-                        //UPDATE THE DISCHARGED PATIENT INTO THE MYSQL
-                        axiosinstance
-                          .post("/admission/updateDischargedPatient", filterdPatientList)
-                          .then((result) => {
-                            const {success, message} = result.data;
-                            if (success === 1) {
-                              succesNofity(message);
-                              //UPDATE THE LAST UPDATED DATED
-                              /****
-                               * compare the selected date and the current date
-                               * and update the lowest date in to the database
-                               * and set the selected date feild min date as the last updated date
-                               */
-                              const selectedFormDate = new Date(value);
-                              if (selectedFormDate <= new Date()) {
-                                const lastUpdatedDate = {
-                                  date: moment(selectedFormDate).format("YYYY-MM-DD h:m:"),
-                                };
+      const lastDisUpdateDateValue = lastDischargeData[0]?.Last_dis_updateDate;
+      const formattedLastDisDate = moment(lastDisUpdateDateValue).format("DD/MM/YYYY");
+      setLastDisUpdateDate(formattedLastDisDate);
+      const oracleFromDate = `${formattedLastDisDate} 00:00:00`;
 
-                                axiosinstance
-                                  .post("/admission/UpdateLastDischargeDates", lastUpdatedDate)
-                                  .then((result) => {
-                                    const {message, success} = result.data;
-                                    if (success === 1) {
-                                      succesNofity("Last Discharge Update Date Updated Successfully");
-                                    } else {
-                                      errorNofity("Error Updating the Last Update Date");
-                                    }
-                                  })
-                                  .catch((e) => {
-                                    errorNofity(e);
-                                  });
-                              }
-                            } else {
-                              errorNofity(message);
-                            }
-                          })
-                          .catch((e) => {
-                            errorNofity(e);
-                          });
-                      }
-                    } else {
-                      warningNofity("error Getting the Not Discahrged Patient OR Not Patient Data");
-                    }
-                  })
-                  .catch((e) => {
-                    errorNofity(e);
-                  });
-              }
-            })
-            .catch((e) => {
-              errorNofity(e);
-            });
+      // GET THE DISCHARGED PATIENT FROM THE ORACLE
+      const dischargedResult = await axiosinstance.post("/admission/getDischargePtFromOracle", {from: oracleFromDate, to: toDate});
+      const {success: dischargedSuccess, data: dischargedPatientFromOra} = dischargedResult.data;
+
+      if (dischargedSuccess === 0) {
+        errorNofity("Error Getting Discharged Patient Information From Ellider Software");
+        return;
+      }
+      if (dischargedSuccess === 2) {
+        infoNofity("No Discharged Patient Found For The Selected Date");
+        return;
+      }
+      if (dischargedSuccess !== 1) return;
+
+      // GET THE NOT DISCHARGED PATIENT LIST FROM THE MYSQL
+      const notDischargedResult = await axiosinstance.get("/admission/getAdmittedTsshPatient");
+      const {success: notDischargedSuccess, data: notDischargedPatient} = notDischargedResult.data;
+
+      if (notDischargedSuccess !== 1) {
+        warningNofity("error Getting the Not Discahrged Patient OR Not Patient Data");
+        return;
+      }
+
+      // FILTER THE DATE FROM ORALCE AND MYSQL DATA AND GET TSSH NOT DISCHARGED PATIENT ONLY
+      const filterdPatientList = notDischargedPatient?.map((val) => dischargedPatientFromOra?.find((el) => el.IP_NO === val.ip_no)).filter((val) => val !== undefined);
+
+      if (filterdPatientList?.length === 0) {
+        infoNofity("There Is No Patient For update Discharge");
+        return;
+      }
+
+      // UPDATE THE DISCHARGED PATIENT INTO THE MYSQL
+      const updateResult = await axiosinstance.post("/admission/updateDischargedPatient", filterdPatientList);
+      const {success: updateSuccess, message: updateMessage} = updateResult.data;
+
+      if (updateSuccess !== 1) {
+        errorNofity(updateMessage);
+        return;
+      }
+
+      succesNofity(updateMessage);
+
+      /****
+       * compare the selected date and the current date
+       * and update the lowest date in to the database
+       * and set the selected date feild min date as the last updated date
+       */
+      const selectedFormDate = new Date(value);
+      if (selectedFormDate <= new Date()) {
+        const lastUpdatedDate = {
+          date: moment(selectedFormDate).format("YYYY-MM-DD h:m:"),
+        };
+
+        const lastUpdateResult = await axiosinstance.post("/admission/UpdateLastDischargeDates", lastUpdatedDate);
+        const {success: lastUpdateSuccess} = lastUpdateResult.data;
+
+        if (lastUpdateSuccess === 1) {
+          succesNofity("Last Discharge Update Date Updated Successfully");
         } else {
-          warningNofity("Error Getting Discharge Updated Date");
+          errorNofity("Error Updating the Last Update Date");
         }
-      })
-      .catch((e) => {
-        errorNofity(e);
-      });
+      }
+    } catch (e) {
+      errorNofity(e);
+    } finally {
+      setApiStatus(false);
+    }
   }, [value]);
 
   const [add, setAdd] = useState([]);
@@ -290,13 +265,12 @@ const IpPatientGrouping = () => {
                 disableFuture
                 disableHighlightToday={true}
                 slotProps={{textField: {size: "small"}}}
-                // minDate={minDate}
               />
             </LocalizationProvider>
-            <Button variant="outlined" sx={{mx: 2}} size="small" onClick={getAdmissionListFun}>
+            <Button variant="outlined" sx={{mx: 2}} size="small" onClick={getAdmissionListFun} disabled={apiStatus}>
               Get Admission
             </Button>
-            <Button variant="outlined" color="error" sx={{mx: 2}} size="small" onClick={() => setOpen(true)}>
+            <Button variant="outlined" color="error" sx={{mx: 2}} size="small" onClick={() => setOpen(true)} disabled={apiStatus}>
               Save Patient List
             </Button>
           </Box>
@@ -327,7 +301,7 @@ const IpPatientGrouping = () => {
             >
               {lastDisUpdateDate}
             </Box>
-            <Button variant="outlined" sx={{mx: 2}} onClick={dischargeProcess} size="small">
+            <Button variant="outlined" sx={{mx: 2}} onClick={dischargeProcess} size="small" disabled={apiStatus}>
               Discharge Process
             </Button>
 
@@ -348,7 +322,7 @@ const IpPatientGrouping = () => {
           }}
         >
           <TableContainer component={Paper} sx={{maxHeight: 700}}>
-            {ipList?.length === 0 && <LinearProgress />}
+            {apiStatus && <LinearProgress />}
             <Table size="small" stickyHeader>
               <TableHead>
                 <TableRow>
@@ -372,7 +346,7 @@ const IpPatientGrouping = () => {
               </TableHead>
               <TableBody>
                 {ipList?.map((val, idx) => (
-                  <TableRows key={idx} data={val} n={idx} setCount={setCount} onClick={onClickTableRowFun} />
+                  <TableRows key={idx} data={val} n={idx} onClick={onClickTableRowFun} />
                 ))}
               </TableBody>
             </Table>

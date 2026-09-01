@@ -345,14 +345,14 @@ const IncomeReports = () => {
                 <WhiteRowTotal data={misData?.Lab} />
 
                 {/* Mri */}
-                <LightBlueRow name={"Lab"} />
+                <LightBlueRow name={"Mri"} />
                 {misData?.Mri?.map((ele, idx) => {
                   return <WhiteRow data={ele} key={idx} />;
                 })}
                 <WhiteRowTotal data={misData?.Mri} />
 
                 {/* Diet */}
-                <LightBlueRow name={"Lab"} />
+                <LightBlueRow name={"Diet"} />
                 {misData?.Diet?.map((ele, idx) => {
                   return <WhiteRow data={ele} key={idx} />;
                 })}

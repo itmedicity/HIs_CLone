@@ -28,7 +28,7 @@ const UnsettledAmountTmch = () => {
   const {data, isLoading, isError, error} = useQuery({
     queryKey: ["GetQmtUnsettledAmount", from, to, ipList],
     queryFn: async () => GET_TMCH_UnsettledAmountBills({from, to, ipList}),
-    enabled: !!from && !!to && !!ipList,
+    enabled: !!from && !!to && ipList.length > 0,
   });
 
   const rows = data?.data || [];

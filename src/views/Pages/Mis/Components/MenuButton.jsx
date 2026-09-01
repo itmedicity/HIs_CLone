@@ -39,7 +39,7 @@ const MenuButton = ({navigateTo, layOutClose, onExportExcel}) => {
           <Box sx={{width: 62, cursor: "pointer"}}>
             <img src={Print} alt="qmt" />
           </Box>
-          <Box sx={{width: 62, cursor: "pointer"}} onClick={() => window.close()}>
+          <Box sx={{width: 62, cursor: "pointer"}} onClick={() => (typeof layOutClose === "function" ? layOutClose(undefined) : window.close())}>
             <img src={Close} alt="qmt" />
           </Box>
         </Box>

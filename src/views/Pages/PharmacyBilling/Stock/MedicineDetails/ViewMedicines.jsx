@@ -244,7 +244,7 @@ export const ViewMedicines = ({ setFlag, viewmedicine, setViewmedicine }) => {
                                                         </IconButton>
                                                     </TableCell>
                                                     <TableCell sx={{ fontSize: 12, borderRight: '1px solid lightgrey', pl: 1, width: 60 }}>{val.itc_alias}</TableCell>
-                                                    <TableCell sx={{ fontSize: 12, borderRight: '1px solid lightgrey', pl: 1, width: 400, textTransform: "capitalize", }}>{val.itc_desc.toLowerCase()}</TableCell>
+                                                    <TableCell sx={{ fontSize: 12, borderRight: '1px solid lightgrey', pl: 1, width: 400, textTransform: "capitalize", }}>{val.itc_desc?.toLowerCase()}</TableCell>
                                                     <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1, width: 15 }}>{val.itn_strip}</TableCell>
                                                     <TableCell sx={{ fontSize: 13, borderRight: '1px solid lightgrey', pl: 1, width: 15 }}>{val.itn_pack}</TableCell>
                                                 </TableRow>

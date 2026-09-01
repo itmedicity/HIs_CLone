@@ -25,7 +25,7 @@ const admissionListSlice = createSlice({
             state.status = false
         },
         [getAdmissionList.rejected]: (state) => {
-            state.message = "pending"
+            state.message = "Error"
             state.status = false
         },
         [getAdmissionList.fulfilled]: (state, { payload }) => {

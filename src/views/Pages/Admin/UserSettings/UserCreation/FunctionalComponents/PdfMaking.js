@@ -63,7 +63,7 @@ export const pdfdownload = async (view) => {
                 {text: val.usc_name, fontSize: 8, alignment: "left"},
                 {text: val.usc_alias, fontSize: 8, alignment: "left"},
                 {text: val.usc_first_name, fontSize: 8, alignment: "left"},
-                {text: val.group_name, fontSize: 8, alignment: "left"},
+                {text: val.user_group_name, fontSize: 8, alignment: "left"},
                 {text: val.usc_active === 1 ? "Yes" : "No", fontSize: 8, alignment: "center"},
               ]),
           ),

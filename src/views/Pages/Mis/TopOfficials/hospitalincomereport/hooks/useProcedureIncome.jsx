@@ -23,10 +23,7 @@ export const useProcedureIncome = (apiData) => {
       headMap.set(h.DM_GRCODE, h);
     });
 
-    // ✅ Only income sections
-    const flatIncome = Object.entries(income)
-      .filter(([key]) => key.toLowerCase())
-      .flatMap(([_, val]) => val || []);
+    const flatIncome = Object.entries(income).flatMap(([_, val]) => val || []);
 
     // console.log(flatIncome);
 

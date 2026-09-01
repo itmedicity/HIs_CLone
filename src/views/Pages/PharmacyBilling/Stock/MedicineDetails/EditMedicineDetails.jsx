@@ -56,11 +56,11 @@ export const EditMedicineDetails = ({ medEdit, setFlag, setEditflag, count, setC
 
     const SaveMedicineDetails = useCallback((e) => {
         const UpdateMedicine = async (patchdata) => {
-            if (strip === '') {
-                warningNofity("Enter Strip Details")
+            if (strip === '' || Number(strip) <= 0) {
+                warningNofity("Enter a valid Strip quantity greater than 0")
             }
-            else if (pack === '') {
-                warningNofity("Enter Pack Details")
+            else if (pack === '' || Number(pack) <= 0) {
+                warningNofity("Enter a valid Pack quantity greater than 0")
             }
             else {
                 const results = await axiosinstance.patch('/importMedicines/medupdate', patchdata)

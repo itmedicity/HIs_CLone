@@ -1,21 +1,21 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { axiosinstance } from '../../controllers/AxiosConfig'
 
-const getMonthlyOpVisitCount = createAsyncThunk('/api/rolprocess', (postData) => {
+const getMonthlyOpVisitCount = createAsyncThunk('/api/rolprocess/opcount', (postData) => {
     return axiosinstance.post("/rolprocess/getopcount", postData)
         .then((response) => {
             return response.data;
         })
 })
 
-const getMonthlyIpVisitCount = createAsyncThunk('/api/rolprocess', (postData) => {
+const getMonthlyIpVisitCount = createAsyncThunk('/api/rolprocess/ipcount', (postData) => {
     return axiosinstance.post("/rolprocess/getipcount", postData)
         .then((response) => {
             return response.data;
         })
 })
 
-const getSoledMedicinesQnty = createAsyncThunk('/api/rolprocess', (postData) => {
+const getSoledMedicinesQnty = createAsyncThunk('/api/rolprocess/soledqnty', (postData) => {
     return axiosinstance.post("/rolprocess/getsoledqnty", postData)
         .then((response) => {
             return response.data;
@@ -50,14 +50,14 @@ const rolProcessSlice = createSlice({
 
         // opcount
         [getMonthlyOpVisitCount.pending]: (state, { payload }) => {
-            state.monthlyOpcount.status = 0
-            state.monthlyOpcount.message = "pending"
+            state.monthlyOpCount.status = 0
+            state.monthlyOpCount.message = "pending"
             state.loading = true
         },
 
         [getMonthlyOpVisitCount.rejected]: (state, { payload }) => {
-            state.monthlyOpcount.status = 1
-            state.monthlyOpcount.message = "Error"
+            state.monthlyOpCount.status = 2
+            state.monthlyOpCount.message = "Error"
             state.loading = false
         },
 
@@ -77,7 +77,7 @@ const rolProcessSlice = createSlice({
         },
 
         [getMonthlyIpVisitCount.rejected]: (state, { payload }) => {
-            state.monthlyIpCount.status = 1
+            state.monthlyIpCount.status = 2
             state.monthlyIpCount.message = "Error"
             state.loading = false
         },
@@ -98,7 +98,7 @@ const rolProcessSlice = createSlice({
         },
 
         [getSoledMedicinesQnty.rejected]: (state, { payload }) => {
-            state.medicineSoledQnty.status = 1
+            state.medicineSoledQnty.status = 2
             state.medicineSoledQnty.message = "Error"
             state.loading = false
         },

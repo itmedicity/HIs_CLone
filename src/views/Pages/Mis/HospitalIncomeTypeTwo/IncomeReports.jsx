@@ -154,7 +154,7 @@ const IncomeReports = () => {
     const roundOff = groupCollection - groupNet;
     const groupNetddctRoundoff = groupNet + roundOff;
     return {ipConatedDiscount, advSettled, creditInsurBill, unsettledAmnt, groupCollection, groupTax, groupNet, groupDis, groupGross, roundOff, groupNetddctRoundoff};
-  });
+  }, [misCollection, grand, tax, netAmount, discount, GrosPharma, collAgainSale]);
 
   const misCollection_advanceCollection = ensureNumber(misCollection?.[0].advanceCollection ?? 0);
   const misCollection_creditInsuranceBillCollection = ensureNumber(misCollection?.[6].creditInsuranceBillCollection ?? 0);
@@ -297,9 +297,9 @@ const IncomeReports = () => {
 
   useEffect(() => {
     const {misGroupState, misGroupMaster} = misGroup;
-    getMisGroupMasterList(misGroupState, misGroupMaster).then((misGrpList) => {
-      setMisGroupList(misGrpList);
-    });
+    const misList = {misGroup: misGroupMaster?.data, misGroupMast: misGroupState?.data};
+    const misGrpList = getMisGroupMasterList(misList);
+    setMisGroupList(misGrpList);
   }, [misGroup]);
 
   useEffect(() => {
@@ -311,23 +311,24 @@ const IncomeReports = () => {
       .filter((val) => val.income === true)
       .map((val) => (val.status === 1 ? val.data : null))
       .flat();
-    getIncomeReportList(incomeArrayData, misGroupList).then(setMisReportList);
+    const list = getIncomeReportList(incomeArrayData, misGroupList);
+    setMisReportList(list);
   }, [proIncome, misGroupList]);
 
   useEffect(() => {
-    getPhamracyIncome(pharmacyIncome).then((value) => setPharamcyIc((prev) => ({...prev, ...value}))); //
+    const value = getPhamracyIncome(pharmacyIncome);
+    setPharamcyIc((prev) => ({...prev, ...value}));
   }, [pharmacyIncome]);
 
   useEffect(() => {
-    getGrandTotal(misReortList).then((ele) => {
-      const grantTotal = {
-        groupNet: ele?.reduce((accumulator, currentValue) => accumulator + currentValue.groupNet, 0) || 0,
-        groupDis: ele?.reduce((accumulator, currentValue) => accumulator + currentValue.groupDiscnt, 0) || 0,
-        groupTax: ele?.reduce((accumulator, currentValue) => accumulator + currentValue.groupTax, 0) || 0,
-        groupGross: ele?.reduce((accumulator, currentValue) => accumulator + currentValue.groupGross, 0) || 0,
-      };
-      setGrand(grantTotal);
-    });
+    const ele = getGrandTotal(misReortList);
+    const grantTotal = {
+      groupNet: ele?.reduce((accumulator, currentValue) => accumulator + currentValue.groupNet, 0) || 0,
+      groupDis: ele?.reduce((accumulator, currentValue) => accumulator + currentValue.groupDiscnt, 0) || 0,
+      groupTax: ele?.reduce((accumulator, currentValue) => accumulator + currentValue.groupTax, 0) || 0,
+      groupGross: ele?.reduce((accumulator, currentValue) => accumulator + currentValue.groupGross, 0) || 0,
+    };
+    setGrand(grantTotal);
   }, [misReortList]);
 
   /*
@@ -442,7 +443,7 @@ const IncomeReports = () => {
   const onClickUnsettledAmount = useCallback(async () => {
     setLayout3("fullscreen");
     try {
-      const result = getUnsettledBillDetl(state);
+      const result = await getUnsettledBillDetl(state);
       setUnsettled(result || []);
     } catch (error) {
       console.log("Error fetching Unsettled Bill Detailed:", error);
@@ -454,7 +455,7 @@ const IncomeReports = () => {
   const onClickAdvanceCollection = useCallback(async () => {
     setLayout4("fullscreen");
     try {
-      const result = advanceCollectionDetail();
+      const result = await advanceCollectionDetail(state);
       setAdvanceCollDetl(result || []);
     } catch (error) {
       console.log("Error fetching Advance Collection Detailed:", error);

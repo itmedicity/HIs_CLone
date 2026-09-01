@@ -26,23 +26,20 @@ const HeaderBar = () => {
 
   const restartPool = async () => {
     try {
-      const poolRestart = await axiosinstance.get("/restart");
-      console.log(poolRestart);
-      if (poolRestart.status === 404) {
-        setShowMenu(false);
-        alert("Api Not Found");
-      }
-
-      if (poolRestart.status === 500) {
-        setShowMenu(false);
-        alert("Pool Restart Failed");
-      }
+      await axiosinstance.get("/restart");
       alert("Pool Restart Successful");
-      setShowMenu(false);
     } catch (error) {
-      console.error("Error occurred while restarting pool:", error);
+      const status = error?.response?.status;
+      if (status === 404) {
+        alert("Api Not Found");
+      } else if (status === 500) {
+        alert("Pool Restart Failed");
+      } else {
+        console.error("Error occurred while restarting pool:", error);
+        alert("An error occurred while restarting the pool.");
+      }
+    } finally {
       setShowMenu(false);
-      alert("An error occurred while restarting the pool.");
     }
   };
 

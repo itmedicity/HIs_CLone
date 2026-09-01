@@ -13,60 +13,50 @@ import { errorNofity, succesNofity, warningNofity } from '../../../../../Constan
 const PatientGroupModal = ({ open, setOpen, addData, removeData, setIplist, setAdd, setRemove }) => {
 
     const onClickInsertPatient = useCallback(async () => {
+        try {
+            //INSERT DATA IN TO THE TSSH TABLE
+            if (addData?.length > 0) {
+                const insertPostData = addData.map((e) => [
+                    e.IPD_DATE,
+                    e.IP_NO,
+                    e.PT_NO,
+                    e.DISSTATUS,
+                    e.DISDATE
+                ])
 
-        const insertPostData = addData?.map((e) => {
-            return [
-                e.IPD_DATE,
-                e.IP_NO,
-                e.PT_NO,
-                e.DISSTATUS,
-                e.DISDATE
-            ]
-        })
+                const result = await axiosinstance.post('/admission/insertTsshPatient', insertPostData);
+                const { success, message } = result.data;
+                if (success === 1) {
+                    succesNofity(message)
+                } else if (success === 2) {
+                    warningNofity(message)
+                } else {
+                    errorNofity(message)
+                }
+            }
 
-        const removePostData = removeData?.map((e) => e.slno)
+            //REMOVE DATA FROM THE TSSH TABLE
+            if (removeData?.length > 0) {
+                const removePostData = removeData.map((e) => e.slno)
+                const removeIpNumner = await axiosinstance.post('/admission/removePatiet', removePostData);
+                const { success, message } = removeIpNumner.data;
+                if (success === 1) {
+                    succesNofity(message)
+                } else if (success === 2) {
+                    warningNofity(message)
+                } else {
+                    errorNofity(message)
+                }
+            }
 
-        //INSERT DATA IN TO THE TSSH TABLE
-        const result = await axiosinstance.post('/admission/insertTsshPatient', insertPostData);
-        const { success, message } = await result.data;
-        if (success === 1) {
-            succesNofity(message)
             setIplist([])
             setOpen(false)
             setAdd([])
             setRemove([])
-        } else if (success === 2) {
-            warningNofity(message)
-            setIplist([])
-            setOpen(false)
-        } else {
-            errorNofity(message)
-            setIplist([])
-            setOpen(false)
+        } catch (e) {
+            errorNofity(e)
         }
-
-        //REMOVE DATA FROM THE TSSH TABLE
-        if (Object.keys(removePostData).length > 0) {
-            const removeIpNumner = await axiosinstance.post('/admission/removePatiet', removePostData);
-            const { succ, msage } = await removeIpNumner.data;
-            if (succ === 1) {
-                succesNofity(msage)
-                setIplist([])
-                setOpen(false)
-                setAdd([])
-                setRemove([])
-            } else if (succ === 2) {
-                warningNofity(msage)
-                setIplist([])
-                setOpen(false)
-            } else {
-                errorNofity(msage)
-                setIplist([])
-                setOpen(false)
-            }
-        }
-
-    }, [addData, removeData])
+    }, [addData, removeData, setAdd, setIplist, setOpen, setRemove])
 
     return (
         <Modal
