@@ -1,11 +1,15 @@
 import React, {useMemo} from "react";
 import {Box, Paper, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, TableFooter} from "@mui/material";
+import moment from "moment";
+import {useLocation} from "react-router-dom";
 import MenuButton from "../../../Components/MenuButton";
 import ReportHeaderDesignTwo from "../../../../../Components/ReportHeaderDesignTwo";
 import "../../Style.css";
 import CollectionTableCellCmp from "./CollectionTableCellCmp";
 import SectionWiseTotal from "./SectionWiseTotal";
 import SectionHeadName from "./SectionHeadName";
+import {useUserWiseCollectionSummary} from "../../../../../../Hooks/useUserWiseCollectionSummary";
+import {exportUserWiseCollectionExcel, exportUserWiseCollectionWord} from "./exportUserWiseCollection";
 
 const tableHeadRowArray = [
   {name: "#", className: "coll-TableHeaderCell"},
@@ -33,13 +37,53 @@ const tableHeadRowArray = [
 
 const CollectionTmchDetlReports = () => {
   const emptyRow = useMemo(() => Array.from({length: 21}, (_, i) => i + 1), []);
+
+  const {state} = useLocation();
+  const fromDate = state?.fromDate ?? moment().startOf("day").toDate();
+  const toDate = state?.toDate ?? moment().endOf("day").toDate();
+  const selectedUserCodes = state?.selectedUserCodes;
+
+  const {
+    summaryRows,
+    creditBillCollectionRows,
+    refundRows,
+    summaryTotalColumns,
+    creditBillCollectionTotalColumns,
+    refundTotalColumns,
+    netAmountColumns,
+    roundOffColumns,
+    revenueCollectionVariation,
+    isLoading,
+    isSuccess,
+    hasError,
+    errorMessage,
+  } = useUserWiseCollectionSummary(fromDate, toDate, selectedUserCodes);
+
+  const exportPayload = {
+    summaryRows,
+    creditBillCollectionRows,
+    refundRows,
+    summaryTotalColumns,
+    creditBillCollectionTotalColumns,
+    refundTotalColumns,
+    netAmountColumns,
+    roundOffColumns,
+    revenueCollectionVariation,
+    fromLabel: moment(fromDate).format("DD-MMM-YYYY"),
+    toLabel: moment(toDate).format("DD-MMM-YYYY"),
+  };
+
   return (
-    <Box flex={1} sx={{backgroundColor: "lightgray", p: "1%"}}>
-      <MenuButton navigateTo={"CollectionReportTmch"} />
+    <Box flex={1} sx={{backgroundColor: "lightgray", p: "12px"}}>
+      <MenuButton
+        navigateTo={"CollectionReportTmch"}
+        onExportExcel={() => exportUserWiseCollectionExcel(exportPayload)}
+        onExportWord={() => exportUserWiseCollectionWord(exportPayload)}
+      />
       <Paper square sx={{borderColor: "black", border: 1}}>
         <ReportHeaderDesignTwo
           name="User Wise Collection"
-          data={{from: "", to: ""}}
+          data={{from: moment(fromDate).format("DD/MM/YYYY HH:mm:ss"), to: moment(toDate).format("DD/MM/YYYY HH:mm:ss")}}
           hosName="TRAVANCORE MEDICAL COLLEGE & HOSPITAL"
           address={"A Unit Of Quilon Medical Trust, Mylapore, Thattamala P.O, Kollam"}
           disable={false}
@@ -73,29 +117,63 @@ const CollectionTmchDetlReports = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
+                {isLoading && (
+                  <TableRow className="coll-TableBodyRow">
+                    <TableCell colSpan={21} className="coll-TableBodyCell coll-TextAlignLeft" sx={{padding: "10px"}}>
+                      Loading collection report…
+                    </TableCell>
+                  </TableRow>
+                )}
+                {hasError && (
+                  <TableRow className="coll-TableBodyRow">
+                    <TableCell colSpan={21} className="coll-TableBodyCell coll-TextAlignLeft" sx={{padding: "10px", color: "#c62828"}}>
+                      {errorMessage || "Failed to load the collection report."}
+                    </TableCell>
+                  </TableRow>
+                )}
                 <SectionHeadName SectionHeadName={"Summary User Wise"} />
                 {/* Summary User Wise Table rows */}
-                <CollectionTableCellCmp />
-                <SectionWiseTotal SectionWiseTotalName="Total Amount" />
+                {isSuccess && summaryRows.map((row, index) => <CollectionTableCellCmp key={`Summary-${row.US_CODE ?? index}`} row={row} index={index} />)}
+                <SectionWiseTotal SectionWiseTotalName="Total Amount" data={summaryTotalColumns} />
                 {/* Credit bill Collection Heads */}
                 <SectionHeadName SectionHeadName={"Credit bill Collection :"} />
-                <SectionWiseTotal SectionWiseTotalName="Credit Bill Collection Total" />
+                {isSuccess &&
+                  creditBillCollectionRows.map((row, index) => (
+                    <CollectionTableCellCmp key={`Credit-${row.US_CODE ?? index}`} row={row} index={index + summaryRows.length} />
+                  ))}
+                <SectionWiseTotal SectionWiseTotalName="Credit Bill Collection Total" data={creditBillCollectionTotalColumns} />
                 {/* Refunds Heads */}
                 <SectionHeadName SectionHeadName={"Refund :"} />
-                <SectionWiseTotal SectionWiseTotalName="Refund Total" />
+                {isSuccess &&
+                  refundRows.map((row, index) => (
+                    <CollectionTableCellCmp
+                      key={`Refund-${row.US_CODE ?? index}`}
+                      row={row}
+                      index={index + summaryRows.length + creditBillCollectionRows.length}
+                    />
+                  ))}
+                <SectionWiseTotal SectionWiseTotalName="Refund Total" data={refundTotalColumns} />
                 {/* Net Amount   */}
-                <SectionWiseTotal SectionWiseTotalName="Net Amount" />
-                <SectionWiseTotal SectionWiseTotalName="Round Off" />
+                <SectionWiseTotal SectionWiseTotalName="Net Amount" data={netAmountColumns} />
+                <SectionWiseTotal SectionWiseTotalName="Round Off" data={roundOffColumns} />
 
                 <TableRow className="coll-TableBodyRow">
                   <TableCell colSpan={12} className="coll-SectionTotalRow coll-TextAlignLeft">
                     Revenue And Collection Variation
                   </TableCell>
+                  {/* Lines up under Total After Adv, Cash, Cr.Card, Cheque, Credit/Insurance,
+                      Bank Transfer (empty), then the variation value under the collection
+                      Total column, then Prev Collection / UnsettledAmt (empty) — 9 cells to
+                      fill out the remaining width after the colSpan=12 label. */}
                   <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
                   <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
                   <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
                   <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
                   <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
+                  <TableCell className="coll-SectionTotalRow coll-TextAlignRight">
+                    {revenueCollectionVariation.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                  </TableCell>
                   <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
                   <TableCell className="coll-SectionTotalRow coll-TextAlignRight"></TableCell>
                 </TableRow>

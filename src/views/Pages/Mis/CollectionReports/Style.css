@@ -29,7 +29,7 @@
 
 .grdDetails .grdItemStyle {
   background-color: #fff;
-  border: 1px #525252;
+  border: solid 1px #eaeaea;
   font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
 }

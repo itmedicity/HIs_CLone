@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import {Box, Divider, Paper} from "@mui/material";
 import moment from "moment";
 import ButtonCmp from "../../../../../Components/ButtonCmp";
@@ -6,207 +6,23 @@ import {imageIcon} from "../../../../../../assets/ImageExport";
 import SearchIcon from "../../../../../../assets/SearchSmall.png";
 import "../../Style.css";
 import {useNavigate} from "react-router-dom";
+import DateTimeField from "../components/DateTimeField";
+import {GET_TMCH_OraUsers} from "../actions/collectionTmchReportsActions";
 
-const user = [100, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 10008, 10009, 10008, 10010, 10011, 10022];
+// Fixed row height (px) matching the rendered checkbox row, so the visible
+// slice can be computed from scrollTop without measuring the DOM. The user
+// list can run into the thousands, so rendering every <tr> at once is what
+// made scrolling hang — this virtualizes it down to only what's on screen.
+const USER_ROW_HEIGHT = 24;
+const USER_LIST_HEIGHT = 150;
+const USER_LIST_OVERSCAN = 8;
 
-const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const CELL_SIZE = 34;
-const TIME_ROW_HEIGHT = 26;
-
-const buildCalendarWeeks = (viewMonth) => {
-  const start = moment(viewMonth).startOf("month").startOf("week");
-  const end = moment(viewMonth).endOf("month").endOf("week");
-  const weeks = [];
-  const cursor = start.clone();
-  while (cursor.isSameOrBefore(end, "day")) {
-    const week = [];
-    for (let i = 0; i < 7; i++) {
-      week.push(cursor.clone());
-      cursor.add(1, "day");
-    }
-    weeks.push(week);
-  }
-  return weeks;
-};
-
-// Fully custom calendar + time-list popup (no react-datepicker). The time list keeps the
-// seconds it was opened with and steps by 1 minute, matching the design's "01:29:55 am,
-// 01:30:55 am, ..." pattern.
-const DateTimeField = ({label, value, onChange, paddingLeft}) => {
-  const [open, setOpen] = useState(false);
-  const [viewMonth, setViewMonth] = useState(() => moment(value));
-  const [refSeconds, setRefSeconds] = useState(value.getSeconds());
-  const containerRef = useRef(null);
-  const timeListRef = useRef(null);
-
-  useEffect(() => {
-    if (!open) return undefined;
-    const handleOutsideClick = (e) => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, [open]);
-
-  const openPicker = () => {
-    setRefSeconds(value.getSeconds());
-    setViewMonth(moment(value));
-    setOpen(true);
-  };
-
-  const selectDay = (day) => {
-    const merged = day
-      .clone()
-      .hour(value.getHours())
-      .minute(value.getMinutes())
-      .second(value.getSeconds())
-      .millisecond(0);
-    onChange(merged.toDate());
-    setViewMonth(day.clone());
-  };
-
-  const goToday = () => selectDay(moment());
-
-  const handleTimeClick = (time) => {
-    const merged = new Date(value);
-    merged.setHours(time.getHours(), time.getMinutes(), time.getSeconds(), 0);
-    onChange(merged);
-    setOpen(false);
-  };
-
-  const scrollTimeList = (dir) => {
-    if (timeListRef.current) {
-      timeListRef.current.scrollTop += dir * TIME_ROW_HEIGHT;
-    }
-  };
-
-  const weeks = buildCalendarWeeks(viewMonth);
-
-  const timeRows = [];
-  for (let i = 0; i < 60; i++) {
-    const t = new Date(value);
-    t.setSeconds(refSeconds, 0);
-    t.setMinutes(t.getMinutes() + i);
-    timeRows.push(t);
-  }
-
-  const navBtnSx = {cursor: "pointer", color: "#7a7a7a", fontSize: "11px", px: "3px", userSelect: "none"};
-
-  return (
-    <Box className="customUserCollectionBoxFrom" sx={{paddingLeft, position: "relative"}} ref={containerRef}>
-      <Box className="customUserCollectionLabel">{label}</Box>
-      <input
-        readOnly
-        className="customUserCollectionDatePicker"
-        value={moment(value).format("DD/MM/YYYY hh:mm:ss A")}
-        onClick={openPicker}
-        style={open ? {borderColor: "#f7941d", outline: "none"} : undefined}
-      />
-      {open && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: "100%",
-            left: 0,
-            zIndex: 50,
-            display: "flex",
-            background: "#fff",
-            border: "1px solid #b0b0b0",
-            boxShadow: "1px 2px 6px rgba(0,0,0,0.25)",
-            fontFamily: "Arial, Helvetica, sans-serif",
-          }}
-        >
-          {/* Calendar panel */}
-          <Box sx={{width: CELL_SIZE * 7}}>
-            <Box sx={{display: "flex", alignItems: "center", padding: "4px 6px", borderBottom: "1px solid #e0e0e0"}}>
-              <Box onClick={() => setViewMonth((m) => moment(m).subtract(1, "month"))} sx={navBtnSx}>
-                &#9664;
-              </Box>
-              <Box onClick={goToday} sx={{...navBtnSx, fontSize: "13px"}} title="Today">
-                &#8962;
-              </Box>
-              <Box sx={{flex: 1, textAlign: "center", fontSize: "13px", color: "#333"}}>
-                <b>{viewMonth.format("MMMM")}</b> {viewMonth.format("YYYY")}
-              </Box>
-              <Box onClick={() => setViewMonth((m) => moment(m).add(1, "month"))} sx={navBtnSx}>
-                &#9654;
-              </Box>
-            </Box>
-            <Box sx={{display: "flex", backgroundColor: "#f2f2f2"}}>
-              {WEEKDAYS.map((d) => (
-                <Box key={d} sx={{width: CELL_SIZE, textAlign: "center", fontSize: "11px", fontWeight: "bold", color: "#6b6b6b", padding: "4px 0"}}>
-                  {d}
-                </Box>
-              ))}
-            </Box>
-            {weeks.map((week) => (
-              <Box key={week[0].format("YYYY-MM-DD")} sx={{display: "flex"}}>
-                {week.map((day) => {
-                  const isCurrentMonth = day.month() === viewMonth.month();
-                  const isSelected = day.isSame(moment(value), "day");
-                  return (
-                    <Box
-                      key={day.format("YYYY-MM-DD")}
-                      onClick={() => selectDay(day)}
-                      sx={{
-                        width: CELL_SIZE,
-                        height: "24px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "12px",
-                        cursor: "pointer",
-                        color: isSelected ? "#fff" : isCurrentMonth ? "#333" : "#bbb",
-                        backgroundColor: isSelected ? "#1565c0" : "transparent",
-                        "&:hover": {backgroundColor: isSelected ? "#1565c0" : "#eef4fb"},
-                      }}
-                    >
-                      {day.date()}
-                    </Box>
-                  );
-                })}
-              </Box>
-            ))}
-          </Box>
-
-          {/* Time panel */}
-          <Box sx={{width: "108px", borderLeft: "1px solid #e0e0e0", display: "flex", flexDirection: "column"}}>
-            <Box onClick={() => scrollTimeList(-1)} sx={{textAlign: "center", padding: "3px 0", cursor: "pointer", color: "#9a9a9a", borderBottom: "1px solid #e0e0e0", fontSize: "10px", userSelect: "none"}}>
-              &#9650;
-            </Box>
-            <Box ref={timeListRef} sx={{flex: 1, maxHeight: `${TIME_ROW_HEIGHT * 6}px`, overflowY: "auto"}}>
-              {timeRows.map((t, idx) => (
-                <Box
-                  key={idx}
-                  onClick={() => handleTimeClick(t)}
-                  sx={{
-                    height: `${TIME_ROW_HEIGHT}px`,
-                    display: "flex",
-                    alignItems: "center",
-                    padding: "0 8px",
-                    fontSize: "12px",
-                    cursor: "pointer",
-                    backgroundColor: idx === 0 ? "#1565c0" : "transparent",
-                    color: idx === 0 ? "#fff" : "#333",
-                    fontWeight: idx === 0 ? "bold" : "normal",
-                    "&:hover": {backgroundColor: idx === 0 ? "#1565c0" : "#f0f0f0"},
-                  }}
-                >
-                  {moment(t).format("hh:mm:ss a")}
-                </Box>
-              ))}
-            </Box>
-            <Box onClick={() => scrollTimeList(1)} sx={{textAlign: "center", padding: "3px 0", cursor: "pointer", color: "#9a9a9a", borderTop: "1px solid #e0e0e0", fontSize: "10px", userSelect: "none"}}>
-              &#9660;
-            </Box>
-          </Box>
-        </Box>
-      )}
-    </Box>
-  );
-};
+const toCapitalCase = (value) =>
+  (value ?? "")
+    .toLowerCase()
+    .split(" ")
+    .map((word) => (word ? word[0].toUpperCase() + word.slice(1) : word))
+    .join(" ");
 
 const CollectionTmchReports = () => {
   const navigate = useNavigate();
@@ -214,10 +30,52 @@ const CollectionTmchReports = () => {
   const [checked, setChecked] = useState(false);
   const [fromDate, setFromDate] = useState(moment().startOf("day").toDate());
   const [toDate, setToDate] = useState(moment().endOf("day").toDate());
+  const [userList, setUserList] = useState([]);
+  const [userSearch, setUserSearch] = useState("");
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [userListScrollTop, setUserListScrollTop] = useState(0);
+  const userListRef = useRef(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const {success, data} = await GET_TMCH_OraUsers();
+        const users = success ? (data ?? []) : [];
+        setUserList(users);
+        setSelectedUsers(users.map((item) => item.US_CODE));
+      } catch (error) {
+        setUserList([]);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   const handleNavigateToDetlPage = () => {
-    navigate("/Menu/CollectionReportTmchDetls");
+    // Only pass a real filter when the cashier isn't fully selected — leaving it
+    // undefined for the "everyone checked" case lets the detail page show every
+    // cashier, including ones added after this list was fetched.
+    const selectedUserCodes = selectedUsers.length < userList.length ? selectedUsers : undefined;
+    navigate("/Menu/CollectionReportTmchDetls", {state: {fromDate, toDate, selectedUserCodes}});
   };
+
+  const filteredUserList = useMemo(
+    () => userList.filter((item) => (item.USC_NAME ?? "").toLowerCase().includes(userSearch.trim().toLowerCase())),
+    [userList, userSearch],
+  );
+
+  // Reset scroll position whenever the filtered set changes so the visible
+  // slice below doesn't point past the end of a shorter, filtered list.
+  useEffect(() => {
+    setUserListScrollTop(0);
+    if (userListRef.current) userListRef.current.scrollTop = 0;
+  }, [userSearch]);
+
+  const userListStartIndex = Math.max(0, Math.floor(userListScrollTop / USER_ROW_HEIGHT) - USER_LIST_OVERSCAN);
+  const userListVisibleCount = Math.ceil(USER_LIST_HEIGHT / USER_ROW_HEIGHT) + USER_LIST_OVERSCAN * 2;
+  const userListEndIndex = Math.min(filteredUserList.length, userListStartIndex + userListVisibleCount);
+  const visibleUserList = filteredUserList.slice(userListStartIndex, userListEndIndex);
+  const userListTopSpacer = userListStartIndex * USER_ROW_HEIGHT;
+  const userListBottomSpacer = (filteredUserList.length - userListEndIndex) * USER_ROW_HEIGHT;
 
   return (
     <Paper sx={{display: "flex", flex: 1, justifyContent: "center"}} square variant="outlined">
@@ -297,7 +155,7 @@ const CollectionTmchReports = () => {
                           <input id="checkbox" type="checkbox" name="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} className="customCheckbox" />
                         </td>
                         <td>
-                          <Box sx={{fontSize: "11.5px", fontWeight: "normal", color: "#0000EE"}}>Travancore Medical College Hospital- (TMCH)</Box>
+                          <Box sx={{fontSize: "11.5px", fontWeight: "normal", color: "#525252"}}>Travancore Medical College Hospital- (TMCH)</Box>
                         </td>
                       </tr>
                     </tbody>
@@ -317,6 +175,9 @@ const CollectionTmchReports = () => {
                 <Box sx={{height: "28px", paddingTop: 0.4, display: "flex", alignItems: "center", justifyContent: "center"}}>
                   <Box sx={{display: "flex"}}>
                     <input
+                      value={userSearch}
+                      onChange={(e) => setUserSearch(e.target.value)}
+                      placeholder="Search"
                       style={{
                         width: "210px",
                         fontSize: "12px",
@@ -336,27 +197,54 @@ const CollectionTmchReports = () => {
 
                 {/* user Selection section */}
                 <Box sx={{display: "flex", flex: 1, overflow: "hidden"}}>
-                  <Box sx={{width: "95%", maxHeight: "150px", overflowY: "auto"}}>
+                  <Box
+                    ref={userListRef}
+                    onScroll={(e) => setUserListScrollTop(e.target.scrollTop)}
+                    sx={{width: "95%", maxHeight: `${USER_LIST_HEIGHT}px`, overflowY: "auto"}}
+                  >
                     <table className="grdDetails" cellSpacing={0} style={{width: "100%"}}>
-                      <tbody>
+                      <thead>
                         <tr className="grdHeader">
-                          <td style={{width: "3%"}}>
+                          <td style={{width: "3%", position: "sticky", top: 0, zIndex: 1, backgroundColor: "#ecebeb"}}>
                             <img src={imageIcon.checkBoxImage} alt="Check" />
                           </td>
-                          <td>Users</td>
+                          <td style={{position: "sticky", top: 0, zIndex: 1, backgroundColor: "#ecebeb"}}>Users</td>
                         </tr>
-                        {user.map((item, index) => {
+                      </thead>
+                      <tbody>
+                        {userListTopSpacer > 0 && (
+                          <tr style={{height: userListTopSpacer}}>
+                            <td colSpan={2} style={{padding: 0, border: "none"}} />
+                          </tr>
+                        )}
+                        {visibleUserList.map((item, index) => {
                           return (
-                            <tr className="grdItemStyle" key={`row-${index}`}>
+                            <tr className="grdItemStyle" key={`row-${item.US_CODE ?? userListStartIndex + index}`} style={{height: USER_ROW_HEIGHT}}>
                               <td style={{borderRight: "1px solid #dadbdcff", padding: "0px 3px 4px 0px"}}>
-                                <input id={`checkbox-${index}`} type="checkbox" name={`checkbox-${index}`} value={true} defaultChecked className="customCheckbox" />
+                                <input
+                                  id={`checkbox-${item.US_CODE ?? userListStartIndex + index}`}
+                                  type="checkbox"
+                                  name={`checkbox-${item.US_CODE ?? userListStartIndex + index}`}
+                                  value={item.US_CODE}
+                                  checked={selectedUsers.includes(item.US_CODE)}
+                                  onChange={(e) => {
+                                    const {checked: isChecked} = e.target;
+                                    setSelectedUsers((prev) => (isChecked ? [...prev, item.US_CODE] : prev.filter((code) => code !== item.US_CODE)));
+                                  }}
+                                  className="customCheckbox"
+                                />
                               </td>
-                              <td key={`row-${index}`}>
-                                <Box sx={{fontSize: "11.5px", fontWeight: "normal", color: "#a0522d"}}>{item}</Box>
+                              <td>
+                                <Box sx={{fontSize: "11.5px", fontWeight: "normal", color: "#525252", paddingLeft: "4px"}}>{toCapitalCase(item.USC_NAME)}</Box>
                               </td>
                             </tr>
                           );
                         })}
+                        {userListBottomSpacer > 0 && (
+                          <tr style={{height: userListBottomSpacer}}>
+                            <td colSpan={2} style={{padding: 0, border: "none"}} />
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </Box>

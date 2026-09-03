@@ -6,10 +6,29 @@ import Close from "../../../../assets/Icon_Close.jpg";
 import {Box} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 
-const MenuButton = ({navigateTo, layOutClose, onExportExcel}) => {
+const MenuButton = ({navigateTo, layOutClose, onExportExcel, onExportWord, onPrint}) => {
   const navigate = useNavigate();
+
+  // Print has no per-report content to know about — window.print() just prints whatever the
+  // browser currently has rendered, so it works for every existing caller with no changes on
+  // their end. A page can still override it (e.g. to open a dedicated print-preview view)
+  // by passing its own onPrint.
+  const handlePrint = onPrint ?? (() => window.print());
+
+  const handleClose = () => {
+    if (typeof layOutClose === "function") {
+      layOutClose(undefined);
+      return;
+    }
+    if (navigateTo) {
+      navigate(`/Menu/${navigateTo}`);
+      return;
+    }
+    window.close();
+  };
+
   return (
-    <Box sx={{display: "flex", justifyContent: "flex-end"}}>
+    <Box sx={{display: "flex", justifyContent: "flex-end", margin: "12px"}}>
       <Box sx={{width: 266.25, backgroundColor: "lightgray"}}>
         <Box
           sx={{
@@ -30,16 +49,16 @@ const MenuButton = ({navigateTo, layOutClose, onExportExcel}) => {
             },
           }}
         >
-          <Box sx={{width: 62, cursor: "pointer"}}>
+          <Box sx={{width: 62, cursor: "pointer"}} onClick={onExportWord}>
             <img src={Word} alt="qmt" />
           </Box>
           <Box sx={{width: 62, cursor: "pointer"}} onClick={onExportExcel}>
             <img src={Excel} alt="qmt" />
           </Box>
-          <Box sx={{width: 62, cursor: "pointer"}}>
+          <Box sx={{width: 62, cursor: "pointer"}} onClick={handlePrint}>
             <img src={Print} alt="qmt" />
           </Box>
-          <Box sx={{width: 62, cursor: "pointer"}} onClick={() => (typeof layOutClose === "function" ? layOutClose(undefined) : window.close())}>
+          <Box sx={{width: 62, cursor: "pointer"}} onClick={handleClose}>
             <img src={Close} alt="qmt" />
           </Box>
         </Box>
