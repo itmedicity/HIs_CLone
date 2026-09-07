@@ -5,6 +5,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 import Text from "./views/Components/Text";
 import NotFountPage from "./views/Components/NotFountPage";
 import ProtectedRoute from "./HomeComponents/LayoutComponents/ProtectedRoute";
+import ProtectedBareLayout from "./HomeComponents/LayoutComponents/ProtectedBareLayout";
 import {Provider} from "react-redux";
 import {store} from "./store";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
@@ -37,6 +38,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/Menu/*" element={<ProtectedRoute />} />
+              <Route path="/MenuBare/*" element={<ProtectedBareLayout />} />
               <Route path="/Mis/*" element={<LayoutRouts />} />
               {/* <Route path='/Menu/*' element={<DefaultLayout />} />
           <Route path='/TestCmp/' element={<TestComponent />} /> */}

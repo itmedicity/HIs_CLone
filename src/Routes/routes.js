@@ -56,7 +56,6 @@ const pharmacyGstReports = React.lazy(() => import("../views/Pages/PharmacyBilli
 const pharmacyGstReptTMCH = React.lazy(() => import("../views/Pages/PharmacyBilling/Analysis Statement/SalesGstReportTmch/SalesGstReportMain"));
 
 //Collection Reports Tmch - imported
-const CollectionTmch = React.lazy(() => import("../views/Pages/Mis/CollectionReports/CollectionReportTssh"));
 const PharmacySalesGstReports = React.lazy(() => import("../views/Pages/Mis/CollectionReports/PharmacySaleGst"));
 
 //Collection Reports Tssh ( Collection Reorts Tmch )
@@ -66,6 +65,24 @@ const CollectionReportTmchDetls = React.lazy(() => import("../views/Pages/Mis/Co
 //Collection Reports Tssh ( Collection Reports Tssh )
 const CollectionReportsCollectionOnly = React.lazy(() => import("../views/Pages/Mis/CollectionReports/tmch/collectionReports-collectionOnly/CollectionReportsCollectionOnly"));
 const CollectionReportCollectionOnlyDetl = React.lazy(() => import("../views/Pages/Mis/CollectionReports/tmch/collectionReports-collectionOnly/CollectionReportsCollOnlyDetl"));
+
+//Collection Reports - tssh
+const CollectionReportTssh = React.lazy(() => import("../views/Pages/Mis/CollectionReports/tssh/collectionReports/CollectionTsshReports"));
+const CollectionReportTsshDetls = React.lazy(() => import("../views/Pages/Mis/CollectionReports/tssh/collectionReports/CollectionTsshDetlReports"));
+const CollectionReportsCollectionOnlyTssh = React.lazy(() => import("../views/Pages/Mis/CollectionReports/tssh/collectionReports-collectionOnly/CollectionReportsCollectionOnly"));
+const CollectionReportCollectionOnlyDetlTssh = React.lazy(() => import("../views/Pages/Mis/CollectionReports/tssh/collectionReports-collectionOnly/CollectionReportsCollOnlyDetl"));
+
+//Collection Reports - qmt
+const CollectionReportQmt = React.lazy(() => import("../views/Pages/Mis/CollectionReports/qmt/collectionReports/CollectionQmtReports"));
+const CollectionReportQmtDetls = React.lazy(() => import("../views/Pages/Mis/CollectionReports/qmt/collectionReports/CollectionQmtDetlReports"));
+const CollectionReportsCollectionOnlyQmt = React.lazy(() => import("../views/Pages/Mis/CollectionReports/qmt/collectionReports-collectionOnly/CollectionReportsCollectionOnly"));
+const CollectionReportCollectionOnlyDetlQmt = React.lazy(() => import("../views/Pages/Mis/CollectionReports/qmt/collectionReports-collectionOnly/CollectionReportsCollOnlyDetl"));
+
+//Collection Reports - grouped
+const CollectionReportGrouped = React.lazy(() => import("../views/Pages/Mis/CollectionReports/grouped/collectionReports/CollectionGroupedReports"));
+const CollectionReportGroupedDetls = React.lazy(() => import("../views/Pages/Mis/CollectionReports/grouped/collectionReports/CollectionGroupedDetlReports"));
+const CollectionReportsCollectionOnlyGrouped = React.lazy(() => import("../views/Pages/Mis/CollectionReports/grouped/collectionReports-collectionOnly/CollectionReportsCollectionOnly"));
+const CollectionReportCollectionOnlyDetlGrouped = React.lazy(() => import("../views/Pages/Mis/CollectionReports/grouped/collectionReports-collectionOnly/CollectionReportsCollOnlyDetl"));
 
 /***************************************NEW MIS PATH************************************************* */
 // QMT
@@ -139,7 +156,6 @@ const routes = [
   {path: "/pharmacyGstSalseReports", name: "PHARMACY GST Sales Reports", element: pharmacyGstReports},
   {path: "/pharmacyGstReportTmch", name: "PHARMACY GST Sales Reports", element: pharmacyGstReptTMCH},
   //Colleciton reports tmch - imported
-  {path: "/CollctionTmch", name: "Collection Report TMCH", element: CollectionTmch},
   {path: "/PharmacyGst", name: "Pharmacy GST TMCH", element: PharmacySalesGstReports},
 
   // Collection reports - tmch
@@ -147,6 +163,24 @@ const routes = [
   {path: "/CollectionReportTmchDetls", name: "Collection Report TMCH Details", element: CollectionReportTmchDetls},
   {path: "/CollectionReportCollectionOnly", name: "Collection Report TSSH", element: CollectionReportsCollectionOnly},
   {path: "/CollectionReportCollectionOnlyDetl", name: "CollectionReportCollectionOnlyDetl", element: CollectionReportCollectionOnlyDetl},
+
+  // Collection reports - tssh
+  {path: "/CollectionReportTssh", name: "Collection Report TSSH", element: CollectionReportTssh},
+  {path: "/CollectionReportTsshDetls", name: "Collection Report TSSH Details", element: CollectionReportTsshDetls},
+  {path: "/CollectionReportCollectionOnlyTssh", name: "Collection Report TSSH Collection Only", element: CollectionReportsCollectionOnlyTssh},
+  {path: "/CollectionReportCollectionOnlyDetlTssh", name: "CollectionReportCollectionOnlyDetlTssh", element: CollectionReportCollectionOnlyDetlTssh},
+
+  // Collection reports - qmt
+  {path: "/CollectionReportQmt", name: "Collection Report QMT", element: CollectionReportQmt},
+  {path: "/CollectionReportQmtDetls", name: "Collection Report QMT Details", element: CollectionReportQmtDetls},
+  {path: "/CollectionReportCollectionOnlyQmt", name: "Collection Report QMT Collection Only", element: CollectionReportsCollectionOnlyQmt},
+  {path: "/CollectionReportCollectionOnlyDetlQmt", name: "CollectionReportCollectionOnlyDetlQmt", element: CollectionReportCollectionOnlyDetlQmt},
+
+  // Collection reports - grouped
+  {path: "/CollectionReportGrouped", name: "Collection Report Grouped", element: CollectionReportGrouped},
+  {path: "/CollectionReportGroupedDetls", name: "Collection Report Grouped Details", element: CollectionReportGroupedDetls},
+  {path: "/CollectionReportCollectionOnlyGrouped", name: "Collection Report Grouped Collection Only", element: CollectionReportsCollectionOnlyGrouped},
+  {path: "/CollectionReportCollectionOnlyDetlGrouped", name: "CollectionReportCollectionOnlyDetlGrouped", element: CollectionReportCollectionOnlyDetlGrouped},
 
   /************NEw Income Reports */
   {path: "/QmtIncomeReportsDateSelection", name: "Hospital Income Statement", element: QmtIncomeReportDateSelection},

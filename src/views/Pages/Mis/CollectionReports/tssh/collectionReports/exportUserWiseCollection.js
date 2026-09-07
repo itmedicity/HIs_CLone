@@ -1,7 +1,7 @@
 import * as XLSX from "xlsx-js-style";
 import {saveAs} from "file-saver";
 
-// Matches the on-screen table header (see tableHeadRowArray in CollectionTmchDetlReports.jsx),
+// Matches the on-screen table header (see tableHeadRowArray in CollectionTsshDetlReports.jsx),
 // except "Credit/ Insurance" carries the space the legacy "User Wise Collection.xls" design uses
 // — three columns are legitimately labelled "Total" on screen (Revenue Total, Total After Adv,
 // Collection Total), which is fine for spreadsheet cell text but can't be object keys, hence

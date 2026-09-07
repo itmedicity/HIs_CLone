@@ -7,7 +7,7 @@ import SearchIcon from "../../../../../../assets/SearchSmall.png";
 import "../../Style.css";
 import {useNavigate} from "react-router-dom";
 import DateTimeField from "../components/DateTimeField";
-import {GET_TMCH_OraUsers} from "../actions/collectionTmchReportsActions";
+import {GET_QMT_OraUsers} from "../actions/collectionQmtReportsActions";
 
 // Fixed row height (px) matching the rendered checkbox row, so the visible
 // slice can be computed from scrollTop without measuring the DOM. The user
@@ -24,7 +24,7 @@ const toCapitalCase = (value) =>
     .map((word) => (word ? word[0].toUpperCase() + word.slice(1) : word))
     .join(" ");
 
-const CollectionTmchReports = () => {
+const CollectionQmtReports = () => {
   const navigate = useNavigate();
 
   const [checked, setChecked] = useState(false);
@@ -39,7 +39,7 @@ const CollectionTmchReports = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const {success, data} = await GET_TMCH_OraUsers();
+        const {success, data} = await GET_QMT_OraUsers();
         const users = success ? (data ?? []) : [];
         setUserList(users);
         setSelectedUsers(users.map((item) => item.US_CODE));
@@ -60,12 +60,12 @@ const CollectionTmchReports = () => {
     // URL, the (possibly long) user-code filter goes through sessionStorage, which a
     // window.open'd popup inherits a snapshot of at creation time.
     if (selectedUserCodes) {
-      sessionStorage.setItem("CollectionReportTmchSelectedUserCodes", JSON.stringify(selectedUserCodes));
+      sessionStorage.setItem("CollectionReportQmtSelectedUserCodes", JSON.stringify(selectedUserCodes));
     } else {
-      sessionStorage.removeItem("CollectionReportTmchSelectedUserCodes");
+      sessionStorage.removeItem("CollectionReportQmtSelectedUserCodes");
     }
     const params = new URLSearchParams({from: fromDate.toISOString(), to: toDate.toISOString()});
-    window.open(`/MenuBare/CollectionReportTmchDetls?${params.toString()}`, "_blank", "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0");
+    window.open(`/MenuBare/CollectionReportQmtDetls?${params.toString()}`, "_blank", "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0");
   };
 
   const filteredUserList = useMemo(() => userList.filter((item) => (item.USC_NAME ?? "").toLowerCase().includes(userSearch.trim().toLowerCase())), [userList, userSearch]);
@@ -162,7 +162,7 @@ const CollectionTmchReports = () => {
                           <input id="checkbox" type="checkbox" name="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} className="customCheckbox" />
                         </td>
                         <td>
-                          <Box sx={{fontSize: "11.5px", fontWeight: "normal", color: "#525252"}}>Travancore Medical College Hospital- (TMCH)</Box>
+                          <Box sx={{fontSize: "11.5px", fontWeight: "normal", color: "#525252"}}>Quilon Medical Trust- (QMT)</Box>
                         </td>
                       </tr>
                     </tbody>
@@ -270,4 +270,4 @@ const CollectionTmchReports = () => {
   );
 };
 
-export default CollectionTmchReports;
+export default CollectionQmtReports;

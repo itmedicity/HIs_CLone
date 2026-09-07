@@ -8,7 +8,7 @@ import "../../Style.css";
 import CollectionTableCellCmp from "./CollectionTableCellCmp";
 import SectionWiseTotal from "./SectionWiseTotal";
 import SectionHeadName from "./SectionHeadName";
-import {useUserWiseCollectionSummary} from "../../../../../../Hooks/useUserWiseCollectionSummary";
+import {useUserWiseCollectionSummaryTssh} from "../../../../../../Hooks/useUserWiseCollectionSummaryTssh";
 import {exportUserWiseCollectionExcel, exportUserWiseCollectionWord} from "./exportUserWiseCollection";
 
 const tableHeadRowArray = [
@@ -35,7 +35,7 @@ const tableHeadRowArray = [
   {name: "UnsettledAmt", className: "coll-TableHeaderCell coll-TextAlignRight"},
 ];
 
-const CollectionTmchDetlReports = () => {
+const CollectionTsshDetlReports = () => {
   const emptyRow = useMemo(() => Array.from({length: 21}, (_, i) => i + 1), []);
 
   const [searchParams] = useSearchParams();
@@ -43,7 +43,7 @@ const CollectionTmchDetlReports = () => {
   const toDate = searchParams.get("to") ? new Date(searchParams.get("to")) : moment().endOf("day").toDate();
   const selectedUserCodes = useMemo(() => {
     try {
-      const raw = sessionStorage.getItem("CollectionReportTmchSelectedUserCodes");
+      const raw = sessionStorage.getItem("CollectionReportTsshSelectedUserCodes");
       return raw ? JSON.parse(raw) : undefined;
     } catch (error) {
       return undefined;
@@ -64,7 +64,7 @@ const CollectionTmchDetlReports = () => {
     isSuccess,
     hasError,
     errorMessage,
-  } = useUserWiseCollectionSummary(fromDate, toDate, selectedUserCodes);
+  } = useUserWiseCollectionSummaryTssh(fromDate, toDate, selectedUserCodes);
 
   const exportPayload = {
     summaryRows,
@@ -91,7 +91,7 @@ const CollectionTmchDetlReports = () => {
         <ReportHeaderDesignTwo
           name="User Wise Collection"
           data={{from: moment(fromDate).format("DD/MM/YYYY HH:mm:ss"), to: moment(toDate).format("DD/MM/YYYY HH:mm:ss")}}
-          hosName="TRAVANCORE MEDICAL COLLEGE & HOSPITAL"
+          hosName="TRAVANCORE SUPER SPECIALITY HOSPITAL"
           address={"A Unit Of Quilon Medical Trust, Mylapore, Thattamala P.O, Kollam"}
           disable={false}
         />
@@ -248,4 +248,4 @@ const CollectionTmchDetlReports = () => {
   );
 };
 
-export default CollectionTmchDetlReports;
+export default CollectionTsshDetlReports;

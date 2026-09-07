@@ -13,10 +13,12 @@ There is no backend in this repository — it is a pure SPA client. The API base
 ```
 npm start   # dev server, http://localhost:3000
 npm run build
-npm test    # currently broken — see Known Issues
+npm test    # passes (single smoke test), see Known Issues for coverage caveat
 ```
 
 No lint/format script is defined beyond CRA's bundled `eslint-config-react-app` (see `eslintConfig` in package.json). No CI is configured.
+
+API base URL is environment-based: `.env.development` / `.env.production` set `REACT_APP_API_URL` (CRA loads the right one per `npm start` vs `npm run build`); override via CI/deploy env vars, which take precedence over the files. `src/controllers/AxiosConfig.js` falls back to a hardcoded dev IP only if that variable is somehow unset.
 
 ## Architecture
 
@@ -45,6 +47,8 @@ No lint/format script is defined beyond CRA's bundled `eslint-config-react-app` 
   Follow this pattern for new slices. A handful of older slices deviate from it (deprecated object-literal `extraReducers`, no `try/catch`, inconsistent status codes) — see `VERSION.md` / audit notes for which ones; don't copy those as a reference.
 - **Reports**: most "Mis" report pages follow the same shape — a date/filter selection screen, a Redux thunk (or in the newer `TopOfficials` tree, a TanStack Query `useQuery`) that fetches a report payload, an ag-Grid or hand-built MUI `Table` to render it, and an xlsx/jspdf export action. There are several near-duplicate variants of the same report per hospital/grouping (`HospitalIcomeTmch`, `HospitalIncomeTssh`, `HospitalIncomeTmchGrouped`, `*Imported`, `HospitalIncomeTypeTwo`) that were copy-pasted from one another and have since drifted — **when fixing a bug in one, grep the sibling folders for the same code shape**, it is very likely present there too (or already fixed there and not here).
 - **Newer report tree**: `views/Pages/Mis/TopOfficials/**` is a more recent rewrite (see `store.js` comment `// MIS REPORT VERTSION V5.0.0`) using TanStack Query instead of Redux thunks for data fetching, with its own `Layouts`, `Modals`, `hooks`, and `utils` subfolders. Prefer this structure for new report work over the older `HospitalIncome*` folders.
+- **`views/Pages/Mis/CollectionReports/tmch/**`**: another TanStack Query-based report area (e.g. `collectionReports/CollectionTmchDetlReports.jsx`, backed by `Hooks/useUserWiseCollectionSummary.js`), with its own `actions/`, `components/`, and `utils/` subfolders per report family — same pattern as `TopOfficials`, just not nested under it. Export-to-file for this kind of report goes through a dedicated `export*.js` module (see `exportUserWiseCollection.js`) built on `xlsx-js-style` (styled Excel) and an HTML/`application/msword`-blob trick via `file-saver` for Word (no `.docx` library is installed) — reuse that pattern rather than adding a new export dependency.
+- **`Components/MenuButton.jsx`**: the shared report toolbar (Word/Excel/Print/Close icons). `onExportExcel`/`onExportWord`/`onPrint` are all optional — Print defaults to `window.print()` and Close falls back to `navigateTo`/`window.close()` — so passing none of them is still safe for older callers. Most of the ~40 call sites only wire `onExportExcel` (or nothing); don't assume a given report has Word export just because the component supports it.
 
 ## Conventions actually in use (follow these, don't invent new ones)
 
@@ -54,16 +58,14 @@ No lint/format script is defined beyond CRA's bundled `eslint-config-react-app` 
 - Notifications: use `Constant/Constants.js`'s `succesNofity` / `errorNofity` / `warningNofity` / `infoNofity` wrappers around `react-toastify` (note the existing typo in the name — it's intentional/established, matching it avoids introducing a second inconsistent name).
 - Lazy-load every route-level page component with `React.lazy`.
 
-## Known issues (see full audit for detail and reasoning — not reproduced here to avoid drift)
+## Known issues
 
-A full line-by-line audit was performed on 2026-08-11 covering the entire `src/` tree. Highlights that matter most for future work:
+A full line-by-line audit was performed on 2026-08-11 covering the entire `src/` tree; re-verified and refreshed 2026-09-03 (several items below have since been fixed and were removed from this list — env config, `rolProcessSlice` registration/action-types, and `App.test.js` all no longer reproduce). Highlights that still matter for future work:
 
-- **No environment-based config.** `src/Constant/Static.js` hardcodes the same internal IP for both `DEV_API_URL` and `PRODUCTION_API_URL`, and `AxiosConfig.js` doesn't branch on environment at all. Before any real production deploy, this needs to move to `.env`/`REACT_APP_*` variables (and `Static.js` actually removed from git tracking — the current `.gitignore` rule for it is a no-op because the file was already committed before the rule was added).
 - **Route-level authorization is UI-only.** `DefaultLayout.jsx` mounts every route unconditionally; only the menu *links* are permission-filtered. Don't assume a hidden link means the page is inaccessible — verify backend endpoints enforce authorization independently.
-- **Dead/broken features exist and look intentional at a glance**: `DashBoard/DashboardOP_IP.jsx` and `Dashboard.jsx` have their entire UI commented out (the underlying chart components are fully built and otherwise unused); `TopOfficials/components/CreditInsuranceBillModal.jsx` has its table body/footer commented out and is invoked with the wrong prop names at both call sites. Don't assume "there's no UI for X" means "X isn't implemented" — grep first, it may just be commented out or wired with wrong props.
-- **`npm test` currently fails** — `src/App.test.js` is unmodified CRA boilerplate asserting text that doesn't exist in this app's actual login page. There is effectively no test coverage in this repository.
-- **Redux status-code convention (0/1/2) is violated in a few slices** (`sliceDashBoard.js`, `rolProcessSlice.js`, `ipAdmissionInfo/*`) where the `.rejected` case reuses the success status value — don't trust `status === 1` as "success" without checking which slice you're in.
-- **`Redux-Slice/pharmacyBilling/rolProcessSlice.js` is never registered in `store.js`** and has three thunks sharing one action-type string, so two of its three reducers can never run. Treat this file as broken until fixed.
+- **Dead/broken features exist and look intentional at a glance**: `TopOfficials/components/CreditInsuranceBillModal.jsx` has its table body/footer commented out (confirmed still true 2026-09-03) and is invoked with the wrong prop names at both call sites. Don't assume "there's no UI for X" means "X isn't implemented" — grep first, it may just be commented out or wired with wrong props.
+- **`npm test` covers one smoke test only** (`src/App.test.js` renders `<App/>` and checks for the login button) — there is effectively no real test coverage in this repository beyond that.
+- **Redux status-code convention (0/1/2) may still be violated in some slices** where `.rejected` reuses the success status value — don't trust `status === 1` as "success" without checking which slice you're in; this was last audited 2026-08-11 and not re-verified slice-by-slice on 2026-09-03.
 - Several near-duplicate report folders under `views/Pages/Mis/` (`HospitalIcomeTmch` vs `HospitalIncomeTssh` vs `*Grouped` vs `*Imported` vs `HospitalIncomeTypeTwo`) have drifted from each other — bugs fixed in one copy are often still present in the others.
 
 When starting new work in an area touched by the above, re-verify current state first — this list is a snapshot, not a live source of truth.
