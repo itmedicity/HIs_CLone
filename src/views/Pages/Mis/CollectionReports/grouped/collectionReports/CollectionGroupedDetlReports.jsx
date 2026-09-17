@@ -49,6 +49,14 @@ const CollectionGroupedDetlReports = () => {
       return undefined;
     }
   }, []);
+  const ipNumbers = useMemo(() => {
+    try {
+      const raw = sessionStorage.getItem("CollectionReportGroupedIpNumbers");
+      return raw ? JSON.parse(raw) : [];
+    } catch (error) {
+      return [];
+    }
+  }, []);
 
   const {
     summaryRows,
@@ -64,7 +72,7 @@ const CollectionGroupedDetlReports = () => {
     isSuccess,
     hasError,
     errorMessage,
-  } = useUserWiseCollectionSummaryGrouped(fromDate, toDate, selectedUserCodes);
+  } = useUserWiseCollectionSummaryGrouped(fromDate, toDate, selectedUserCodes, ipNumbers);
 
   const exportPayload = {
     summaryRows,

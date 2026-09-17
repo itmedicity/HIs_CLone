@@ -49,6 +49,14 @@ const CollectionTsshDetlReports = () => {
       return undefined;
     }
   }, []);
+  const ipNumbers = useMemo(() => {
+    try {
+      const raw = sessionStorage.getItem("CollectionReportTsshIpNumbers");
+      return raw ? JSON.parse(raw) : [];
+    } catch (error) {
+      return [];
+    }
+  }, []);
 
   const {
     summaryRows,
@@ -64,7 +72,7 @@ const CollectionTsshDetlReports = () => {
     isSuccess,
     hasError,
     errorMessage,
-  } = useUserWiseCollectionSummaryTssh(fromDate, toDate, selectedUserCodes);
+  } = useUserWiseCollectionSummaryTssh(fromDate, toDate, selectedUserCodes, ipNumbers);
 
   const exportPayload = {
     summaryRows,

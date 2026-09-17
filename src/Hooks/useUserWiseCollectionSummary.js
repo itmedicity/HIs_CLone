@@ -153,29 +153,32 @@ const roundOffRow = (rows) => {
 
 /**
  * Fetches the full three-section "User Wise Collection" report (Summary, Credit Bill
- * Collection, Refund) from GET /collectionOnlyQmt/getUserWiseCollectionSummary, and shapes it
+ * Collection, Refund) from POST /collectionOnlyQmt/getUserWiseCollectionSummary, and shapes it
  * into the row/column format CollectionTableCellCmp and SectionWiseTotal expect.
  *
  * @param {Date} fromDate
  * @param {Date} toDate
  * @param {string[]} [selectedUserCodes] - restricts every section to these US_CODEs (the
  *   checkboxes on the filter page); omit/undefined shows every cashier the backend returns.
+ * @param {string[]} [ipNumbers=[]] - full IP-admitted patient list for the date range; the
+ *   backend excludes (NOT IN) every one of these from the OP-hospital collection figures.
  * @param {string} [mhCode="00"]
  */
-export const useUserWiseCollectionSummary = (fromDate, toDate, selectedUserCodes, mhCode = "00") => {
-  const params = useMemo(
+export const useUserWiseCollectionSummary = (fromDate, toDate, selectedUserCodes, ipNumbers = [], mhCode = "00") => {
+  const body = useMemo(
     () => ({
       fromDate: moment(fromDate).format("DD/MM/YYYY hh:mm:ss A"),
       toDate: moment(toDate).format("DD/MM/YYYY hh:mm:ss A"),
       mhCode,
+      ptno: ipNumbers,
     }),
-    [fromDate, toDate, mhCode],
+    [fromDate, toDate, mhCode, ipNumbers],
   );
 
   const query = useQuery({
-    queryKey: ["user-wise-collection-summary", params],
+    queryKey: ["user-wise-collection-summary", body],
     queryFn: async () => {
-      const {data} = await axiosinstance.get("/collectionOnlyQmt/getUserWiseCollectionSummary", {params});
+      const {data} = await axiosinstance.post("/collectionOnlyQmt/getUserWiseCollectionSummary", body);
       return data ?? {};
     },
     enabled: Boolean(fromDate && toDate),

@@ -8,6 +8,7 @@ import "../../Style.css";
 import {useNavigate} from "react-router-dom";
 import DateTimeField from "../components/DateTimeField";
 import {GET_TSSH_OraUsers} from "../actions/collectionTsshReportsActions";
+import {axiosinstance} from "../../../../../../controllers/AxiosConfig";
 
 // Fixed row height (px) matching the rendered checkbox row, so the visible
 // slice can be computed from scrollTop without measuring the DOM. The user
@@ -50,20 +51,41 @@ const CollectionTsshReports = () => {
     fetchUsers();
   }, []);
 
-  const handleNavigateToDetlPage = () => {
+  // Derives the IP-admitted patient list for the selected date range the same way
+  // TopOfficials/hospitalincomereport/tmch/IncomeReportsTmch.jsx does, then keeps only the
+  // tmch_status==='0' subset ("rmIpNumber") — the patients CollectionTssh's backend filters
+  // IN (...) for.
+  const getRmIpNumber = async () => {
+    try {
+      const postData = {
+        from: moment(fromDate).format("YYYY-MM-DD 00:00:00"),
+        to: moment(toDate).format("YYYY-MM-DD 23:59:59"),
+      };
+      const ipNumberResponse = await axiosinstance.post("/admission/getIpNumber", postData);
+      const {success, data} = ipNumberResponse.data;
+      return success === 1 ? (data?.filter((e) => e.tmch_status === "0").map((e) => e.ip_no) ?? []) : [];
+    } catch (error) {
+      console.error("Error fetching IP numbers:", error);
+      return [];
+    }
+  };
+
+  const handleNavigateToDetlPage = async () => {
     // Only pass a real filter when the cashier isn't fully selected — leaving it
     // undefined for the "everyone checked" case lets the detail page show every
     // cashier, including ones added after this list was fetched.
     const selectedUserCodes = selectedUsers.length < userList.length ? selectedUsers : undefined;
     // Opened as its own popup window (matching TopOfficials' Modal reports) rather than an
     // in-SPA navigation, so router `state` can't cross the window boundary — dates go on the
-    // URL, the (possibly long) user-code filter goes through sessionStorage, which a
+    // URL, the (possibly long) user-code filter and IP list go through sessionStorage, which a
     // window.open'd popup inherits a snapshot of at creation time.
     if (selectedUserCodes) {
       sessionStorage.setItem("CollectionReportTsshSelectedUserCodes", JSON.stringify(selectedUserCodes));
     } else {
       sessionStorage.removeItem("CollectionReportTsshSelectedUserCodes");
     }
+    const rmIpNumber = await getRmIpNumber();
+    sessionStorage.setItem("CollectionReportTsshIpNumbers", JSON.stringify(rmIpNumber));
     const params = new URLSearchParams({from: fromDate.toISOString(), to: toDate.toISOString()});
     window.open(`/MenuBare/CollectionReportTsshDetls?${params.toString()}`, "_blank", "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0");
   };

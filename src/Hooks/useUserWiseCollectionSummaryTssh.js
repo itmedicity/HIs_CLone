@@ -153,29 +153,32 @@ const roundOffRow = (rows) => {
 
 /**
  * Fetches the full three-section "User Wise Collection" report (Summary, Credit Bill
- * Collection, Refund) from GET /collectionReportsTssh/getUserWiseCollectionSummary, and shapes it
+ * Collection, Refund) from POST /collectionReportsTssh/getUserWiseCollectionSummary, and shapes it
  * into the row/column format CollectionTableCellCmp and SectionWiseTotal expect.
  *
  * @param {Date} fromDate
  * @param {Date} toDate
  * @param {string[]} [selectedUserCodes] - restricts every section to these US_CODEs (the
  *   checkboxes on the filter page); omit/undefined shows every cashier the backend returns.
+ * @param {string[]} [ipNumbers=[]] - the tmch_status==='0' ("rmIpNumber") subset of the IP
+ *   admission list for the date range; the backend restricts every section IN (...) this list.
  * @param {string} [mhCode="00"]
  */
-export const useUserWiseCollectionSummaryTssh = (fromDate, toDate, selectedUserCodes, mhCode = "00") => {
-  const params = useMemo(
+export const useUserWiseCollectionSummaryTssh = (fromDate, toDate, selectedUserCodes, ipNumbers = [], mhCode = "00") => {
+  const body = useMemo(
     () => ({
       fromDate: moment(fromDate).format("DD/MM/YYYY hh:mm:ss A"),
       toDate: moment(toDate).format("DD/MM/YYYY hh:mm:ss A"),
       mhCode,
+      rmIpNumber: ipNumbers,
     }),
-    [fromDate, toDate, mhCode],
+    [fromDate, toDate, mhCode, ipNumbers],
   );
 
   const query = useQuery({
-    queryKey: ["user-wise-collection-summary-tssh", params],
+    queryKey: ["user-wise-collection-summary-tssh", body],
     queryFn: async () => {
-      const {data} = await axiosinstance.get("/collectionReportsTssh/getUserWiseCollectionSummary", {params});
+      const {data} = await axiosinstance.post("/collectionReportsTssh/getUserWiseCollectionSummary", body);
       return data ?? {};
     },
     enabled: Boolean(fromDate && toDate),
