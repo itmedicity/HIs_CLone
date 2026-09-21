@@ -63,8 +63,8 @@ const CollectionReportTmch = React.lazy(() => import("../views/Pages/Mis/Collect
 const CollectionReportTmchDetls = React.lazy(() => import("../views/Pages/Mis/CollectionReports/tmch/collectionReports/CollectionTmchDetlReports"));
 
 //Collection Reports Tssh ( Collection Reports Tssh )
-const CollectionReportsCollectionOnly = React.lazy(() => import("../views/Pages/Mis/CollectionReports/tmch/collectionReports-collectionOnly/CollectionReportsCollectionOnly"));
-const CollectionReportCollectionOnlyDetl = React.lazy(() => import("../views/Pages/Mis/CollectionReports/tmch/collectionReports-collectionOnly/CollectionReportsCollOnlyDetl"));
+const CollectionReportsCollectionOnly = React.lazy(() => import("../views/Pages/Mis/collectionReports-collectionOnly/CollectionReportsCollectionOnly"));
+const CollectionReportCollectionOnlyDetl = React.lazy(() => import("../views/Pages/Mis/collectionReports-collectionOnly/CollectionReportsCollOnlyDetl"));
 
 //Collection Reports - tssh
 const CollectionReportTssh = React.lazy(() => import("../views/Pages/Mis/CollectionReports/tssh/collectionReports/CollectionTsshReports"));
