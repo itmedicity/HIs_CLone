@@ -1,7 +1,7 @@
 import React, {useMemo} from "react";
 import {Box, Paper, Table, TableContainer, TableHead, TableRow, TableCell, TableBody} from "@mui/material";
 import moment from "moment";
-import {Navigate, useLocation} from "react-router-dom";
+import {Navigate, useSearchParams} from "react-router-dom";
 import ReportHeaderDesignTwo from "../../../Components/ReportHeaderDesignTwo";
 import SectionWiseTotal from "../CollectionReports/tmch/collectionReports/SectionWiseTotal";
 import SectionHeadName from "../CollectionReports/tmch/collectionReports/SectionHeadName";
@@ -9,7 +9,7 @@ import CollectionTableCellCmp from "../CollectionReports/tmch/collectionReports/
 import MenuButton from "../Components/MenuButton";
 import "../CollectionReports/Style.css";
 import {useCollectionOnlySummary} from "../../../../Hooks/useCollectionOnlySummary";
-import {COLLECTION_ONLY_ADDRESS, COLLECTION_ONLY_VARIANTS} from "./collectionOnlyVariants";
+import {COLLECTION_ONLY_ADDRESS, COLLECTION_ONLY_VARIANTS, collectionOnlySessionKeys} from "./collectionOnlyVariants";
 import {exportCollectionOnlyExcel, exportCollectionOnlyWord} from "./exportCollectionOnly";
 
 const tableHeadRowArray = [
@@ -25,6 +25,15 @@ const tableHeadRowArray = [
   {name: "UnsettledAmt", className: "coll-TableHeaderCell coll-TextAlignRight"},
 ];
 const COLUMN_COUNT = tableHeadRowArray.length;
+
+const readSession = (key) => {
+  try {
+    const raw = sessionStorage.getItem(key);
+    return raw === null ? null : JSON.parse(raw);
+  } catch (error) {
+    return null;
+  }
+};
 
 const CollectionOnlyReport = ({config, variant, state}) => {
   const fromDate = useMemo(() => new Date(state.from), [state.from]);
@@ -55,7 +64,7 @@ const CollectionOnlyReport = ({config, variant, state}) => {
 
   return (
     <Box flex={1} sx={{backgroundColor: "lightgray", p: "1%"}}>
-      <MenuButton navigateTo={config.filterRoute} onExportExcel={() => exportCollectionOnlyExcel(exportPayload)} onExportWord={() => exportCollectionOnlyWord(exportPayload)} />
+      <MenuButton navigateTo={""} onExportExcel={() => exportCollectionOnlyExcel(exportPayload)} onExportWord={() => exportCollectionOnlyWord(exportPayload)} />
       <Paper square sx={{borderColor: "black", border: 1}}>
         <ReportHeaderDesignTwo
           name="User Wise Collection"
@@ -148,13 +157,20 @@ const CollectionOnlyReport = ({config, variant, state}) => {
   );
 };
 
-// The selection (dates, cashiers, IP list) travels in router state from the filter page; a page
-// refresh drops it, so send the user back to re-select rather than guess a default that could
-// silently show a different hospital slice.
+// Opened in its own window by the filter page: dates come from the URL, the cashier selection
+// and IP list from sessionStorage (which survives a refresh of this window). If any of it is
+// missing (e.g. a pasted URL) go back to the filter rather than guess — a missing IP list would
+// silently show the wrong hospital slice.
 const CollectionOnlyDetailPage = ({variant}) => {
-  const {state} = useLocation();
+  const [searchParams] = useSearchParams();
   const config = COLLECTION_ONLY_VARIANTS[variant];
-  if (!state?.from || !state?.to) return <Navigate to={`/Menu/${config.filterRoute}`} replace />;
+  const keys = collectionOnlySessionKeys(variant);
+  const from = searchParams.get("from");
+  const to = searchParams.get("to");
+  const ipNumbers = useMemo(() => readSession(keys.ips), [keys.ips]);
+  const selectedUserCodes = useMemo(() => readSession(keys.users) ?? undefined, [keys.users]);
+  const state = useMemo(() => ({from, to, selectedUserCodes, ipNumbers: ipNumbers ?? []}), [from, to, selectedUserCodes, ipNumbers]);
+  if (!from || !to || (config.selectIpNumbers && ipNumbers === null)) return <Navigate to={`/Menu/${config.filterRoute}`} replace />;
   return <CollectionOnlyReport config={config} variant={variant} state={state} />;
 };
 

@@ -1,3 +1,11 @@
+// The report opens in its own window (like the full Collection Reports): dates travel on the URL,
+// the cashier selection and IP list through sessionStorage, which the popup inherits a copy of.
+export const collectionOnlySessionKeys = (variant) => ({
+  users: `CollectionOnlySelectedUserCodes-${variant}`,
+  ips: `CollectionOnlyIpNumbers-${variant}`,
+});
+export const COLLECTION_ONLY_POPUP_FEATURES = "toolbar=no,scrollbars=yes,resizable=yes,top=0,left=100,right=300,bottom=0";
+
 export const COLLECTION_ONLY_ADDRESS = "A Unit Of Quilon Medical Trust, Mylapore, Thattamala P.O, Kollam";
 
 // `selectIpNumbers` picks this report's IP list out of the /admission/getIpNumber rows — the

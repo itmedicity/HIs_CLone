@@ -10,7 +10,7 @@ import "../CollectionReports/Style.css";
 import {imageIcon} from "../../../../assets/ImageExport";
 import {axiosinstance} from "../../../../controllers/AxiosConfig";
 import {errorNofity, warningNofity} from "../../../../Constant/Constants";
-import {COLLECTION_ONLY_VARIANTS} from "./collectionOnlyVariants";
+import {COLLECTION_ONLY_POPUP_FEATURES, COLLECTION_ONLY_VARIANTS, collectionOnlySessionKeys} from "./collectionOnlyVariants";
 
 // The cashier list can run into the thousands, so only the rows on screen are rendered
 // (fixed row height lets the visible slice be computed from scrollTop without measuring).
@@ -78,9 +78,12 @@ const CollectionOnlyFilterPage = ({variant}) => {
       // Only pass a real filter when the cashier isn't fully selected — undefined for the
       // "everyone checked" case lets the report show every cashier.
       const selectedUserCodes = selectedUsers.length < userList.length ? selectedUsers : undefined;
-      navigate(`/Menu/${config.detailRoute}`, {
-        state: {from: fromDate.toISOString(), to: toDate.toISOString(), selectedUserCodes, ipNumbers},
-      });
+      const keys = collectionOnlySessionKeys(variant);
+      if (selectedUserCodes) sessionStorage.setItem(keys.users, JSON.stringify(selectedUserCodes));
+      else sessionStorage.removeItem(keys.users);
+      sessionStorage.setItem(keys.ips, JSON.stringify(ipNumbers));
+      const params = new URLSearchParams({from: fromDate.toISOString(), to: toDate.toISOString()});
+      window.open(`/MenuBare/${config.detailRoute}?${params.toString()}`, "_blank", COLLECTION_ONLY_POPUP_FEATURES);
     } catch (error) {
       console.error("Error preparing collection report:", error);
       errorNofity("Unable to load the IP admission list. Please try again.");
