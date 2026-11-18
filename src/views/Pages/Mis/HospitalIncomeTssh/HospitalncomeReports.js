@@ -77,6 +77,8 @@ const HospitalncomeReports = () => {
           to: moment(endDate).format("YYYY-MM-DD 23:59:59"),
         };
 
+        // console.log(`tssh --------->`, post_data0);
+
         const dischargeResponse = await axiosinstance.post("/admission/getIpDischargedPatientInfo", post_data0);
         const {success: dischargeSuccess, data: dischargeData} = dischargeResponse.data;
 

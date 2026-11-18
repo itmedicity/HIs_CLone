@@ -88,6 +88,8 @@ const HospitalncomeReports = () => {
           to: moment(endDate).format("YYYY-MM-DD 23:59:59"),
         };
 
+        // console.log(`grouped --------->`, postData0);
+
         const dischargedResponse = await axiosinstance.post("/admission/getIpDischargedPatientInfoGrouped", postData0);
         const {success: dischargedSuccess, data: newIpReceiptBased} = dischargedResponse.data;
         // console.log(`getIpDischargedPatientInfoGrouped ----->`, newIpReceiptBased);
