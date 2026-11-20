@@ -3,10 +3,17 @@ export const topOfficilasMenu = [
   {slno: 11, module: 1, path: "/Menu/hospital_income_tmch", name: "Hospital Income Statement - TMCH"},
   {slno: 12, module: 1, path: "/Menu/hospital_income_tssh", name: "Hospital Income Statement - TSSH"},
   {slno: 14, module: 1, path: "/Menu/hospital_income_grouped", name: "Hospital Income Statement - Grouped"},
-  {slno: 19, module: 2, path: "/Menu/CollctionTmch", name: "Collection Report - TMCH (i)"},
   {slno: 20, module: 2, path: "/Menu/PharmacyGst", name: "Pharmacy Sales Gst Reports"},
+  // CollectionReportTmch;
   {slno: 26, module: 2, path: "/Menu/CollectionReportTmch", name: "Collection Reports - Tmch"},
+  {slno: 29, module: 2, path: "/Menu/CollectionReportTssh", name: "Collection Reports - Tssh"},
+  {slno: 28, module: 2, path: "/Menu/CollectionReportQmt", name: "Collection Reports - Qmt"},
+  {slno: 30, module: 2, path: "/Menu/CollectionReportGrouped", name: "Collection Reports - Grouped"},
+  // CollectionReportCollectionOnly;
   {slno: 27, module: 2, path: "/Menu/CollectionReportCollectionOnly", name: "Collection Reports(Collection Only) - Tmch"},
+  {slno: 31, module: 2, path: "/Menu/CollectionReportCollectionOnlyTssh", name: "Collection Reports(Collection Only) - Tssh"},
+  {slno: 32, module: 2, path: "/Menu/CollectionReportCollectionOnlyQmt", name: "Collection Reports(Collection Only) - Qmt"},
+  {slno: 33, module: 2, path: "/Menu/CollectionReportCollectionOnlyGrouped", name: "Collection Reports(Collection Only) - Grouped"},
 
   {slno: 21, module: 3, path: "/Menu/QmtIncomeReportsDateSelection", name: "Hospital Income Statement - QMT"},
   {slno: 22, module: 3, path: "/Menu/TmcIncomeReportsDateSelection", name: "Hospital Income Statement - TMCH"},

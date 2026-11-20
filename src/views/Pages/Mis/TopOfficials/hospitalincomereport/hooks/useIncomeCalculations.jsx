@@ -41,8 +41,19 @@ export const useIncomeCalculations = (apiData, setLoading, grpval) => {
     const pharmacy_tax = pharmacy.getPharmacyCollection_One?.[0]?.TAX || 0;
     const pharmacy_discount =
       (pharmacy.getPharmacyCollection_One?.[0]?.DISCOUNT || 0) + (pharmacy.getPharmacyCollection_four?.[0]?.DISCOUNT || 0) + (pharmacy.getPharmacyReturnSection_three?.[0]?.DISCOUNT || 0);
+    // Legacy MIS adds tax to the pharmacy gross when HOSPITAL.HOC_GROSSAMTFLAG = 'Y' (flag only sent by the QMT API)
+    const grossIncludesTax = data.settings?.grossAmtFlag === "Y";
     const pharmacy_gross =
-      (pharmacy.getPharmacyCollection_One?.[0]?.GROSSAMT || 0) + (pharmacy.getPharmacyCollection_four?.[0]?.GROSSAMT || 0) + (pharmacy.getPharmacyReturnSection_three?.[0]?.GROSSAMT || 0);
+      (pharmacy.getPharmacyCollection_One?.[0]?.GROSSAMT || 0) +
+      (pharmacy.getPharmacyCollection_four?.[0]?.GROSSAMT || 0) +
+      (pharmacy.getPharmacyReturnSection_three?.[0]?.GROSSAMT || 0) +
+      (grossIncludesTax ? pharmacy_tax : 0);
+
+    // Rows from the legacy MIS report (only present in the QMT API response)
+    const legacyRows = data.legacyRows || null;
+    const ipOpSettled = legacyRows ? sum(legacyRows.getIpOpSettled || [], "NETAMT") : 0;
+    const ipOpCredit = legacyRows ? sum(legacyRows.getIpOpCredit_one || [], "BILLCREDIT") + sum(legacyRows.getIpOpCredit_two || [], "BILLCREDIT") : 0;
+    const ipPackageAdjustment = legacyRows ? sum(legacyRows.getIpPackageAdjustment || [], "DSN_PACKAGEADJAMT") : 0;
 
     const pharmacyIncome = [
       {
@@ -92,6 +103,7 @@ export const useIncomeCalculations = (apiData, setLoading, grpval) => {
         netAmount: pharmacyIncome[0].tax,
         style: "N",
       },
+      ...(legacyRows ? [{subGroupName: "Ip/Op Settled", netAmount: ipOpSettled, style: "N"}] : []),
     ];
 
     const totalCollectedNetAmount = grpval === 1 ? GrandIncomeTotal?.netAmount - ipConsolidatedDiscount : GrandIncomeTotal?.netAmount + pharma_netAmount + pharmacy_tax - ipConsolidatedDiscount;
@@ -164,6 +176,7 @@ export const useIncomeCalculations = (apiData, setLoading, grpval) => {
         gross: null,
         style: "U",
       },
+      ...(legacyRows ? [{subGroupName: "Ip/Op Credit", collection: ipOpCredit, netAmount: null, tax: null, discount: null, gross: null, style: "N"}] : []),
       {
         subGroupName: "Round Off",
         collection: null,
@@ -191,7 +204,7 @@ export const useIncomeCalculations = (apiData, setLoading, grpval) => {
     const settled = sum(data.CreditInSuranceBillCollection?.creditInsuranceBillCollection || [], "AMT");
     const ipPreviousDayCollection = sum(data.IpPreviousDayCollection?.getIpPreviousDayCollection || [], "AMT");
     const ipPreviousDayDiscount = sum(data.discount?.IpPreviousDayDicount || [], "DISCOUNT");
-    const advanceRefund = 0;
+    const advanceRefund = sum(data.advanceRefund?.getAdvanceRefund || [], "AMT");
     const creditInsuranceBillDiscount = sum(data.ungrouped?.getDiscount || [], "DISCOUNT");
 
     // =========================
@@ -218,11 +231,6 @@ export const useIncomeCalculations = (apiData, setLoading, grpval) => {
         style: "N",
       },
       {
-        subGroupName: "IP Previous Day's  Discount",
-        collection: ipPreviousDayDiscount,
-        style: "N",
-      },
-      {
         subGroupName: "Advance Refund (B)",
         collection: advanceRefund,
         style: "N",
@@ -242,6 +250,12 @@ export const useIncomeCalculations = (apiData, setLoading, grpval) => {
         collection: ipPreviousDayCollection,
         style: "N",
       },
+      {
+        subGroupName: "IP Previous Day's  Discount",
+        collection: ipPreviousDayDiscount,
+        style: "N",
+      },
+      ...(legacyRows ? [{subGroupName: "IP Package Adjustment Amount", collection: ipPackageAdjustment, style: "N"}] : []),
     ];
 
     // =========================
